@@ -18,5 +18,5 @@ Steps to follow
 ``npm run build:dist``
 
 ## Demo
-https://meta-magic.github.io/projectmsui/
+https://meta-magic.github.io/project-ms-ui/
 
