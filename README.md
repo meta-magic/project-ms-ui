@@ -7,76 +7,16 @@
 [![GitHub stars](https://img.shields.io/github/stars/ketan-gote/projectmsui.svg)](https://github.com/ketan-gote/projectmsui/stargazers)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/ketan-gote/projectmsui/master/LICENSE)
 
+Steps to follow 
+
+## Start Local Development
+`` npm start`` Which will live reload all changes to your modules/component/html etc
+## Test Your Module
+`` npm build:demo`` . THIS STEPS IS IMPORTANT BEFORE YOU COMMIT. Any defects in your module can be found and fixed at this stage.
+
+## Build Your Micro Front UI
+``npm run build:dist``
+
 ## Demo
-https://ketan-gote.github.io/projectmsui/
+https://meta-magic.github.io/projectmsui/
 
-## Table of contents
-
-- [About](#about)
-- [Installation](#installation)
-- [Documentation](#documentation)
-- [Development](#development)
-- [License](#license)
-
-## About
-
-Handles all Project Microservice UI
-
-## Installation
-
-Install through npm:
-```
-npm install --save projectmsui
-```
-
-Then include in your apps module:
-
-```typescript
-import { NgModule } from '@angular/core';
-import { ProjectMsUIModule } from 'projectmsui';
-
-@NgModule({
-  imports: [
-    ProjectMsUIModule.forRoot()
-  ]
-})
-export class MyModule {}
-```
-
-Finally use in one of your apps components:
-```typescript
-import { Component } from '@angular/core';
-
-@Component({
-  template: '<hello-world></hello-world>'
-})
-export class MyComponent {}
-```
-
-You may also find it useful to view the [demo source](https://github.com/ketan-gote/projectmsui/blob/master/demo/demo.component.ts).
-
-## Documentation
-All documentation is auto-generated from the source via [compodoc](https://compodoc.github.io/compodoc/) and can be viewed here:
-https://ketan-gote.github.io/projectmsui/docs/
-
-## Development
-
-### Prepare your environment
-* Install [Node.js](http://nodejs.org/) and NPM
-* Install local dev dependencies: `npm install` while current directory is this repo
-
-### Development server
-Run `npm start` to start a development server on port 8000 with auto reload + tests.
-
-### Testing
-Run `npm test` to run tests once or `npm run test:watch` to continually run tests.
-
-### Release
-* Bump the version in package.json (once the module hits 1.0 this will become automatic)
-```bash
-npm run release
-```
-
-## License
-
-MIT
