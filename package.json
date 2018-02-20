@@ -5,7 +5,8 @@
   "scripts": {
     "start": "concurrently --raw \"webpack-dev-server --open\" \"npm run test:watch\"",
     "build:demo": "webpack --env=production",
-    "build:dist": "ng-packagr -p package.json",
+    "build:dist": "ng-packagr -p package.json && npm run copyasset",
+    "copyasset": "sh copyassets.sh",
     "build:clean": "del-cli dist",
     "test": "karma start --single-run && npm run build:dist && npm run build:clean",
     "test:watch": "karma start --auto-watch",
