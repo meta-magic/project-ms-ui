@@ -46,7 +46,6 @@ export class CreateProjectComponent implements OnInit {
   }
 
   saveProject(event: any) {
-    /*debugger;
     let msg = this.projectname;
     const message1 = {
       ms_id: 'project_ms',
@@ -54,13 +53,11 @@ export class CreateProjectComponent implements OnInit {
         name: msg
       }
     };
-    debugger;
-
     localStorage.setItem('project_details', JSON.stringify(message1));
-    this.emittProjectSaveEvent(JSON.stringify(message1));*/
+    this.emittProjectSaveEvent(JSON.stringify(message1));
   }
 
   emittProjectSaveEvent(string: any) {
-    // window.postMessage(string, window.location.origin);
+    window.postMessage(string, window.location.origin);
   }
 }
