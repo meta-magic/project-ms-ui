@@ -123,8 +123,8 @@
     "@angular/forms": "^5.2.4",
     "@angular/http": "^5.2.4",
     "@angular/router": "^5.2.4",
-    "amexio-ng-extensions": "^4.0.7",
-    "platform-commons": "file:../platform-commons/dist/platform-commons-0.0.0.tgz",
-    "font-awesome": "^4.7.0"
+    "amexio-ng-extensions": "^4.0.10",
+    "font-awesome": "^4.7.0",
+    "platform-commons": "http://localhost/desireplatform/platform-commons-0.0.0.tgz"
   }
 }
