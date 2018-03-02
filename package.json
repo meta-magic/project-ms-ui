@@ -125,6 +125,6 @@
     "@angular/router": "^5.2.4",
     "amexio-ng-extensions": "^4.0.10",
     "font-awesome": "^4.7.0",
-    "platform-commons": "http://localhost/desireplatform/micro-ui-libs/platform-commons-0.0.0.tgz"
+    "platform-commons": "http://localhost/desireplatform/micro-ui-libs/platform-commons.tgz"
   }
 }
