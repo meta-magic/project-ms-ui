@@ -25,7 +25,10 @@ import { CookieService } from 'platform-commons';
                           [(ngModel)]="projectCreationModel.projectDescription">
           </amexio-text-input>
         </amexio-column>    
-        <amexio-column [size]="6">
+        <amexio-column [size]="12">
+        <amexio-card [header]="false" [footer]="false"
+        [body-height]="50">
+        <amexio-body>
         <amexio-radio-group
            [field-label]="'Theme'"
            name ="theme"
@@ -38,6 +41,8 @@ import { CookieService } from 'platform-commons';
            [default-value]="projectCreationModel.themeUUID"  
            (onSelection)="setTheme($event)">
         </amexio-radio-group>
+         </amexio-body>
+        </amexio-card>
         </amexio-column>  
       </amexio-row>
     </amexio-body>

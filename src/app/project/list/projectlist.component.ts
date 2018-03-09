@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
-
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'project-list',
   template: `
@@ -19,5 +19,20 @@ import { Router } from '@angular/router';
   `
 })
 export class ProjectListComponent implements OnInit {
+  projectList: any;
+  constructor(private http: HttpClient) {}
   ngOnInit() {}
+  getProjectList() {
+    let projectDataList: any;
+
+    this.http.get('/api/project/project/findByProjectOwner').subscribe(
+      response => {
+        projectDataList = response;
+      },
+      error => {},
+      () => {
+        this.projectList = projectDataList;
+      }
+    );
+  }
 }

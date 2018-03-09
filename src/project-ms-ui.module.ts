@@ -6,10 +6,15 @@ import { RouterModule, Routes } from '@angular/router';
 import { CreateProjectComponent } from './app/project/create/createproject.component';
 import { ProjectListComponent } from './app/project/list/projectlist.component';
 import { CodeExplorerComponent } from './app/project/code-explorer/code-explorer.component';
-import {HttpClientModule} from "@angular/common/http";
-import {PlatformCommmonsModule} from "platform-commons";
+import { HttpClientModule } from '@angular/common/http';
+import { PlatformCommmonsModule } from 'platform-commons';
 
 const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'create',
+    pathMatch: 'full'
+  },
   {
     path: 'create',
     component: CreateProjectComponent
