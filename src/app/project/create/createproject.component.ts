@@ -8,7 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
   template: `
 
   <amexio-card [header]="true" [footer]="true" [footer-align]="'right'"
-  [body-height]="60">
+  [body-height]="75">
     <amexio-header>
       Project Create
     </amexio-header>
@@ -27,22 +27,32 @@ import { Router, ActivatedRoute } from '@angular/router';
                           [(ngModel)]="projectCreationModel.projectDescription">
           </amexio-text-input>
         </amexio-column>    
-        <amexio-column [size]="12">
+        <amexio-column [size]="6">
        
        
         <amexio-radio-group
-           [field-label]="'Theme'"
+           [field-label]="'Amexio Themes'"
            name ="theme"
-           [data-reader]="'response'"
            [display-field]="'themesName'"
            [value-field]="'themeUUID'"
            [horizontal]="true"
-           [http-method]="'get'"
-           [http-url]="'/api/project/themes/findAll'"
+           [data]="amexioThemes"
            [default-value]="projectCreationModel.themeUUID"  
            (onSelection)="setTheme($event)">
         </amexio-radio-group>
       
+        </amexio-column>  
+        <amexio-column [size]="6">
+        <amexio-radio-group
+           [field-label]="'Material Themes'"
+           name ="theme"
+           [display-field]="'themesName'"
+           [value-field]="'themeUUID'"
+           [horizontal]="true"
+           [data]="materialthemes"
+           [default-value]="projectCreationModel.themeUUID"  
+           (onSelection)="setTheme($event)">
+        </amexio-radio-group>
         </amexio-column>  
         
       </amexio-row>
@@ -89,6 +99,9 @@ export class CreateProjectComponent implements OnInit {
   projectUUID: string;
   validationMsgArray: any = [];
   isValidateForm: boolean = false;
+  themes: any;
+  amexioThemes: any;
+  materialthemes: any;
   constructor(
     private http: HttpClient,
     private ls: LocalStorageService,
@@ -96,6 +109,9 @@ export class CreateProjectComponent implements OnInit {
     private route: ActivatedRoute
   ) {
     this.projectCreationModel = new ProjectCreationModel();
+    this.amexioThemes = [];
+    this.materialthemes = [];
+    this.getThemeData();
   }
 
   ngOnInit(): void {
@@ -225,6 +241,52 @@ export class CreateProjectComponent implements OnInit {
           this.serverPort = projectData.response.serverPort;
         }
       );
+  }
+  getThemeData() {
+    let response: any;
+    this.http.get('/api/project/themes/findAll').subscribe(
+      res => {
+        response = res;
+      },
+      err => {
+        this.validationMsgArray.push('Unable to connect to server');
+        this.isValidateForm = true;
+        this.asyncFlag = false;
+      },
+      () => {
+        if (response.success) {
+          this.themes = response.response;
+          console.log('themes', this.themes);
+          this.iterateData(this.themes);
+        } else if (!response.success && response.errors) {
+          this.validationMsgArray.push(response.errorMessage);
+        }
+      }
+    );
+  }
+
+  iterateData(themes: any) {
+    themes.forEach((obj: any) => {
+      if (obj.themeType == '1') {
+        const obj1 = {
+          themeUUID: obj.themeUUID,
+          themesName: obj.themesName,
+          themesDescription: obj.themesDescription,
+          themeType: obj.themeType
+        };
+        this.amexioThemes.push(obj1);
+        console.log('amexiotheme', this.amexioThemes);
+      } else {
+        const obj2 = {
+          themeUUID: obj.themeUUID,
+          themesName: obj.themesName,
+          themesDescription: obj.themesDescription,
+          themeType: obj.themeType
+        };
+        this.materialthemes.push(obj2);
+        console.log('material', this.materialthemes);
+      }
+    });
   }
 }
 export class ProjectCreationModel {
