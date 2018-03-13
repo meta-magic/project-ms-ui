@@ -2,11 +2,13 @@ import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from 'platform-commons';
 import { CookieService } from 'platform-commons';
+import { Router, ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'project-create',
   template: `
 
-  <amexio-card [header]="true" [footer]="true" [footer-align]="'right'">
+  <amexio-card [header]="true" [footer]="true" [footer-align]="'right'"
+  [body-height]="60">
     <amexio-header>
       Project Create
     </amexio-header>
@@ -26,9 +28,8 @@ import { CookieService } from 'platform-commons';
           </amexio-text-input>
         </amexio-column>    
         <amexio-column [size]="12">
-        <amexio-card [header]="false" [footer]="false"
-        [body-height]="50">
-        <amexio-body>
+       
+       
         <amexio-radio-group
            [field-label]="'Theme'"
            name ="theme"
@@ -41,9 +42,9 @@ import { CookieService } from 'platform-commons';
            [default-value]="projectCreationModel.themeUUID"  
            (onSelection)="setTheme($event)">
         </amexio-radio-group>
-         </amexio-body>
-        </amexio-card>
+      
         </amexio-column>  
+        
       </amexio-row>
     </amexio-body>
     <amexio-action>
@@ -82,19 +83,35 @@ import { CookieService } from 'platform-commons';
 export class CreateProjectComponent implements OnInit {
   projectCreationModel: ProjectCreationModel;
   asyncFlag: boolean = false;
+  serverPort: any;
   newTokenid: string;
   msgData: any = [];
+  projectUUID: string;
   validationMsgArray: any = [];
   isValidateForm: boolean = false;
   constructor(
     private http: HttpClient,
     private ls: LocalStorageService,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private route: ActivatedRoute
   ) {
     this.projectCreationModel = new ProjectCreationModel();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    debugger;
+
+    this.route.params.forEach(p => {
+      // console.log('test1',p)
+      let id = p.id;
+      if (id == null || id == '') {
+        // console.log('tset2',id)
+        this.projectCreationModel = new ProjectCreationModel();
+      } else {
+        this.getProjData(id);
+      }
+    });
+
     /*  if (localStorage.getItem('project_details')) {
       this.emittProjectSaveEvent(localStorage.getItem('project_details'));
     }*/
@@ -185,6 +202,29 @@ export class CreateProjectComponent implements OnInit {
 
   clearData() {
     this.projectCreationModel = new ProjectCreationModel();
+  }
+  getProjData(projectUUID: any) {
+    let projectData: any;
+    this.projectCreationModel = new ProjectCreationModel();
+    this.http
+      .get('/api/project/project/findByProjectUUID?projectUUID=' + projectUUID)
+      .subscribe(
+        response => {
+          projectData = response;
+        },
+        err => {
+          console.log('Error occured');
+        },
+        () => {
+          console.log(projectData.response);
+          this.projectCreationModel.projectName =
+            projectData.response.projectName;
+          this.projectCreationModel.projectDescription =
+            projectData.response.projectDescription;
+          this.projectCreationModel.themeUUID = projectData.response.themeUUID;
+          this.serverPort = projectData.response.serverPort;
+        }
+      );
   }
 }
 export class ProjectCreationModel {
