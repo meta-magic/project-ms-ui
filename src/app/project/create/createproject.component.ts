@@ -10,7 +10,7 @@ import { Router, ActivatedRoute } from '@angular/router';
   <amexio-card [header]="true" [footer]="true" [footer-align]="'right'"
   [body-height]="75">
     <amexio-header>
-      Project Create
+      Project Creation
     </amexio-header>
     <amexio-body>
       <amexio-row>
@@ -35,7 +35,6 @@ import { Router, ActivatedRoute } from '@angular/router';
            name ="theme"
            [display-field]="'themesName'"
            [value-field]="'themeUUID'"
-           [horizontal]="true"
            [data]="amexioThemes"
            [default-value]="projectCreationModel.themeUUID"  
            (onSelection)="setTheme($event)">
@@ -48,7 +47,6 @@ import { Router, ActivatedRoute } from '@angular/router';
            name ="theme"
            [display-field]="'themesName'"
            [value-field]="'themeUUID'"
-           [horizontal]="true"
            [data]="materialthemes"
            [default-value]="projectCreationModel.themeUUID"  
            (onSelection)="setTheme($event)">
@@ -59,10 +57,11 @@ import { Router, ActivatedRoute } from '@angular/router';
     </amexio-body>
     <amexio-action>
     <amexio-button
-    [label]="'save'"
+    [label]="'Save'"
     [loading]="asyncFlag"
-    [type]="'secondary'"
-    [tooltip]="'save'" 
+    [type]="'primary'"
+    [tooltip]="'Save'"
+    [size]="'small'" 
     (onClick)="saveProject()">
     </amexio-button>
     </amexio-action>    
@@ -208,9 +207,16 @@ export class CreateProjectComponent implements OnInit {
           this.asyncFlag = false;
           this.msgData.push(response.successMessage);
           this.clearData();
-        } else if (!response.success && response.errors) {
-          this.validationMsgArray.push(response.errorMessage);
-          this.asyncFlag = false;
+        } else {
+          if (response.errorMessage == null) {
+            this.validationMsgArray.push(response.errors);
+            this.isValidateForm = true;
+            this.asyncFlag = false;
+          } else {
+            this.validationMsgArray.push(response.errorMessage);
+            this.isValidateForm = true;
+            this.asyncFlag = false;
+          }
         }
       }
     );
