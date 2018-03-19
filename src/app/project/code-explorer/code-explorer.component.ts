@@ -97,8 +97,8 @@ export class CodeExplorerComponent implements OnInit {
 
   //Method to get Source Code Data in tree format
   getSourceCodeTreeData() {
-    let appUrl =
-      'http://host:8080/code-pipeline-service/projectExplorer/explorer';
+    // let appUrl = 'http://host:8080/code-pipeline-service/projectExplorer/explorer';
+    let appUrl = 'http://host:9870/projectExplorer/explorer';
     if (this.publicIpAddress) {
       appUrl = appUrl.replace('host', this.publicIpAddress);
     } else {
@@ -127,6 +127,7 @@ export class CodeExplorerComponent implements OnInit {
   getFileData(data: any) {
     let appUrl =
       'http://host:8080/code-pipeline-service/projectExplorer/findSourceCode';
+    // let appUrl = 'http://host:9870/projectExplorer/findSourceCode';
     if (this.publicIpAddress) {
       appUrl = appUrl.replace('host', this.publicIpAddress);
     } else {
