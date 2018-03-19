@@ -8,7 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
   template: `
 
   <amexio-card [header]="true" [footer]="true" [footer-align]="'right'"
-  [body-height]="75">
+  [body-height]="85">
     <amexio-header>
       Project Creation
     </amexio-header>
@@ -36,7 +36,7 @@ import { Router, ActivatedRoute } from '@angular/router';
            [display-field]="'themesName'"
            [value-field]="'themeUUID'"
            [data]="amexioThemes"
-           [default-value]="projectCreationModel.themeUUID"  
+           [(ngModel)]="projectCreationModel.themeUUID"  
            (onSelection)="setTheme($event)">
         </amexio-radio-group>
       
@@ -48,7 +48,7 @@ import { Router, ActivatedRoute } from '@angular/router';
            [display-field]="'themesName'"
            [value-field]="'themeUUID'"
            [data]="materialthemes"
-           [default-value]="projectCreationModel.themeUUID"  
+           [(ngModel)]="projectCreationModel.themeUUID"  
            (onSelection)="setTheme($event)">
         </amexio-radio-group>
         </amexio-column>  
@@ -61,8 +61,15 @@ import { Router, ActivatedRoute } from '@angular/router';
     [loading]="asyncFlag"
     [type]="'primary'"
     [tooltip]="'Save'"
-    [size]="'small'" 
+    [size]="'default'" 
     (onClick)="saveProject()">
+    </amexio-button>
+    <amexio-button
+    [label]="'Cancel'"
+    [type]="'secondary'"
+    [tooltip]="'Cancel'"
+    [size]="'default'" 
+    (onClick)="cancelProject()">
     </amexio-button>
     </amexio-action>    
   </amexio-card>
@@ -114,44 +121,23 @@ export class CreateProjectComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    debugger;
-
     this.route.params.forEach(p => {
-      // console.log('test1',p)
       let id = p.id;
       if (id == null || id == '') {
-        // console.log('tset2',id)
         this.projectCreationModel = new ProjectCreationModel();
       } else {
         this.getProjData(id);
       }
     });
-
-    /*  if (localStorage.getItem('project_details')) {
-      this.emittProjectSaveEvent(localStorage.getItem('project_details'));
-    }*/
   }
 
-  // saveProject(event: any) {
-  //   let msg = this.projectname;
-  //   const message1 = {
-  //     ms_id: 'project_ms',
-  //     data: {
-  //       name: msg
-  //     }
-  //   };
-  //   localStorage.setItem('project_details', JSON.stringify(message1));
-  //   this.emittProjectSaveEvent(JSON.stringify(message1));
-  // }
-
-  // emittProjectSaveEvent(string: any) {
-  //   window.postMessage(string, window.location.origin);
-  // }
+  //Set Theme
   setTheme(themeData: any) {
     this.projectCreationModel.themeUUID = themeData.themeUUID;
   }
+
+  //Validate Form Fields
   validateFormFields() {
-    debugger;
     let isValid: boolean = false;
     this.validationMsgArray = [];
     if (this.projectCreationModel.projectName == '') {
@@ -167,11 +153,19 @@ export class CreateProjectComponent implements OnInit {
       this.validationMsgArray.push('Invalid (Blank) Theme.');
     }
   }
+
+  //To close Window
   okErrorBtnClick() {
     this.isValidateForm = false;
     this.validationMsgArray = [];
   }
 
+  //Reset Project Data
+  cancelProject() {
+    this.projectCreationModel = new ProjectCreationModel();
+  }
+
+  //To Save Project Details
   saveProject() {
     this.validateFormFields();
     if (this.validationMsgArray && this.validationMsgArray.length >= 1) {
@@ -182,6 +176,8 @@ export class CreateProjectComponent implements OnInit {
       this.saveProjectCreation();
     }
   }
+
+  //Save Method to create Project
   saveProjectCreation() {
     let response: any;
     this.asyncFlag = true;
@@ -225,6 +221,8 @@ export class CreateProjectComponent implements OnInit {
   clearData() {
     this.projectCreationModel = new ProjectCreationModel();
   }
+
+  //To fetch Project Details
   getProjData(projectUUID: any) {
     let projectData: any;
     this.projectCreationModel = new ProjectCreationModel();
@@ -238,7 +236,6 @@ export class CreateProjectComponent implements OnInit {
           console.log('Error occured');
         },
         () => {
-          console.log(projectData.response);
           this.projectCreationModel.projectName =
             projectData.response.projectName;
           this.projectCreationModel.projectDescription =
@@ -248,6 +245,8 @@ export class CreateProjectComponent implements OnInit {
         }
       );
   }
+
+  //To Fetch Theme Data from DB
   getThemeData() {
     let response: any;
     this.http.get('/api/project/themes/findAll').subscribe(
@@ -262,7 +261,6 @@ export class CreateProjectComponent implements OnInit {
       () => {
         if (response.success) {
           this.themes = response.response;
-          console.log('themes', this.themes);
           this.iterateData(this.themes);
         } else if (!response.success && response.errors) {
           this.validationMsgArray.push(response.errorMessage);
@@ -281,7 +279,6 @@ export class CreateProjectComponent implements OnInit {
           themeType: obj.themeType
         };
         this.amexioThemes.push(obj1);
-        console.log('amexiotheme', this.amexioThemes);
       } else {
         const obj2 = {
           themeUUID: obj.themeUUID,
@@ -290,7 +287,6 @@ export class CreateProjectComponent implements OnInit {
           themeType: obj.themeType
         };
         this.materialthemes.push(obj2);
-        console.log('material', this.materialthemes);
       }
     });
   }
