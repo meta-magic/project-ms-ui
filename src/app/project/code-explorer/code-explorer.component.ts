@@ -6,6 +6,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 @Component({
   selector: 'code-explorer',
   template: `
+<amexio-row>
+<amexio-column [size]="12">
 <amexio-card [header]="true"
 [footer]="false"
 [body-height]="85"
@@ -52,7 +54,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
         </amexio-row>
     </amexio-body>
 </amexio-card>
-
+</amexio-column>
+</amexio-row>
  `,
   styles: [
     `

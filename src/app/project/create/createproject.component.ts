@@ -6,7 +6,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'project-create',
   template: `
-
+  <amexio-row>
+  <amexio-column [size]="12">
   <amexio-card [header]="true" [footer]="true" [footer-align]="'right'"
   [body-height]="85">
     <amexio-header>
@@ -56,6 +57,13 @@ import { Router, ActivatedRoute } from '@angular/router';
       </amexio-row>
     </amexio-body>
     <amexio-action>
+     <amexio-button
+    [label]="'Cancel'"
+    [type]="'secondary'"
+    [tooltip]="'Cancel'"
+    [size]="'default'" 
+    (onClick)="cancelProject()">
+    </amexio-button>
     <amexio-button
     [label]="'Save'"
     [loading]="asyncFlag"
@@ -64,15 +72,9 @@ import { Router, ActivatedRoute } from '@angular/router';
     [size]="'default'" 
     (onClick)="saveProject()">
     </amexio-button>
-    <amexio-button
-    [label]="'Cancel'"
-    [type]="'secondary'"
-    [tooltip]="'Cancel'"
-    [size]="'default'" 
-    (onClick)="cancelProject()">
-    </amexio-button>
     </amexio-action>    
   </amexio-card>
+  </amexio-column>
    <amexio-notification 
    [data]="msgData"
    [vertical-position]="'top'"
@@ -91,9 +93,8 @@ import { Router, ActivatedRoute } from '@angular/router';
     </amexio-button>
 </amexio-action>
 </amexio-dialogue>
-
+</amexio-row>
   
-
   `
 })
 export class CreateProjectComponent implements OnInit {
