@@ -10,7 +10,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 <amexio-column [size]="12">
 <amexio-card [header]="true"
 [footer]="false"
-[body-height]="85"
+[body-height]="82"
 [show]="true">
     <amexio-header>
       Project Code Explorer
@@ -18,7 +18,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
     <amexio-body>
      <amexio-row>
             <amexio-column [size]="3">
-            <amexio-card  [header]="true" [footer]="false" [show]="true" [body-height]="72" [footer-align]="'right'">
+            <amexio-card  [header]="true" [footer]="false" [show]="true" [body-height]="82" [footer-align]="'right'">
           <amexio-header>
                Code Structure
           </amexio-header>

@@ -9,7 +9,7 @@ import { Router, ActivatedRoute } from '@angular/router';
   <amexio-row>
   <amexio-column [size]="12">
   <amexio-card [header]="true" [footer]="true" [footer-align]="'right'"
-  [body-height]="85">
+  [body-height]="82">
     <amexio-header>
       Project Creation
     </amexio-header>
