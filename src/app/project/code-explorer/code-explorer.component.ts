@@ -18,7 +18,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
     <amexio-body>
      <amexio-row>
             <amexio-column [size]="3">
-            <amexio-card  [header]="true" [footer]="false" [show]="true" [body-height]="82" [footer-align]="'right'">
+            <amexio-card  [header]="true" [footer]="false" [show]="true" [body-height]="70" [footer-align]="'right'">
           <amexio-header>
                Code Structure
           </amexio-header>
@@ -38,7 +38,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
             
             <amexio-panel [header]="false"
                 expanded="true" [height]="700">
-                <div style = "height:500px;">   
+                <div style = "height:480px;">   
             
       <ng-container *ngIf="isHtml">
       {{sourceCode}}
@@ -60,7 +60,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   styles: [
     `
    .panel-panel{
-     height:500px!important;
+     height:488px!important;
    }
    `
   ]
@@ -128,9 +128,9 @@ export class CodeExplorerComponent implements OnInit {
 
   //Method to Get File Data
   getFileData(data: any) {
-    let appUrl =
-      'http://host:8080/code-pipeline-service/projectExplorer/findSourceCode';
-    // let appUrl = 'http://host:9870/projectExplorer/findSourceCode';
+    // let appUrl =
+    //   'http://host:8080/code-pipeline-service/projectExplorer/findSourceCode';
+    let appUrl = 'http://host:9870/projectExplorer/findSourceCode';
     if (this.publicIpAddress) {
       appUrl = appUrl.replace('host', this.publicIpAddress);
     } else {
