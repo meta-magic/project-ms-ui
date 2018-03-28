@@ -14,7 +14,7 @@ import { Router, ActivatedRoute } from '@angular/router';
   
     <amexio-body>
      <amexio-listbox [enable-checkbox]="false"
-                [header]="'Project List'"
+                [header]="'Projects'"
                 [search-placeholder]="'Search Project'"
                 [data]="projectList"
                 [filter]="true"
@@ -64,7 +64,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 <ng-container *ngIf="!portDisableFlag">
          <amexio-column [size]="12">
 
-          Port:{{serverPort}}
+         Server Port:{{serverPort}}
         </amexio-column>   
                 </ng-container>
 
@@ -142,7 +142,7 @@ import { Router, ActivatedRoute } from '@angular/router';
    [auto-dismiss-msg]="true"
    [auto-dismiss-msg-interval]="7000">
 </amexio-notification>
-<amexio-dialogue [show-dialogue]="isValidateForm" [message-type]="'error'" [closable]="false" [title]="'Error'" [type]="'alert'" [custom]="true">
+<amexio-dialogue [show-dialogue]="isValidateForm" [message-type]="'error'" [closable]="true" [title]="'Error'" [type]="'alert'" [custom]="true" (close)="isValidateForm = !isValidateForm">
 <amexio-body>
     <ol>
         <li *ngFor="let msgObj of validationMsgArray let index=index">{{msgObj}}</li>
@@ -313,7 +313,6 @@ export class CreateProjectComponent implements OnInit {
   saveProjectCreation() {
     let response: any;
     this.asyncFlag = true;
-
     const requestJson = {
       projectName: this.projectCreationModel.projectName,
       projectDescription: this.projectCreationModel.projectDescription,
