@@ -364,8 +364,8 @@ export class CreateProjectComponent implements OnInit {
         response = res;
       },
       err => {
-        this.validationMsgArray.push('Unable to connect to server');
-        this.isValidateForm = true;
+        // this.validationMsgArray.push('Unable to connect to server');
+        // this.isValidateForm = true;
         this.asyncFlag = false;
       },
       () => {
