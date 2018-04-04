@@ -314,7 +314,7 @@ export class CreateProjectComponent implements OnInit {
       return;
     } else {
       this.isValidateForm = false;
-      this.saveProjectCreation();
+      this.findInstance();
     }
   }
 
@@ -372,7 +372,7 @@ export class CreateProjectComponent implements OnInit {
 
   findInstance() {
     let instanceresponse: any;
-    this.http.get('/api/pipeline/Instance/findInstance').subscribe(
+    this.http.post('/api/pipeline/Instance/validateUserInstance', {}).subscribe(
       res => {
         instanceresponse = res;
       },
@@ -383,14 +383,12 @@ export class CreateProjectComponent implements OnInit {
       () => {
         if (instanceresponse.success) {
           console.log('instance', instanceresponse);
+          this.saveProjectCreation();
         } else {
-          if (instanceresponse.errorMessage == null) {
-            this.validationMsgArray.push(instanceresponse.errors);
-            this.isValidateForm = true;
-          } else {
-            this.validationMsgArray.push(instanceresponse.errorMessage);
-            this.isValidateForm = true;
-          }
+          this.validationMsgArray.push(
+            'User instance not in a running state, start instance from Instance Management Screen.'
+          );
+          this.isValidateForm = true;
         }
       }
     );
