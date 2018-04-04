@@ -135,6 +135,13 @@ import { Router, ActivatedRoute } from '@angular/router';
                 </amexio-card>
                 </ng-container>
   </amexio-column>
+  <amexio-dialogue [show-dialogue]="confirmdialogue"
+               [title]="'Confirm'"
+               [message]="'Do you want to view created project status?'"
+               [message-type]="'confirm'"
+               [type]="'confirm'"
+               (actionStatus)="checkStatus($event)">
+</amexio-dialogue>
    <amexio-notification 
    [data]="msgData"
    [vertical-position]="'top'"
@@ -175,12 +182,14 @@ export class CreateProjectComponent implements OnInit {
   projectId: string;
   disblefields: boolean = false;
   disableBtn: boolean = false;
+  confirmdialogue: boolean;
   constructor(
     private http: HttpClient,
     private ls: LocalStorageService,
     private cookieService: CookieService,
     private msgService: MessagingService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private _route: Router
   ) {
     this.projectCreationModel = new ProjectCreationModel();
     this.themes = [];
@@ -337,6 +346,7 @@ export class CreateProjectComponent implements OnInit {
           this.clearData();
           this.getProjectList();
           this.msgService.sendMessage({ projectId: this.projectId });
+          this.showtask();
         } else {
           if (response.errorMessage == null) {
             this.validationMsgArray.push(response.errors);
@@ -346,6 +356,40 @@ export class CreateProjectComponent implements OnInit {
             this.validationMsgArray.push(response.errorMessage);
             this.isValidateForm = true;
             this.asyncFlag = false;
+          }
+        }
+      }
+    );
+  }
+  showtask() {
+    this.confirmdialogue = !this.confirmdialogue;
+  }
+  checkStatus(data: any) {
+    if (data === 'ok') {
+      this._route.navigate(['home/codepipeline/task-ui']);
+    }
+  }
+
+  findInstance() {
+    let instanceresponse: any;
+    this.http.get('/api/pipeline/Instance/findInstance').subscribe(
+      res => {
+        instanceresponse = res;
+      },
+      err => {
+        this.validationMsgArray.push('Unable to connect to server');
+        this.isValidateForm = true;
+      },
+      () => {
+        if (instanceresponse.success) {
+          console.log('instance', instanceresponse);
+        } else {
+          if (instanceresponse.errorMessage == null) {
+            this.validationMsgArray.push(instanceresponse.errors);
+            this.isValidateForm = true;
+          } else {
+            this.validationMsgArray.push(instanceresponse.errorMessage);
+            this.isValidateForm = true;
           }
         }
       }
