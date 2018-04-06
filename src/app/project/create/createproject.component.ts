@@ -30,7 +30,7 @@ import { Router, ActivatedRoute } from '@angular/router';
     [tooltip]="'New'"
     [size]="'default'" 
     [icon]="'fa fa-plus fa-lg'"
-    (onClick)="openProjectUi()">
+    (onClick)="findInstance()">
     </amexio-button>
 </amexio-action>
 </amexio-card>
@@ -314,7 +314,7 @@ export class CreateProjectComponent implements OnInit {
       return;
     } else {
       this.isValidateForm = false;
-      this.findInstance();
+      this.saveProjectCreation();
     }
   }
 
@@ -383,7 +383,7 @@ export class CreateProjectComponent implements OnInit {
       () => {
         if (instanceresponse.success) {
           console.log('instance', instanceresponse);
-          this.saveProjectCreation();
+          this.openProjectUi();
         } else {
           this.validationMsgArray.push(
             'User instance not in a running state, start instance from Instance Management Screen.'
