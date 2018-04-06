@@ -77,13 +77,14 @@ export class CodeExplorerComponent implements OnInit {
   publicIpAddress: any;
 
   constructor(public http: HttpClient) {
+    this.publicIpAddress = null;
     this.fileStructuredata = {
       response: []
     };
   }
 
   ngOnInit() {
-    this.getSourceCodeTreeData();
+    // this.getSourceCodeTreeData();
 
     let ipAddress: any;
     this.http.get('/api/user/person/findLoggedInUserInfo').subscribe(
@@ -104,26 +105,28 @@ export class CodeExplorerComponent implements OnInit {
     let appUrl = 'http://host:9870/projectExplorer/explorer';
     if (this.publicIpAddress) {
       appUrl = appUrl.replace('host', this.publicIpAddress);
-    } else {
-      appUrl = appUrl.replace('host', 'localhost');
-    }
-    let filedata: any;
 
-    this.http.get(appUrl).subscribe(
-      res => {
-        filedata = res;
-      },
-      err => {
-        console.log('Error occured');
-      },
-      () => {
-        if (filedata.response) {
-          let responsedata: any;
-          responsedata = JSON.parse(filedata.response);
-          this.fileStructuredata.response = responsedata.children;
+      // else {
+      //   appUrl = appUrl.replace('host', 'localhost');
+      // }
+      let filedata: any;
+
+      this.http.get(appUrl).subscribe(
+        res => {
+          filedata = res;
+        },
+        err => {
+          console.log('Error occured');
+        },
+        () => {
+          if (filedata.response) {
+            let responsedata: any;
+            responsedata = JSON.parse(filedata.response);
+            this.fileStructuredata.response = responsedata.children;
+          }
         }
-      }
-    );
+      );
+    }
   }
 
   //Method to Get File Data
