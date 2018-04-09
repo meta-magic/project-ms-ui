@@ -29,6 +29,7 @@ const routes: Routes = [
   declarations: [DemoComponent],
   imports: [
     BrowserModule,
+
     HttpModule,
     FormsModule,
     AmexioWidgetModule,

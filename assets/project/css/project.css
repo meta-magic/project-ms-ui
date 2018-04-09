@@ -1,0 +1,21 @@
+
+.project-explorer{
+
+}
+.project-explorer .card-body{
+  padding-left: 0px!important;
+  padding-right: 0px!important;
+
+  overflow-x:hidden  ;
+  overflow-y: hidden ;
+}
+
+.card-body{
+  padding: 0px!important;
+  overflow-x:hidden  ;
+  overflow-y: hidden ;
+
+
+}
+
+
