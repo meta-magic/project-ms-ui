@@ -128,19 +128,18 @@ export class CodeExplorerComponent implements OnInit {
 
   ngOnInit() {
     let ipAddress: any;
-    this.publicIpAddress = '18.216.48.183';
-    this.getSourceCodeTreeData();
-    /* this.http.get('/api/user/person/findLoggedInUserInfo').subscribe(
-     response => {
-     ipAddress = response;
-     },
-     error => {
-     },
-     () => {
-     this.publicIpAddress = ipAddress.response.publicIpAddress;
-     this.getSourceCodeTreeData();
-     }
-     ); */
+    // this.publicIpAddress = '18.216.48.183';
+    // this.getSourceCodeTreeData();
+    this.http.get('/api/user/person/findLoggedInUserInfo').subscribe(
+      response => {
+        ipAddress = response;
+      },
+      error => {},
+      () => {
+        this.publicIpAddress = ipAddress.response.publicIpAddress;
+        this.getSourceCodeTreeData();
+      }
+    );
   }
 
   resetFlag() {
