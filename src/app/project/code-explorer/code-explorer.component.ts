@@ -5,7 +5,7 @@ import { CookieService } from 'platform-commons';
 import { clearImmediate } from 'timers';
 @Component({
   selector: 'code-explorer',
-  template: `    
+  template: `
     <amexio-row>
       <amexio-column [size]="3">
         <amexio-card  [header]="true"  [footer]="false" [show]="true" [header-align]="'left'"
@@ -15,14 +15,14 @@ import { clearImmediate } from 'timers';
             <amexio-button [type]="'warning'" [tooltip]="'Share'" (onClick)="onShareClick($event)" [icon]="'fa fa-share-alt'" > </amexio-button>
             <amexio-button [type]="'success'" [tooltip]="'Files'" (onClick)="onFileClick($event)" [icon]="'fa fa-file-o'" > </amexio-button>
           </amexio-header>
-          
+
           <amexio-body>
-             
-              <ng-container *ngIf="fileStructuredata && fileDataFromBack">
-                <amexio-treeview [data]="fileStructuredata" (nodeClick)="getFileData($event)" [data-reader]="'children'">
-                </amexio-treeview>
-              </ng-container>
-          
+
+            <ng-container *ngIf="fileStructuredata && fileDataFromBack">
+              <amexio-treeview [data]="fileStructuredata" (nodeClick)="getFileData($event)" [data-reader]="'children'">
+              </amexio-treeview>
+            </ng-container>
+
 
             <ng-container *ngIf="treeViewData">
               <amexio-row>
@@ -40,7 +40,7 @@ import { clearImmediate } from 'timers';
                       <amexio-row>
                         <amexio-column size="12">
                           <amexio-tree-filter-view  [data]="File" [data-reader]="'item'">
-                          </amexio-tree-filter-view>  
+                          </amexio-tree-filter-view>
                         </amexio-column>
                       </amexio-row>
                     </amexio-accordion-tab>
@@ -48,7 +48,7 @@ import { clearImmediate } from 'timers';
                 </amexio-column>
               </amexio-row>
             </ng-container>
-            
+
           </amexio-body>
         </amexio-card>
       </amexio-column>
@@ -58,28 +58,28 @@ import { clearImmediate } from 'timers';
           <amexio-body>
             <amexio-label size="'small'">
               <ng-container *ngIf="sourceCode">
-                
+
                 <ng-container *ngIf="isCss">
                   <prism-block [code]="sourceCode" [language]="'css'"></prism-block>
-                </ng-container> 
-                
+                </ng-container>
+
                 <ng-container *ngIf="isHtml">
                   <prism-block [code]="sourceCode" [language]="'html'"></prism-block>
                 </ng-container>
-                
+
                 <ng-container *ngIf="isTypeScript">
                   <prism-block [code]="sourceCode" [language]="'typescript'"></prism-block>
                 </ng-container>
-                
+
                 <ng-container *ngIf="isJson">
                   <prism-block [code]="sourceCode" [language]="'json'"></prism-block>
                 </ng-container>
 
-               
+
               </ng-container>
-                    </amexio-label>
-                  </amexio-body>
-                </amexio-card>
+            </amexio-label>
+          </amexio-body>
+        </amexio-card>
       </amexio-column>
     </amexio-row>
 
@@ -127,9 +127,9 @@ export class CodeExplorerComponent implements OnInit {
   }
 
   ngOnInit() {
-    let ipAddress: any;
-    // this.publicIpAddress = '18.216.48.183';
-    // this.getSourceCodeTreeData();
+    // let ipAddress: any;
+    // this.publicIpAddress = '18.219.125.0';
+    this.getSourceCodeTreeData();
     this.http.get('/api/user/person/findLoggedInUserInfo').subscribe(
       response => {
         ipAddress = response;
