@@ -13,7 +13,7 @@ import { clearImmediate } from 'timers';
           <amexio-header>
             Project Explorer
             <amexio-button [type]="'warning'" [tooltip]="'Share'" (onClick)="onShareClick($event)" [icon]="'fa fa-share-alt'" > </amexio-button>
-            <amexio-button [type]="'success'" [tooltip]="'Files'"(onClick)="onFileClick($event)" [icon]="'fa fa-file-o'" > </amexio-button>
+            <amexio-button [type]="'success'" [tooltip]="'Files'" (onClick)="onFileClick($event)" [icon]="'fa fa-file-o'" > </amexio-button>
           </amexio-header>
           
           <amexio-body>
@@ -150,7 +150,7 @@ export class CodeExplorerComponent implements OnInit {
   }
 
   // on button click the files are display here in tree formate
-  onFileClick() {
+  onFileClick(data: any) {
     this.fileDataFromBack = true;
     this.treeViewData = false;
     this.getSourceCodeTreeData();
