@@ -127,9 +127,9 @@ export class CodeExplorerComponent implements OnInit {
   }
 
   ngOnInit() {
-    // let ipAddress: any;
+     let ipAddress: any;
     // this.publicIpAddress = '18.219.125.0';
-    this.getSourceCodeTreeData();
+    //this.getSourceCodeTreeData();
     this.http.get('/api/user/person/findLoggedInUserInfo').subscribe(
       response => {
         ipAddress = response;
