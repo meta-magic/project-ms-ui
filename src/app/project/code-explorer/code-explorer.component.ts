@@ -27,24 +27,12 @@ import { clearImmediate } from 'timers';
             <ng-container *ngIf="treeViewData">
               <amexio-row>
                 <amexio-column size="12">
-                  <amexio-accordion>
-                    <amexio-accordion-tab header="Unstaged Changes" active="true">
-                      <amexio-row>
-                        <amexio-column size="12">
-                          <amexio-tree-filter-view  [data]="File" [data-reader]="'item'">
-                          </amexio-tree-filter-view>
-                        </amexio-column>
-                      </amexio-row>
-                    </amexio-accordion-tab>
-                    <amexio-accordion-tab header="Staged Changes">
-                      <amexio-row>
-                        <amexio-column size="12">
-                          <amexio-tree-filter-view  [data]="File" [data-reader]="'item'">
-                          </amexio-tree-filter-view>
-                        </amexio-column>
-                      </amexio-row>
-                    </amexio-accordion-tab>
-                  </amexio-accordion>
+                  <amexio-tree-filter-view [data-reader]="'Data'"
+                                           [http-method]="'get'"
+                                           (nodeClick)="onShareTreeDataClick($event)"
+                                           [http-url]="'assets/share.json'">
+                  </amexio-tree-filter-view>
+                 
                 </amexio-column>
               </amexio-row>
             </ng-container>
@@ -56,6 +44,93 @@ import { clearImmediate } from 'timers';
       <amexio-column [size]="9"   >
         <amexio-card [body-height]="79">
           <amexio-body>
+            <ng-container *ngIf="commitWindow">
+              <!--<amexio-tree-filter-view  [data]="docker" [data-reader]="'Data'">-->
+              <!--</amexio-tree-filter-view>-->
+              <amexio-window [show-window]="showBasicWindow"
+                             type="window" [closable]="true" [footer] ="true">
+                <amexio-header>
+                 Commit Changes
+                </amexio-header>
+                <amexio-body>
+                  <amexio-row>
+                  
+                    <amexio-column [size]="12">
+                      <amexio-text-input [field-label]="'Repository URL'" name="URL"
+                                         [(ngModel)]="commitAllDataClass.remoteURL"
+                                         [place-holder]="'https://github.com/meta-magic/Amexio5API.git'"
+                                         [enable-popover]="true"
+                                         [icon-feedback]="true"
+                                         [allow-blank]="false"
+                                         [error-msg]="'Please enter proper URL'"
+                      >
+                      </amexio-text-input>
+                    </amexio-column>
+
+                  </amexio-row>
+                  <amexio-row>
+                    <amexio-column [size]="6">
+                      <amexio-textarea-input [field-label]="'User Name'" name="username"
+                                             [(ngModel)] ="commitAllDataClass.username"
+                                             [place-holder]="'Enter your user name'"
+                                             [error-msg]="'Please enter user name'"
+                                             [icon-feedback]="true"
+                                             [rows]="'1'"
+                                             [columns]="'2'"
+                                             [allow-blank]="false"
+                                             [enable-popover]="true">
+                      </amexio-textarea-input>
+                    </amexio-column>
+                    <amexio-column [size]="6">
+                      <amexio-password-input [enable-popover]="true"
+                                             [(ngModel)]="commitAllDataClass.password"
+                                             [field-label]="'Password '"
+                                             name ="Password"
+                                             [place-holder]="'Enter your password'"
+                                             [allow-blank]="false"
+                                             [error-msg] ="'Please enter password'"
+                                             [min-length]="6"
+                                             [min-error-msg]="'Minimum 6 char required'"
+                                             [max-length]="32"
+                                             [max-error-msg]="'Maximum 32 char allowed'"
+                                             [icon-feedback]="true">
+                      </amexio-password-input>
+                    </amexio-column>
+                  </amexio-row>
+                  <amexio-row>
+                    <amexio-column [size]="12">
+                      <amexio-textarea-input 
+                                              [(ngModel)]="commitAllDataClass.commitMessage"
+                                              [enable-popover]="true"
+                                             [field-label]="'Commit Message'" 
+                                             name ="Message"
+                                             [place-holder]="'Add commit message ...'"
+                                             [allow-blank]="true"
+                                             [icon-feedback]="true"
+                                             [rows]="'4'"
+                                             [columns]="'2'">
+                        
+                      </amexio-textarea-input>
+                     
+
+                    </amexio-column>
+
+                  </amexio-row>
+
+                </amexio-body>
+                <amexio-action>
+                 
+                  <amexio-button 
+                                  (onClick)="onCommitChangesClick($event)"
+                                 label="Commit Changes" type="green" [icon]="'fa fa fa-arrow-circle-up'">
+                  </amexio-button>
+                  <amexio-button (onClick)="showBasicWindow = false"
+                                 label="Close" type="white"  [icon]="'fa fa-remove'">
+                  </amexio-button>
+                </amexio-action>
+              </amexio-window>
+
+            </ng-container>
             <amexio-label size="'small'">
               <ng-container *ngIf="sourceCode">
 
@@ -82,8 +157,17 @@ import { clearImmediate } from 'timers';
         </amexio-card>
       </amexio-column>
     </amexio-row>
-
-
+    <amexio-dialogue [show-dialogue]="showErrorDialogue" (close)="closeDialogue()"
+                     [custom]="true"
+                     [title]="'Error Message'"
+                     [type]="'confirm'">
+      <amexio-body>
+       <div *ngFor="let data of inValidMessageData">
+         {{data}}
+       </div>
+      </amexio-body>
+      
+    </amexio-dialogue>  
 
   `,
   styles: [
@@ -95,39 +179,51 @@ import { clearImmediate } from 'timers';
   ]
 })
 export class CodeExplorerComponent implements OnInit {
-  sourceCode: any;
-
   isHtml: boolean;
 
   isJson: boolean;
 
   isTypeScript: boolean;
 
-  fileStructuredata: any;
-
-  publicIpAddress: any;
-
   treeViewData: boolean;
 
   fileDataFromBack: boolean;
 
+  showBasicWindow: boolean;
+
   isCss: boolean;
 
+  commitWindow: boolean;
+
   File: any;
+
+  fileStructuredata: any;
+
+  publicIpAddress: any;
+
   mainData: any;
+
+  sourceCode: any;
+
+  showErrorDialogue: boolean = false;
+
+  commitAllDataClass: CommitAllDataClass;
+
+  inValidMessageData: any[] = [];
 
   constructor(
     public http: HttpClient,
     private cookie: CookieService,
     public cdf: ChangeDetectorRef
   ) {
+    this.commitAllDataClass = new CommitAllDataClass();
     this.resetFlag();
     this.treeViewData = false;
     this.fileDataFromBack = true;
   }
 
   ngOnInit() {
-     let ipAddress: any;
+    let ipAddress: any;
     // this.publicIpAddress = '18.219.125.0';
     //this.getSourceCodeTreeData();
     this.http.get('/api/user/person/findLoggedInUserInfo').subscribe(
@@ -147,6 +243,7 @@ export class CodeExplorerComponent implements OnInit {
     this.isTypeScript = false;
     this.isJson = false;
     this.isCss = false;
+    this.commitWindow = false;
   }
 
   // on button click the files are display here in tree formate
@@ -169,6 +266,7 @@ export class CodeExplorerComponent implements OnInit {
     this.fileDataFromBack = false;
     // let appUrl = 'http://host:8080/code-pipeline-service/projectExplorer/explorer';
     let appUrl = 'http://host:9870/projectExplorer/explorer';
+    debugger;
     if (this.publicIpAddress) {
       appUrl = appUrl.replace('host', this.publicIpAddress);
     } else {
@@ -257,5 +355,105 @@ export class CodeExplorerComponent implements OnInit {
         );
       }
     }
+  }
+
+  onShareTreeDataClick(data: any) {
+    // if (data.id === 'commitWindow') {
+    //   this.commitWindow = true;
+    // this.fileDataFromBack = false;
+
+    this.commitWindow = true;
+
+    this.showBasicWindow = !this.showBasicWindow;
+  }
+  onCommitChangesClick(data: any) {
+    debugger;
+    // this.checkvalidation();
+    // this.showErrorDialogue = true;
+    //if condition for the if call from back end call come which is not correct goes to (if)
+    // and call is correct goes to else part..
+    if (!this.checkvalidation()) {
+      this.showErrorDialogue = true;
+    } else {
+      let responseData: any;
+      let requestJson = this.commitAllDataClass;
+      const headers = new Headers({
+        'Content-Type': 'application/json;charset=UTF-8'
+      });
+      const httpOptions = { headers: headers };
+      this.http
+        .post(
+          '/api/pipeline/SourceCodeSharing/commitAll',
+          httpOptions,
+          requestJson
+        )
+        .subscribe(
+          response => {
+            responseData = response.json();
+          },
+          err => {
+            console.log('Error occured');
+          },
+          () => {
+            if (responseData && responseData.errors) {
+              this.inValidMessageData = responseData.errors;
+            }
+          }
+        );
+    }
+  }
+
+  closeDialogue() {
+    this.showErrorDialogue = false;
+  }
+
+  checkvalidation(): boolean {
+    debugger;
+
+    this.inValidMessageData = [];
+    //let validCheck:boolean;
+    // validCheck = true;
+    if (
+      this.commitAllDataClass.remoteURL == '' ||
+      this.commitAllDataClass.remoteURL == null
+    ) {
+      this.inValidMessageData.push('Repository URL can not empty');
+      // validCheck = false;
+    }
+    if (
+      this.commitAllDataClass.username == '' ||
+      this.commitAllDataClass.username == null
+    ) {
+      this.inValidMessageData.push('User Name can not blank');
+      // validCheck = false;
+    }
+    if (
+      this.commitAllDataClass.password == '' ||
+      this.commitAllDataClass.password == null
+    ) {
+      this.inValidMessageData.push('Password can not empty');
+      // validCheck = false;
+    }
+    if (
+      this.commitAllDataClass.commitMessage == '' ||
+      this.commitAllDataClass.commitMessage == null
+    ) {
+      this.inValidMessageData.push('Commit Message can not blank');
+      //validCheck = false;
+    }
+    // return validCheck;
+  }
+}
+
+export class CommitAllDataClass {
+  remoteURL: string;
+  username: string;
+  password: string;
+  commitMessage: string;
+  constructor() {
+    this.remoteURL = '';
+    this.username = '';
+    this.password = '';
+    this.commitMessage = '';
   }
 }
