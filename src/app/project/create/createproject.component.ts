@@ -382,7 +382,6 @@ export class CreateProjectComponent implements OnInit {
       },
       () => {
         if (instanceresponse.success) {
-          console.log('instance', instanceresponse);
           this.openProjectUi();
         } else {
           this.validationMsgArray.push(
