@@ -163,10 +163,15 @@ import { clearImmediate } from 'timers';
                      [type]="'confirm'">
       <amexio-body>
        <div *ngFor="let data of inValidMessageData">
-         {{data}}
+       <li style="text-align: left">{{data}}</li>  
        </div>
+        
       </amexio-body>
-      
+
+      <amexio-action>
+        <amexio-button type="primary" (onClick)="closeDialogue()" [label]="'Ok'">
+        </amexio-button>
+      </amexio-action>
     </amexio-dialogue>  
 
   `,
@@ -358,90 +363,64 @@ export class CodeExplorerComponent implements OnInit {
   }
 
   onShareTreeDataClick(data: any) {
-    // if (data.id === 'commitWindow') {
-    //   this.commitWindow = true;
-    // this.fileDataFromBack = false;
-
     this.commitWindow = true;
-
     this.showBasicWindow = !this.showBasicWindow;
   }
   onCommitChangesClick(data: any) {
-    debugger;
-    // this.checkvalidation();
-    // this.showErrorDialogue = true;
-    //if condition for the if call from back end call come which is not correct goes to (if)
-    // and call is correct goes to else part..
-    if (!this.checkvalidation()) {
-      this.showErrorDialogue = true;
-    } else {
-      let responseData: any;
-      let requestJson = this.commitAllDataClass;
-      const headers = new Headers({
-        'Content-Type': 'application/json;charset=UTF-8'
-      });
-      const httpOptions = { headers: headers };
-      this.http
-        .post(
-          '/api/pipeline/SourceCodeSharing/commitAll',
-          httpOptions,
-          requestJson
-        )
-        .subscribe(
-          response => {
-            responseData = response.json();
-          },
-          err => {
-            console.log('Error occured');
-          },
-          () => {
-            if (responseData && responseData.errors) {
-              this.inValidMessageData = responseData.errors;
-            }
+    this.validateForm();
+    let responseData: any;
+    let requestJson = this.commitAllDataClass;
+    this.http
+      .post('/api/pipeline/SourceCodeSharing/commitAll', requestJson)
+      .subscribe(
+        response => {
+          responseData = response;
+        },
+        err => {
+          console.log('Error occured');
+        },
+        () => {
+          if (responseData && responseData.errors) {
+            this.inValidMessageData = responseData.errors;
           }
-        );
-    }
+        }
+      );
   }
 
   closeDialogue() {
     this.showErrorDialogue = false;
   }
 
-  checkvalidation(): boolean {
-    debugger;
-
+  validateForm() {
     this.inValidMessageData = [];
-    //let validCheck:boolean;
-    // validCheck = true;
     if (
       this.commitAllDataClass.remoteURL == '' ||
       this.commitAllDataClass.remoteURL == null
     ) {
-      this.inValidMessageData.push('Repository URL can not empty');
-      // validCheck = false;
+      this.inValidMessageData.push('Repository url should not  empty');
+      this.showErrorDialogue = true;
     }
     if (
       this.commitAllDataClass.username == '' ||
       this.commitAllDataClass.username == null
     ) {
-      this.inValidMessageData.push('User Name can not blank');
-      // validCheck = false;
+      this.inValidMessageData.push('User name can not blank');
+      this.showErrorDialogue = true;
     }
     if (
       this.commitAllDataClass.password == '' ||
       this.commitAllDataClass.password == null
     ) {
       this.inValidMessageData.push('Password can not empty');
-      // validCheck = false;
+      this.showErrorDialogue = true;
     }
     if (
       this.commitAllDataClass.commitMessage == '' ||
       this.commitAllDataClass.commitMessage == null
     ) {
-      this.inValidMessageData.push('Commit Message can not blank');
-      //validCheck = false;
+      this.inValidMessageData.push('Commit message can not blank');
+      this.showErrorDialogue = true;
     }
-    // return validCheck;
   }
 }
 
