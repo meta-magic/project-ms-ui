@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "text": "Commit All",
+      "id": "commitAllWindow",
+      "icon": "fa fa-cloud-upload"
+    },
+    {
+      "text": "Commit",
+      "id": "commitWindow",
+      "icon": "fa fa-cloud-upload"
+
+    },
+    {
+      "text": "Pull/Update",
+      "id": "pullWindow",
+      "icon": "fa fa-cloud-download"
+    }
+  ]
+}
+
+
