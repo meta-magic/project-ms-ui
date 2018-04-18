@@ -33,8 +33,8 @@ import { any } from 'codelyzer/util/function';
                                    (nodeClick)="onShareTreeDataClick($event)"
                                    [http-url]="'assets/share.json'">
                   </amexio-treeview>
-                  
-                  
+
+
 
                 </amexio-column>
               </amexio-row>
@@ -144,81 +144,84 @@ import { any } from 'codelyzer/util/function';
                       <amexio-row>
                         <amexio-column [size]="5">
 
-                          
-                         
-                            <amexio-panel [header]="true"
-                                          [title]="'Unstaged Changes'"
-                                          [expanded]="true"
-                                          [height] ="'40%'"
-                            >
 
-                              <amexio-header>
+                          <amexio-panel [header]="true"
+                                        [title]="'Unstaged Changes'"
+                                        [expanded]="true"
+                                        [height] ="'90px'"
+                          >
+
+                            <amexio-header>
                               <amexio-button   [size]="'small'" [tooltip]="'Add one file '" type="green"  [icon]="'fa fa-plus-circle'" (onClick)="onAddFileClick($event)"></amexio-button>
-                                <amexio-button  [size]="'medium'" [tooltip]="'Add all file '" type="yellow"  [icon]="'fa fa-plus'" ></amexio-button>
+                              <amexio-button  [size]="'medium'" [tooltip]="'Add all file '" type="yellow"  [icon]="'fa fa-plus'" ></amexio-button>
 
-                              </amexio-header>
-                              <amexio-row>
-                                <amexio-column size="12">
+                            </amexio-header>
+                            <amexio-row>
+                              <amexio-column size="12">
 
-                                  <!--<amexio-treeview [enable-checkbox]="true"  [data]="fileStructuredata" (nodeClick)="getUnstagedData($event)" [data-reader]="'children'" >-->
-                                  <!--</amexio-treeview>-->
-                                  
-                                  <amexio-treeview   [data]="unstagedTreeData"
-                                                     [data-reader]="'demo'"
-                                                      (nodeClick)="getUnstagedData($event)"
-                                                >
-                                  </amexio-treeview>
-                                          </amexio-column>
-                                        </amexio-row>
-                            </amexio-panel>
-          
-                                  </amexio-column>
-                                  <amexio-column [size]="7">
-          
-                                    <amexio-textarea-input
-                                      [(ngModel)]="commitAllDataClass.commitMessage"
-                                      [enable-popover]="true"
-                                      [field-label]="'Commit Message'"
-                                      name ="Message"
-                                      [place-holder]="'Add commit message ...'"
-                                      [allow-blank]="true"
-                                      [icon-feedback]="true"
-                                      [rows]="'5'"
-                                      [columns]="'2'">
-          
-                                    </amexio-textarea-input>
-          
-          
-                                  </amexio-column>
-                                </amexio-row>
-                              </amexio-body>
-                            </amexio-card>
-                            <amexio-card  >
-                              <amexio-body>
-                                
+                                <!--<amexio-treeview [enable-checkbox]="true"  [data]="fileStructuredata" (nodeClick)="getUnstagedClickData($event)" [data-reader]="'children'" >-->
+                                <!--</amexio-treeview>-->
 
-                                <amexio-row>
-                                  <amexio-column [size]="5">
-                                    
-                                    <amexio-panel [header]="true"
-                                                  [title]="'Staged Changes'"
-                                                  [expanded]="true">
+                                <amexio-treeview  [enable-checkbox]="true"
+                                                  [data]="unstagedTreeData"
+                                                  [data-reader]="'demo'"
+                                                  (nodeClick)="getUnstagedClickData($event)"
+                                >
+                                </amexio-treeview>
+                              </amexio-column>
+                            </amexio-row>
+                          </amexio-panel>
 
-                                      <amexio-header>
-                                        <amexio-button   [size]="'small'" [tooltip]="'Remove one file '" type="green"  [icon]="'fa fa-minus-circle'"></amexio-button>
-                                        <amexio-button   [size]="'medium'" [tooltip]="'Remove all file '" type="yellow"  [icon]="'fa fa-minus'" ></amexio-button>
+                        </amexio-column>
+                        <amexio-column [size]="7">
 
-                                      </amexio-header>
-                                      <amexio-row>
-                                        <amexio-column size="12">
-                                         
-                                          <amexio-treeview [data]="stageData">
-                                            </amexio-treeview>
-                                          
-                                        </amexio-column>
-                                      </amexio-row>
-                                    </amexio-panel>
-                                    <!--<ng-container *ngIf="fileStructuredata && fileDataFromBack">-->
+                          <amexio-textarea-input
+                            [(ngModel)]="commitAllDataClass.commitMessage"
+                            [enable-popover]="true"
+                            [field-label]="'Commit Message'"
+                            name ="Message"
+                            [place-holder]="'Add commit message ...'"
+                            [allow-blank]="true"
+                            [icon-feedback]="true"
+                            [rows]="'5'"
+                            [columns]="'2'">
+
+                          </amexio-textarea-input>
+
+
+                        </amexio-column>
+                      </amexio-row>
+                    </amexio-body>
+                  </amexio-card>
+                  <amexio-card  >
+                    <amexio-body>
+
+
+                      <amexio-row>
+                        <amexio-column [size]="5">
+
+                          <amexio-panel [header]="true"
+                                        [title]="'Staged Changes'"
+                                        [expanded]="true"
+                                        [height] ="'40px'">
+
+                            <amexio-header>
+                              <amexio-button   [size]="'small'" [tooltip]="'Remove one file '" type="green"  (onClick)="onRemoveFileClick($event)"[icon]="'fa fa-minus-circle'"></amexio-button>
+                              <amexio-button   [size]="'medium'" [tooltip]="'Remove all file '" type="yellow"  [icon]="'fa fa-minus'" ></amexio-button>
+
+                            </amexio-header>
+                            <amexio-row>
+                              <amexio-column size="12">
+                                <amexio-treeview [enable-checkbox]="true"
+                                                 [data]="stageData"
+                                                 (nodeClick)="getStageDataClick($event)"
+                                >
+                                </amexio-treeview>
+
+                              </amexio-column>
+                            </amexio-row>
+                          </amexio-panel>
+                          <!--<ng-container *ngIf="fileStructuredata && fileDataFromBack">-->
                           <!--<amexio-treeview [data]="fileStructuredata" (nodeClick)="getFileData($event)" [data-reader]="'children'">-->
                           <!--</amexio-treeview>-->
                           <!--</ng-container>-->
@@ -323,7 +326,7 @@ import { any } from 'codelyzer/util/function';
 
                     label="Ok" type="green" [icon]="'fa fa fa-hand-o-right'"   (onClick)="onPullRequestClick($event)" >
                   </amexio-button>
-                 
+
 
                 </amexio-action>
               </amexio-window>
@@ -395,7 +398,7 @@ export class CodeExplorerComponent implements OnInit {
 
   showCommitAllWindow: boolean;
   showCommitWindow: boolean;
-  showpullWindow: boolean;
+  showPullWindow: boolean;
 
   isCss: boolean;
 
@@ -424,8 +427,9 @@ export class CodeExplorerComponent implements OnInit {
   inValidMessageData: any[] = [];
 
   unstagedTreeData: any;
-  unstageDataVariable: any;
-
+  unstageData: any[] = [];
+  selectedTreeUnstageObject: any;
+  selectedTreeStageObject: any;
   constructor(
     public http: HttpClient,
     private cookie: CookieService,
@@ -504,39 +508,55 @@ export class CodeExplorerComponent implements OnInit {
     // );
   }
 
-  getUnstagedData(data: any) {
-    debugger;
-
-    this.unstageDataVariable = this.unstagedTreeData;
-    this.addStageFile = data;
-
-    this.unstageDataVariable.forEach(obj => {
-      if (obj.text == this.addStageFile) {
-        this.unstageDataVariable.splice(
-          this.unstageDataVariable.indexOf(addStageFile),
-          1
-        );
-      }
-    });
-  }
-
-  onAddFileClick(data: any) {
-    //   const index :number = this.data.indexOf(addStageFile);
-    // if(index !==-1)
-    //   {
-    //     this.addStageFile.splice(index,1);
-    //   }
-
-    if (this.addStageFile != null) {
-      //if(this.stageData != '' && this.stageData !=null)
-      // {
-      this.stageData.push(this.addStageFile);
-      this.addStageFile = null;
-      // }
-      this.addStageFile = null;
+  getUnstagedClickData(data: any) {
+    this.selectedTreeUnstageObject = data;
+    if (data.text) {
+      this.addStageFile = data.text;
     }
   }
 
+  onAddFileClick(data: any) {
+    // REMOVE FROM UNSTAGE
+    this.unstagedTreeData.demo.forEach((child: any, index: any) => {
+      if (this.selectedTreeUnstageObject == child) {
+        this.unstagedTreeData.demo.splice(index, 1);
+        console.log('deleted');
+      }
+    });
+
+    // ADD DATA TO STAGE DATA
+    this.addStageData();
+  }
+  addStageData() {
+    if (this.selectedTreeUnstageObject != null) {
+      this.stageData.push(this.selectedTreeUnstageObject);
+      this.selectedTreeUnstageObject = null;
+    }
+  }
+  getStageDataClick(data: any) {
+    debugger;
+    this.selectedTreeStageObject = data;
+  }
+
+  onRemoveFileClick(data: any) {
+    //RETURN DATA TO UNSTAGE
+    debugger;
+    this.stageData.forEach((child: any, index: any) => {
+      if (this.selectedTreeStageObject == child) {
+        this.stageData.splice(index, 1);
+      }
+    });
+
+    this.removeFormStageData();
+  }
+  removeFormStageData() {
+    //RETURN DATA TO UNSTAGE
+
+    if (this.selectedTreeStageObject != null) {
+      this.unstagedTreeData.demo.push(this.selectedTreeStageObject);
+      this.selectedTreeStageObject = null;
+    }
+  }
   resetFlag() {
     this.isHtml = false;
     this.isTypeScript = false;
