@@ -114,7 +114,8 @@
     "webpack": "^3.3.0",
     "webpack-config-utils": "^2.3.0",
     "webpack-dev-server": "^2.2.0",
-    "zone.js": "^0.8.4"
+    "zone.js": "^0.8.4",
+    "angular-prism": "0.1.20"
   },
   "peerDependencies": {
     "@angular/core": ">=5.0.0 <6.0.0"
@@ -123,7 +124,7 @@
     "@angular/forms": "^5.2.4",
     "@angular/http": "^5.2.4",
     "@angular/router": "^5.2.4",
-    "amexio-ng-extensions": "^4.0.10",
+    "amexio-ng-extensions": "http://localhost/desireplatform/amexio-builds/amexio-ng-extensions.tgz",
     "font-awesome": "^4.7.0",
     "platform-commons": "http://localhost/desireplatform/micro-ui-libs/platform-commons.tgz"
   }

@@ -8,6 +8,7 @@ import { ProjectListComponent } from './app/project/list/projectlist.component';
 import { CodeExplorerComponent } from './app/project/code-explorer/code-explorer.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PlatformCommmonsModule } from 'platform-commons';
+import { PrismModule } from './app/prism-module/prism.module';
 
 const routes: Routes = [
   {
@@ -36,6 +37,7 @@ const routes: Routes = [
     AmexioWidgetModule,
     HttpClientModule,
     PlatformCommmonsModule,
+    PrismModule,
     RouterModule.forChild(routes)
   ],
   declarations: [

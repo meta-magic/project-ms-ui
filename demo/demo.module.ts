@@ -9,6 +9,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { CreateProjectComponent } from '../src/app/project/create/createproject.component';
 import { ProjectListComponent } from '../src/app/project/list/projectlist.component';
 import { CodeExplorerComponent } from '../src/app/project/code-explorer/code-explorer.component';
+import { PrismModule } from '../src/app/prism-module/prism.module';
 
 const routes: Routes = [
   {
@@ -29,10 +30,12 @@ const routes: Routes = [
   declarations: [DemoComponent],
   imports: [
     BrowserModule,
+
     HttpModule,
     FormsModule,
     AmexioWidgetModule,
     ProjectMsUIModule,
+    PrismModule,
     RouterModule.forRoot(routes, { useHash: true })
   ],
   bootstrap: [DemoComponent]
