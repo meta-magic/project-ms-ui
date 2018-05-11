@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from 'platform-commons';
 import { CookieService } from 'platform-commons';
@@ -37,16 +37,24 @@ import { Router, ActivatedRoute } from '@angular/router';
     </amexio-column>
   <amexio-column [size]="9">
   <ng-container *ngIf="showCard">
-  <amexio-card [header]="true" [footer]="true" [footer-align]="'right'"
-  [body-height]="82">
-    <amexio-header>
+ <amexio-form #projform [form-name]="'validateForm'" [header]="true" [show-error]="false" [footer-align]="'right'"  [height]="'430'">
+
+    <amexio-form-header>
              Project Creation          
-    </amexio-header>
-    <amexio-body>
-      <amexio-row>
+    </amexio-form-header>
+<amexio-form-body>
+                     <amexio-tab-view [closable]="false" (onClick)="onTabClick($event)">
+                          <amexio-tab title="Project Configuration" [active]="projecttabFlag">
+                           <amexio-row>
         <amexio-column [size]="6">
-          <amexio-text-input [(ngModel)]="projectCreationModel.projectName" [field-label]="'Name'" name ="projectCreationModel.projectName"
+          <amexio-text-input  [(ngModel)]="projectCreationModel.projectName" [field-label]="'Name'" name ="projectCreationModel.projectName"
                             [place-holder]="'Enter Name'"
+                            [enable-popover]="true"
+                            [min-length]="3" [max-length]="128" 
+                             [min-error-msg]="'Minimun 3  characters project name required'"
+                             [max-error-msg]="'Maximun 128 characters  project name allowed'"
+                            [allow-blank]="false"
+                            error-msg="Please enter project name"
                             [icon-feedback]="true"
                             [disabled]="disblefields">
           </amexio-text-input>
@@ -55,6 +63,9 @@ import { Router, ActivatedRoute } from '@angular/router';
           <amexio-textarea-input [field-label]="'Description'" name ="projectCreationModel.projectDescription"
                           [place-holder]="'Enter Description'"
                           [icon-feedback]="true"
+                           [allow-blank]="false"
+                            error-msg="Please enter  project description"
+                            [enable-popover]="true"
                            [rows]="'1'"
                            [columns]="'1'"
                           [disabled]="disblefields"
@@ -68,11 +79,10 @@ import { Router, ActivatedRoute } from '@angular/router';
         </amexio-column>   
                 </ng-container>
 
-        <amexio-column [size]="6">
-       
-       
+        <amexio-column [size]="6">  
         <amexio-radio-group
            [field-label]="'Amexio Themes'"
+            [allow-blank]="true"
            name ="projectCreationModel.themeUUID"
            [display-field]="'themesName'"
            [value-field]="'themeUUID'"
@@ -88,6 +98,7 @@ import { Router, ActivatedRoute } from '@angular/router';
            [field-label]="'Material Themes'"
            name ="projectCreationModel.themeUUID"
            [display-field]="'themesName'"
+           [allow-blank]="true"
            [value-field]="'themeUUID'"
            [data]="materialthemes"
            [disabled]="disblefields"
@@ -97,17 +108,79 @@ import { Router, ActivatedRoute } from '@angular/router';
         </amexio-column>  
         
       </amexio-row>
-    </amexio-body>
-    <amexio-action>
+ </amexio-tab>
+<amexio-tab title="Source Code Configuration" [active]="sourcetabFlag" [disabled] = "tabdisabledFlag">
+<amexio-row>
+<amexio-column [size]="6">
+ <amexio-radio-group
+           [field-label]="'Git Repository Type'"
+            [allow-blank]="false"
+           name="projectCreationModel.respositoryTypeId"
+           [display-field]="'respositoryType'"
+           [value-field]="'respositoryTypeId'"
+           [horizontal]="true" 
+           [data-reader]="'response.data'"
+           [data]="respositoryTypeData"
+           [disabled]="disblefields"
+           [default-value]="projectCreationModel.respositoryTypeId">
+        </amexio-radio-group>
+</amexio-column>
+<amexio-column [size]="6">
+ <amexio-text-input [(ngModel)]="projectCreationModel.repositoryURL" [field-label]="'Git Repository URL'" name ="projectCreationModel.repositoryURL"
+                            [place-holder]="'https://github.com/meta-magic/demoapp.git'"
+                            [enable-popover]="true"
+                            [allow-blank]="false"
+                            error-msg="Please Enter Repository URL"
+                            [icon-feedback]="true">
+          </amexio-text-input>
+</amexio-column>     
+<amexio-column [size]="6">
+ <amexio-text-input [(ngModel)]="projectCreationModel.repositoryUsername" [field-label]="'User Name'" name ="projectCreationModel.repositoryUsername"
+                            [place-holder]="'Enter GitHub user name'"
+                            [enable-popover]="true"
+                            [allow-blank]="false"
+                            error-msg="Please enter User name"
+                            [icon-feedback]="true"
+                            [disabled]="disbleUserFlag">
+ </amexio-text-input>
+</amexio-column>    
+<amexio-column [size]="6">
+<amexio-password-input
+     [enable-popover]="true"
+     [field-label]="'Password'"
+     name ="newPassword"
+     [place-holder]="'Enter GitHub Password'"
+     [allow-blank]="false"
+     [error-msg] ="' Please Enter New Password'"
+     [icon-feedback]="true"
+     [(ngModel)]="projectCreationModel.repositoryPassword"
+     [disabled]="disbleUserFlag">
+</amexio-password-input>
+</amexio-column>   
+</amexio-row>
+</amexio-tab>
+</amexio-tab-view> 
+ </amexio-form-body>   
+   <amexio-form-action>
+   <ng-container *ngIf="showNext">
+    <amexio-button
+    [label]="'Next'"
+    [type]="'secondary'"
+    [tooltip]="'Next'"
+    [size]="'default'" 
+    (onClick)="onNextClick(projform)">
+    </amexio-button>
+    </ng-container>
      <amexio-button
     [label]="'Cancel'"
     [type]="'secondary'"
     [tooltip]="'Cancel'"
     [size]="'default'" 
     [icon]="'fa fa-close'" 
-    [disabled]="disableBtn"
+    [disabled]="disableCancelBtn"
     (onClick)="cancelProject()">
     </amexio-button>
+    <ng-container *ngIf="!showNext">
     <amexio-button
     [label]="'Save'"
     [loading]="asyncFlag"
@@ -116,10 +189,13 @@ import { Router, ActivatedRoute } from '@angular/router';
     [size]="'default'"
     [icon]="'fa fa-save'"  
     [disabled]="disableBtn"
-    (onClick)="saveProject()">
+    (onClick)="saveProject(projform)">
     </amexio-button>
-    </amexio-action>    
-  </amexio-card>
+    </ng-container>
+</amexio-form-action>
+
+ </amexio-form>
+  
   </ng-container>
    <ng-container *ngIf="!showCard">
                 <amexio-card [header]="true"
@@ -178,30 +254,79 @@ export class CreateProjectComponent implements OnInit {
   amexioThemes: any;
   materialthemes: any;
   projectList: any;
+  respositoryTypeData: any;
   showCard: boolean = false;
   projectId: string;
+  projecttabFlag: boolean = true;
+  sourcetabFlag: boolean;
   disblefields: boolean = false;
-  disableBtn: boolean = false;
+  disbleUserFlag: boolean;
+  showSaveBtn: boolean = false;
+  showNext: boolean = true;
+  disableBtn: boolean;
+  disableCancelBtn: boolean;
   confirmdialogue: boolean;
+  showerrorFlag: boolean = false;
+  tabdisabledFlag: boolean = true;
+  // userblankFlag:boolean;
+  // passwordblankFlag:boolean;
   constructor(
     private http: HttpClient,
     private ls: LocalStorageService,
     private cookieService: CookieService,
     private msgService: MessagingService,
     private route: ActivatedRoute,
-    private _route: Router
+    private _route: Router,
+    private _cdf: ChangeDetectorRef
   ) {
+    debugger;
     this.projectCreationModel = new ProjectCreationModel();
     this.themes = [];
     this.amexioThemes = [];
     this.materialthemes = [];
     this.getThemeData();
     this.getProjectList();
+    this.respositoryTypeData = {
+      response: {
+        data: [
+          {
+            respositoryType: 'Public',
+            respositoryTypeId: '1'
+          },
+          {
+            respositoryType: 'Private',
+            respositoryTypeId: '2'
+          }
+        ]
+      }
+    };
   }
 
   ngOnInit() {}
+  onTabClick(event: any) {
+    if (event.title == 'Project Configuration') {
+      this.projecttabFlag = true;
+      this.sourcetabFlag = false;
+      this.showNext = true;
+    } else {
+      this.projecttabFlag = false;
+      this.sourcetabFlag = true;
+      this.showNext = false;
+    }
+  }
 
-  //GET PROJECT LIST
+  // onRepositorySelect(event:any){
+  // if(event.respositoryTypeId==1){
+  //   this.disbleUserFlag=true;
+  //   this.userblankFlag=true;
+  //   this.passwordblankFlag=true;
+  // }else{
+  //   this.disbleUserFlag=false;
+  //   this.userblankFlag=false;
+  //   this.passwordblankFlag=false
+  // }
+  // }
+  //GET PROJECT LIST OF LOGGED IN USER
   getProjectList() {
     let projectDataList: any;
 
@@ -225,10 +350,17 @@ export class CreateProjectComponent implements OnInit {
   }
 
   openProjectUi() {
+    debugger;
     this.showCard = true;
     this.portDisableFlag = true;
-    this.disableBtn = false;
     this.disblefields = false;
+    this.projecttabFlag = true;
+    this.sourcetabFlag = false;
+    this.tabdisabledFlag = true;
+    this.showNext = true;
+    // this.showSaveBtn=false;
+    this.showerrorFlag = false;
+    this.disableCancelBtn = false;
     this.projectCreationModel = new ProjectCreationModel();
   }
 
@@ -262,8 +394,11 @@ export class CreateProjectComponent implements OnInit {
             this.newTokenid = selectProject.response.newtokenId;
             this.cookieService.set('tokenid', this.newTokenid);
             this.msgService.sendMessage({ projectId: this.projectId });
+            this._cdf.detectChanges();
             this.disableBtn = true;
+            this.disableCancelBtn = true;
             this.disblefields = true;
+            this.tabdisabledFlag = true;
           } else {
             this.validationMsgArray.push(selectProject.errorMessage);
             this.isValidateForm = true;
@@ -278,22 +413,41 @@ export class CreateProjectComponent implements OnInit {
   }
 
   //Validate Form Fields
-  validateFormFields() {
-    let isValid: boolean = false;
-    this.validationMsgArray = [];
-    if (this.projectCreationModel.projectName == '') {
-      this.validationMsgArray.push('Invalid (Blank) Project Name.');
-    }
-    if (this.projectCreationModel.projectDescription == '') {
-      this.validationMsgArray.push('Invalid (Blank) Project Description.');
-    }
-    if (
-      this.projectCreationModel.themeUUID == null ||
-      this.projectCreationModel.themeUUID == ''
-    ) {
-      this.validationMsgArray.push('Invalid (Blank) Theme.');
-    }
-  }
+  // validateFormFields() {
+  //   let isValid: boolean = false;
+  //   this.validationMsgArray = [];
+  //   if (this.projectCreationModel.projectName == '') {
+  //     this.validationMsgArray.push('Invalid (Blank) Project Name.');
+  //   }
+  //   if (this.projectCreationModel.projectDescription == '') {
+  //     this.validationMsgArray.push('Invalid (Blank) Project Description.');
+  //   }
+  //   if (
+  //     this.projectCreationModel.themeUUID == null ||
+  //     this.projectCreationModel.themeUUID == ''
+  //   ) {
+  //     this.validationMsgArray.push('Invalid (Blank) Theme.');
+  //   }
+  // }
+
+  // validateSourceFormFields(){
+  //   let isValid: boolean = false;
+  //   this.validationMsgArray = [];
+  //   if (this.projectCreationModel.respositoryTypeId == '' ||this.projectCreationModel.respositoryTypeId== null)  {
+  //     this.validationMsgArray.push('Invalid (Blank) respository Type.');
+  //   }
+  //   if (this.projectCreationModel.repositoryURL == '') {
+  //     this.validationMsgArray.push('Invalid (Blank) Respository URL.');
+  //   }
+  //   if(this.projectCreationModel.respositoryTypeId==2){
+  //    if (this.projectCreationModel.userName == '') {
+  //     this.validationMsgArray.push('Invalid (Blank) User Name.');
+  //   }
+  //   if (this.projectCreationModel.password == '') {
+  //     this.validationMsgArray.push('Invalid (Blank) Password');
+  //   }
+  //   }
+  // }
 
   //To close Window
   okErrorBtnClick() {
@@ -305,10 +459,59 @@ export class CreateProjectComponent implements OnInit {
   cancelProject() {
     this.projectCreationModel = new ProjectCreationModel();
   }
+  onNextClick(projform: any) {
+    let isValid: boolean = false;
+    this.validationMsgArray = [];
+    let invalidfield: any;
+    invalidfield = projform.getErrorMsgData();
+
+    // this.validateFormFields();
+    invalidfield.forEach((obj: any) => {
+      if (obj.label == 'Name') {
+        this.validationMsgArray.push('Invalid (Blank) Project Name.');
+      }
+      if (obj.label == 'Description') {
+        this.validationMsgArray.push('Invalid (Blank) Project Description.');
+      }
+    });
+    if (this.validationMsgArray && this.validationMsgArray.length >= 1) {
+      this.isValidateForm = true;
+      return;
+    } else {
+      this.isValidateForm = false;
+      this.projecttabFlag = false;
+      this.sourcetabFlag = true;
+      this.tabdisabledFlag = false;
+      this._cdf.detectChanges();
+      this.showSaveBtn = true;
+      this.showNext = false;
+      this.showerrorFlag = true;
+    }
+  }
 
   //To Save Project Details
-  saveProject() {
-    this.validateFormFields();
+  saveProject(projform: any) {
+    //  this.validateSourceFormFields();
+    let isValid: boolean = false;
+    this.validationMsgArray = [];
+    let invalidSourceFields: any;
+    invalidSourceFields = projform.getErrorMsgData();
+    invalidSourceFields.forEach((obj1: any) => {
+      if (obj1.label == 'Git Repository URL') {
+        this.validationMsgArray.push('Invalid (Blank) respository Type.');
+      }
+      if (obj1.label == 'Git Repository Type') {
+        this.validationMsgArray.push('Invalid (Blank) Respository URL.');
+      }
+      {
+        if (obj1.label == 'User Name') {
+          this.validationMsgArray.push('Invalid (Blank) User Name.');
+        }
+        if (obj1.label == 'Password') {
+          this.validationMsgArray.push('Invalid (Blank) Password');
+        }
+      }
+    });
     if (this.validationMsgArray && this.validationMsgArray.length >= 1) {
       this.isValidateForm = true;
       return;
@@ -325,7 +528,11 @@ export class CreateProjectComponent implements OnInit {
     const requestJson = {
       projectName: this.projectCreationModel.projectName,
       projectDescription: this.projectCreationModel.projectDescription,
-      themeUUID: this.projectCreationModel.themeUUID
+      themeUUID: this.projectCreationModel.themeUUID,
+      respositoryTypeId: this.projectCreationModel.respositoryTypeId,
+      repositoryURL: this.projectCreationModel.repositoryURL,
+      repositoryUsername: this.projectCreationModel.repositoryUsername,
+      repositoryPassword: this.projectCreationModel.repositoryPassword
     };
     this.http.post('/api/project/project/save ', requestJson).subscribe(
       res => {
@@ -372,7 +579,7 @@ export class CreateProjectComponent implements OnInit {
 
   findInstance() {
     let instanceresponse: any;
-    this.http.post('/api/pipeline/Instance/validateUserInstance', {}).subscribe(
+    this.http.post('/api/pipeline/Instance/getHostDetails', {}).subscribe(
       res => {
         instanceresponse = res;
       },
@@ -446,10 +653,17 @@ export class ProjectCreationModel {
   projectName: string;
   projectDescription: string;
   themeUUID: any;
-
+  respositoryTypeId: any;
+  repositoryURL: string;
+  repositoryUsername: string;
+  repositoryPassword: string;
   constructor() {
     this.projectDescription = '';
     this.projectName = '';
-    this.themeUUID = null;
+    this.themeUUID = '6FF7B738-EE02-4367-9168-FD5327E3FCBB';
+    this.respositoryTypeId = '1';
+    this.repositoryURL = '';
+    this.repositoryUsername = '';
+    this.repositoryPassword = '';
   }
 }
