@@ -8,7 +8,7 @@ import {
 } from 'amexio-ng-extensions';
 import { RouterModule, Routes } from '@angular/router';
 import { CreateProjectComponent } from './app/project/create/createproject.component';
-import { ProjectListComponent } from './app/project/list/projectlist.component';
+import { ProjectAppComponent } from './app/project/list/projectapp.component';
 import { CodeExplorerComponent } from './app/project/code-explorer/code-explorer.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PlatformCommmonsModule } from 'platform-commons';
@@ -19,8 +19,8 @@ const routes: Routes = [
     component: CreateProjectComponent
   },
   {
-    path: 'list',
-    component: ProjectListComponent
+    path: 'app',
+    component: ProjectAppComponent
   },
   {
     path: 'code-explorer',
@@ -42,14 +42,14 @@ const routes: Routes = [
   ],
   declarations: [
     CreateProjectComponent,
-    ProjectListComponent,
+    ProjectAppComponent,
     CodeExplorerComponent
   ],
   exports: [
     RouterModule,
     CreateProjectComponent,
     CodeExplorerComponent,
-    ProjectListComponent
+    ProjectAppComponent
   ]
 })
 export class ProjectMsUIModule {

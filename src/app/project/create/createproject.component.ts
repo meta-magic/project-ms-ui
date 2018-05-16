@@ -122,21 +122,25 @@ import { Router, ActivatedRoute } from '@angular/router';
            [data-reader]="'response.data'"
            [data]="respositoryTypeData"
            [disabled]="disblefields"
-           [default-value]="projectCreationModel.respositoryTypeId">
+           [default-value]="projectCreationModel.respositoryTypeId"
+           (onSelection)="onRepositorySelect($event)"
+           >
         </amexio-radio-group>
 </amexio-column>
 <amexio-column [size]="6">
- <amexio-text-input [(ngModel)]="projectCreationModel.repositoryURL" [field-label]="'Git Repository URL'" name ="projectCreationModel.repositoryURL"
+ <amexio-text-input #rUrl [(ngModel)]="projectCreationModel.repositoryURL" [field-label]="'Git Repository URL'" name ="projectCreationModel.repositoryURL"
                             [place-holder]="'https://github.com/meta-magic/demoapp.git'"
-                            [enable-popover]="true"
+                            [enable-popover]="true" 
+                            (onBlur)="onBlurCheck(rUrl)"
+                            [pattern]="'/((http|https):\/\/)?[A-Za-z0-9\.-]{3,}\.[A-Za-z]{2}/'"
                             [allow-blank]="false"
                             error-msg="Please Enter Repository URL"
                             [icon-feedback]="true">
           </amexio-text-input>
 </amexio-column>     
 <amexio-column [size]="6">
- <amexio-text-input [(ngModel)]="projectCreationModel.repositoryUsername" [field-label]="'User Name'" name ="projectCreationModel.repositoryUsername"
-                            [place-holder]="'Enter GitHub user name'"
+ <amexio-text-input [(ngModel)]="projectCreationModel.repositoryUsername" [field-label]="'User name or email address'" name ="projectCreationModel.repositoryUsername"
+                            [place-holder]="'Enter GitHub user name or email address'"
                             [enable-popover]="true"
                             [allow-blank]="false"
                             error-msg="Please enter User name"
@@ -225,6 +229,22 @@ import { Router, ActivatedRoute } from '@angular/router';
    [auto-dismiss-msg]="true"
    [auto-dismiss-msg-interval]="7000">
 </amexio-notification>
+<amexio-dialogue [show-dialogue]="warningdialogue"
+               [title]="'Warning'"
+               [message-type]="'warning'"
+               [closable]="true"
+               [custom]="true" (close)="isValidateForm = !isValidateForm"
+               [type]="'alert'">
+               <amexio-body>
+    <ol>
+        <li *ngFor="let msgObjone of WarningMsgArray let index=index">{{msgObjone}}</li>
+    </ol>
+</amexio-body>
+<amexio-action>
+    <amexio-button type="primary" (onClick)="okWarningBtnClick()" [label]="'Ok'">
+    </amexio-button>
+</amexio-action>
+</amexio-dialogue>
 <amexio-dialogue [show-dialogue]="isValidateForm" [message-type]="'error'" [closable]="true" [title]="'Error'" [type]="'alert'" [custom]="true" (close)="isValidateForm = !isValidateForm">
 <amexio-body>
     <ol>
@@ -268,6 +288,9 @@ export class CreateProjectComponent implements OnInit {
   confirmdialogue: boolean;
   showerrorFlag: boolean = false;
   tabdisabledFlag: boolean = true;
+
+  WarningMsgArray: any = [];
+  warningdialogue: boolean = false;
   // userblankFlag:boolean;
   // passwordblankFlag:boolean;
   constructor(
@@ -291,11 +314,13 @@ export class CreateProjectComponent implements OnInit {
         data: [
           {
             respositoryType: 'Public',
-            respositoryTypeId: '1'
+            respositoryTypeId: '1',
+            disabled: false
           },
           {
             respositoryType: 'Private',
-            respositoryTypeId: '2'
+            respositoryTypeId: '2',
+            disabled: false
           }
         ]
       }
@@ -303,6 +328,16 @@ export class CreateProjectComponent implements OnInit {
   }
 
   ngOnInit() {}
+  onRepositorySelect(event: any) {
+    console.log('id', event);
+    if (event.respositoryType == 'Private') {
+      this.WarningMsgArray.push(
+        'If repository type is private,preview is not allowed'
+      );
+      this.warningdialogue = true;
+    }
+  }
+
   onTabClick(event: any) {
     if (event.title == 'Project Configuration') {
       this.projecttabFlag = true;
@@ -364,6 +399,14 @@ export class CreateProjectComponent implements OnInit {
     this.projectCreationModel = new ProjectCreationModel();
   }
 
+  onBlurCheck(rUrl: any) {
+    if (rUrl != null && rUrl.isComponentValid) {
+    } else {
+      this.validationMsgArray = [];
+      this.validationMsgArray.push('Url is not valid ,Please check');
+      this.isValidateForm = true;
+    }
+  }
   //GET PROJECT DETAILS OF SELECTED PROJECT IN READ ONLY FORM
   onProjectSelect(event: any) {
     let selectProject: any;
@@ -399,6 +442,8 @@ export class CreateProjectComponent implements OnInit {
             this.disableCancelBtn = true;
             this.disblefields = true;
             this.tabdisabledFlag = true;
+            this.projecttabFlag = true;
+            this.sourcetabFlag = false;
           } else {
             this.validationMsgArray.push(selectProject.errorMessage);
             this.isValidateForm = true;
@@ -455,6 +500,12 @@ export class CreateProjectComponent implements OnInit {
     this.validationMsgArray = [];
   }
 
+  //To close window
+  okWarningBtnClick() {
+    this.warningdialogue = false;
+    this.WarningMsgArray = [];
+  }
+
   //Reset Project Data
   cancelProject() {
     this.projectCreationModel = new ProjectCreationModel();
@@ -504,7 +555,7 @@ export class CreateProjectComponent implements OnInit {
         this.validationMsgArray.push('Invalid (Blank) Respository URL.');
       }
       {
-        if (obj1.label == 'User Name') {
+        if (obj1.label == 'User name or email address') {
           this.validationMsgArray.push('Invalid (Blank) User Name.');
         }
         if (obj1.label == 'Password') {

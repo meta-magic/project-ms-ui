@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   template: `
     <amexio-nav [title]="'Project Creation UI'">
       <amexio-nav-item position-center><a routerLink="create">Create</a> </amexio-nav-item>
-      <amexio-nav-item position-center><a routerLink="list">List</a> </amexio-nav-item>
+      <amexio-nav-item position-center><a routerLink="app">List</a> </amexio-nav-item>
       <amexio-nav-item position-center><a routerLink="code-explorer">Code-Explorer</a> </amexio-nav-item>
       <amexio-nav-item position-center>
         <amexio-image [icon-class]="'fa fa-cog fa-1x'"

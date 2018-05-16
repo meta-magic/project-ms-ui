@@ -49,7 +49,8 @@ import { any } from 'codelyzer/util/function';
                 <amexio-body>
                   <amexio-row>
                     <amexio-column [size]="12">
-                      <amexio-text-input [field-label]="'Repository URL'" name="URL" [disabled]="URLDisabled"
+                      <amexio-text-input #rUrl [field-label]="'Repository URL'" name="URL" [disabled]="URLDisabled"
+                                         (onBlur)="onBlurCheck(rUrl)"
                                          [pattern]="'/((http|https):\/\/)?[A-Za-z0-9\.-]{3,}\.[A-Za-z]{2}/'"
                                          [(ngModel)]="commitAllDataClass.repositoryURL"
                                          [place-holder]="'https://github.com/meta-magic/demoapp.git'"
@@ -59,9 +60,9 @@ import { any } from 'codelyzer/util/function';
                   </amexio-row>
                   <amexio-row>
                     <amexio-column [size]="6">
-                      <amexio-textarea-input [field-label]="'User Name'" name="username"
+                      <amexio-textarea-input [field-label]="'User name or email address'" name="username"
                                              [(ngModel)]="commitAllDataClass.username"
-                                             [place-holder]="'Enter GitHub user name'"
+                                             [place-holder]="'Enter GitHub user name or email address'"
                                              [error-msg]="'Please enter user name'" [icon-feedback]="true" [rows]="'1'"
                                              [columns]="'2'" [allow-blank]="false"
                                              [enable-popover]="true"></amexio-textarea-input>
@@ -153,9 +154,9 @@ import { any } from 'codelyzer/util/function';
                                                  [place-holder]="'Add commit message ...'" [allow-blank]="true"
                                                  [icon-feedback]="true" [rows]="'3'"
                                                  [columns]="'2'"></amexio-textarea-input>
-                          <amexio-textarea-input [field-label]="'User Name'" name="username"
+                          <amexio-textarea-input [field-label]="'User name or email address'" name="username"
                                                  [(ngModel)]="gitCommitDataClass.username"
-                                                 [place-holder]="'Enter GitHub user name'"
+                                                 [place-holder]="'Enter GitHub user name or email address'"
                                                  [error-msg]="'Please enter user name'" [icon-feedback]="true"
                                                  [rows]="'1'" [columns]="'2'" [allow-blank]="false"
                                                  [enable-popover]="true"></amexio-textarea-input>
@@ -188,9 +189,9 @@ import { any } from 'codelyzer/util/function';
                                          [place-holder]="'https://github.com/meta-magic/Amexio5API.git'"
                                          [enable-popover]="true" [icon-feedback]="true" [allow-blank]="false"
                                          [error-msg]="'Please enter proper URL'"></amexio-text-input>
-                      <amexio-textarea-input [field-label]="'User Name'" name="username"
+                      <amexio-textarea-input [field-label]="'User name or email address'" name="username"
                                              [(ngModel)]="gitPullDataClass.username"
-                                             [place-holder]="'Enter GitHub user name'"
+                                             [place-holder]="'Enter GitHub user name or email address'"
                                              [error-msg]="'Please enter user name'" [icon-feedback]="true" [rows]="'1'"
                                              [columns]="'2'" [allow-blank]="false"
                                              [enable-popover]="true"></amexio-textarea-input>
@@ -236,18 +237,6 @@ import { any } from 'codelyzer/util/function';
        <amexio-notification [data]="msgData" [vertical-position]="'top'" [horizontal-position]="'right'" [auto-dismiss-msg]="true"
 [auto-dismiss-msg-interval]="6000">
 </amexio-notification>  
-
-    <amexio-dialogue [show-dialogue]="unableToConnectDialogue" (close)="closeDialogueBox()" [custom]="true"
-                     [title]="'Error Message'" [type]="'confirm'">
-      <amexio-body>
-        <div *ngFor="let data of unableToConnectServerMsg">
-          <li style="text-align: left">{{data}}</li>
-        </div>
-      </amexio-body>
-      <amexio-action>
-        <amexio-button type="primary" (onClick)="closeDialogueBox()" [label]="'Ok'"></amexio-button>
-      </amexio-action>
-    </amexio-dialogue>
     <amexio-dialogue [show-dialogue]="showErrorDialogue" (close)="closeDialogue()" [custom]="true"
                      [title]="'Error Message'" [type]="'confirm'">
       <amexio-body>
@@ -293,7 +282,7 @@ export class CodeExplorerComponent implements OnInit {
   openingWindowFlag: boolean;
   URLDisabled: boolean;
   showErrorDialogue: boolean = false;
-  unableToConnectDialogue: boolean = false;
+  // unableToConnectDialogue: boolean = false;
 
   File: any;
   fileStructuredata: any;
@@ -301,7 +290,7 @@ export class CodeExplorerComponent implements OnInit {
   sourceCode: any;
 
   inValidMessageData: any[] = [];
-  unableToConnectServerMsg: any[] = [];
+  // unableToConnectServerMsg: any[] = [];
   unstagedTreeData: any;
   shareTreeJSonData: any;
 
@@ -346,12 +335,12 @@ export class CodeExplorerComponent implements OnInit {
         icon: 'fa fa-upload',
         tooltip: 'Commit All Files'
       },
-      {
-        text: 'Commit',
-        id: 'showCommitWindow',
-        icon: 'fa fa-cloud-upload',
-        tooltip: 'Commit Selected Files'
-      },
+      // {
+      //   text: 'Commit',
+      //   id: 'showCommitWindow',
+      //   icon: 'fa fa-cloud-upload',
+      //   tooltip: 'Commit Selected Files'
+      // },
       {
         text: 'Pull/Update',
         id: 'showPullWindow',
@@ -500,7 +489,7 @@ export class CodeExplorerComponent implements OnInit {
 
   //Method to get Source Code FROM BACKEND AND USE FOR THE TREE STRUCTURE DATA DISPLAY
   getSourceCodeTreeData() {
-    this.unableToConnectServerMsg = [];
+    this.inValidMessageData = [];
     this.fileDataFromBack = false;
     // let appUrl = 'http://host:8080/code-pipeline-service/projectExplorer/explorer';
     let appUrl = 'http://host:9870/projectExplorer/explorer';
@@ -522,9 +511,9 @@ export class CodeExplorerComponent implements OnInit {
       },
       err => {
         console.log('Error occured');
-        this.unableToConnectServerMsg = [];
-        this.unableToConnectServerMsg.push('Unable To Connect Server');
-        this.unableToConnectDialogue = true;
+        this.inValidMessageData = [];
+        this.inValidMessageData.push('Unable To Connect Server');
+        this.showErrorDialogue = true;
       },
       () => {
         if (filedata.response) {
@@ -544,7 +533,7 @@ export class CodeExplorerComponent implements OnInit {
   //Method to Get File Data IN TREE FORMATE AND USE FOR CLICK ON NODE OF TREE
   getFileDataBtnClick(data: any) {
     //back end data comes on child click.
-    this.unableToConnectServerMsg = [];
+    this.inValidMessageData = [];
     if (!data.children) {
       // let appUrl =
       //   'http://host:8080/code-pipeline-service/projectExplorer/findSourceCode';
@@ -564,8 +553,8 @@ export class CodeExplorerComponent implements OnInit {
           },
           err => {
             console.log('Error occured');
-            this.unableToConnectServerMsg.push('Unable To Connect Server');
-            this.unableToConnectDialogue = true;
+            this.inValidMessageData.push('Unable To Connect Server');
+            this.showErrorDialogue = true;
           },
           () => {
             const responseData = JSON.parse(filedata.response);
@@ -597,6 +586,16 @@ export class CodeExplorerComponent implements OnInit {
           }
         );
       }
+    }
+  }
+
+  onBlurCheck(data: any) {
+    if (data != null && data.isComponentValid) {
+      console.log('done');
+    } else {
+      this.inValidMessageData = [];
+      this.showErrorDialogue = true;
+      this.inValidMessageData.push('Url is not valid ,Please check');
     }
   }
 
@@ -652,9 +651,9 @@ export class CodeExplorerComponent implements OnInit {
           },
           err => {
             console.log('Error occured');
-            this.unableToConnectServerMsg = [];
-            this.unableToConnectServerMsg.push('Unable To Connect Server');
-            this.unableToConnectDialogue = true;
+            this.inValidMessageData = [];
+            this.inValidMessageData.push('Unable To Connect Server');
+            this.showErrorDialogue = true;
           },
           () => {
             if (responseData.success) {
@@ -693,9 +692,9 @@ export class CodeExplorerComponent implements OnInit {
           },
           err => {
             console.log('Error occured');
-            this.unableToConnectServerMsg = [];
-            this.unableToConnectServerMsg.push('Unable To Connect Server');
-            this.unableToConnectDialogue = true;
+            this.inValidMessageData = [];
+            this.inValidMessageData.push('Unable To Connect Server');
+            this.showErrorDialogue = true;
           },
           () => {
             if (responseData && responseData.errors) {
@@ -718,9 +717,9 @@ export class CodeExplorerComponent implements OnInit {
           },
           err => {
             console.log('Error occured');
-            this.unableToConnectServerMsg = [];
-            this.unableToConnectServerMsg.push('Unable To Connect Server');
-            this.unableToConnectDialogue = true;
+            this.inValidMessageData = [];
+            this.inValidMessageData.push('Unable To Connect Server');
+            this.showErrorDialogue = true;
           },
           () => {
             if (responseData && responseData.errors) {
@@ -815,7 +814,7 @@ export class CodeExplorerComponent implements OnInit {
     this.showErrorDialogue = false;
   }
   closeDialogueBox() {
-    this.unableToConnectDialogue = false;
+    this.showErrorDialogue = false;
   }
 
   //CLOSE COMMIT ALL WINDOW
@@ -860,9 +859,9 @@ export class CodeExplorerComponent implements OnInit {
         },
         err => {
           console.log('Error occured');
-          this.unableToConnectServerMsg = [];
-          this.unableToConnectServerMsg.push('Unable To Connect Server');
-          this.unableToConnectDialogue = true;
+          this.inValidMessageData = [];
+          this.inValidMessageData.push('Unable To Connect Server');
+          this.showErrorDialogue = true;
         },
         () => {
           if (responseData.success) {
@@ -895,9 +894,9 @@ export class CodeExplorerComponent implements OnInit {
       },
       err => {
         console.log('Error occured');
-        this.unableToConnectServerMsg = [];
-        this.unableToConnectServerMsg.push('Unable To Connect Server');
-        this.unableToConnectDialogue = true;
+        this.inValidMessageData = [];
+        this.inValidMessageData.push('Unable To Connect Server');
+        this.showErrorDialogue = true;
       },
       () => {
         this.unstagedTreeData = responseData;
