@@ -11,8 +11,8 @@ import { Router, ActivatedRoute } from '@angular/router';
     <amexio-column [size]="3">
     <amexio-card [header]="false" [footer]="true" [footer-align]="'right'"
   [body-height]="82">
-  
-    <amexio-body>
+
+    <amexio-body [padding]="'0px'">
      <amexio-listbox [enable-checkbox]="false"
                 [header]="'Projects'"
                 [search-placeholder]="'Search Project'"
@@ -23,12 +23,12 @@ import { Router, ActivatedRoute } from '@angular/router';
                 (onRowClick)="onProjectSelect($event)">
 </amexio-listbox>
 </amexio-body>
-<amexio-action>
+<amexio-action >
  <amexio-button
     [label]="'New'"
     [type]="'secondary'"
     [tooltip]="'New'"
-    [size]="'default'" 
+    [size]="'default'"
     [icon]="'fa fa-plus fa-lg'"
     (onClick)="findInstance()">
     </amexio-button>
@@ -40,7 +40,7 @@ import { Router, ActivatedRoute } from '@angular/router';
  <amexio-form #projform [form-name]="'validateForm'" [header]="true" [show-error]="false" [footer-align]="'right'"  [height]="'430'">
 
     <amexio-form-header>
-             Project Creation          
+             Project Creation
     </amexio-form-header>
 <amexio-form-body>
                      <amexio-tab-view [closable]="false" (onClick)="onTabClick($event)">
@@ -50,7 +50,7 @@ import { Router, ActivatedRoute } from '@angular/router';
           <amexio-text-input  [(ngModel)]="projectCreationModel.projectName" [field-label]="'Name'" name ="projectCreationModel.projectName"
                             [place-holder]="'Enter Name'"
                             [enable-popover]="true"
-                            [min-length]="3" [max-length]="128" 
+                            [min-length]="3" [max-length]="128"
                              [min-error-msg]="'Minimun 3  characters project name required'"
                              [max-error-msg]="'Maximun 128 characters  project name allowed'"
                             [allow-blank]="false"
@@ -71,15 +71,15 @@ import { Router, ActivatedRoute } from '@angular/router';
                           [disabled]="disblefields"
                           [(ngModel)]="projectCreationModel.projectDescription">
           </amexio-textarea-input>
-        </amexio-column>   
+        </amexio-column>
 <ng-container *ngIf="!portDisableFlag">
          <amexio-column [size]="12">
 
          Server Port:{{serverPort}}
-        </amexio-column>   
+        </amexio-column>
                 </ng-container>
 
-        <amexio-column [size]="6">  
+        <amexio-column [size]="6">
         <amexio-radio-group
            [field-label]="'Amexio Themes'"
             [allow-blank]="true"
@@ -91,8 +91,8 @@ import { Router, ActivatedRoute } from '@angular/router';
            [default-value]="projectCreationModel.themeUUID"
            (onSelection)="setTheme($event)">
         </amexio-radio-group>
-      
-        </amexio-column>  
+
+        </amexio-column>
         <amexio-column [size]="6">
         <amexio-radio-group
            [field-label]="'Material Themes'"
@@ -105,8 +105,8 @@ import { Router, ActivatedRoute } from '@angular/router';
            [default-value]="projectCreationModel.themeUUID"
            (onSelection)="setTheme($event)">
         </amexio-radio-group>
-        </amexio-column>  
-        
+        </amexio-column>
+
       </amexio-row>
  </amexio-tab>
 <amexio-tab title="Source Code Configuration" [active]="sourcetabFlag" [disabled] = "tabdisabledFlag">
@@ -118,7 +118,7 @@ import { Router, ActivatedRoute } from '@angular/router';
            name="projectCreationModel.respositoryTypeId"
            [display-field]="'respositoryType'"
            [value-field]="'respositoryTypeId'"
-           [horizontal]="true" 
+           [horizontal]="true"
            [data-reader]="'response.data'"
            [data]="respositoryTypeData"
            [disabled]="disblefields"
@@ -130,14 +130,14 @@ import { Router, ActivatedRoute } from '@angular/router';
 <amexio-column [size]="6">
  <amexio-text-input #rUrl [(ngModel)]="projectCreationModel.repositoryURL" [field-label]="'Git Repository URL'" name ="projectCreationModel.repositoryURL"
                             [place-holder]="'https://github.com/meta-magic/demoapp.git'"
-                            [enable-popover]="true" 
+                            [enable-popover]="true"
                             (onBlur)="onBlurCheck(rUrl)"
                             [pattern]="'/((http|https):\/\/)?[A-Za-z0-9\.-]{3,}\.[A-Za-z]{2}/'"
                             [allow-blank]="false"
                             error-msg="Please Enter Repository URL"
                             [icon-feedback]="true">
           </amexio-text-input>
-</amexio-column>     
+</amexio-column>
 <amexio-column [size]="6">
  <amexio-text-input [(ngModel)]="projectCreationModel.repositoryUsername" [field-label]="'User name or email address'" name ="projectCreationModel.repositoryUsername"
                             [place-holder]="'Enter GitHub user name or email address'"
@@ -147,7 +147,7 @@ import { Router, ActivatedRoute } from '@angular/router';
                             [icon-feedback]="true"
                             [disabled]="disbleUserFlag">
  </amexio-text-input>
-</amexio-column>    
+</amexio-column>
 <amexio-column [size]="6">
 <amexio-password-input
      [enable-popover]="true"
@@ -160,18 +160,18 @@ import { Router, ActivatedRoute } from '@angular/router';
      [(ngModel)]="projectCreationModel.repositoryPassword"
      [disabled]="disbleUserFlag">
 </amexio-password-input>
-</amexio-column>   
+</amexio-column>
 </amexio-row>
 </amexio-tab>
-</amexio-tab-view> 
- </amexio-form-body>   
+</amexio-tab-view>
+ </amexio-form-body>
    <amexio-form-action>
    <ng-container *ngIf="showNext">
     <amexio-button
     [label]="'Next'"
     [type]="'secondary'"
     [tooltip]="'Next'"
-    [size]="'default'" 
+    [size]="'default'"
     (onClick)="onNextClick(projform)">
     </amexio-button>
     </ng-container>
@@ -179,8 +179,8 @@ import { Router, ActivatedRoute } from '@angular/router';
     [label]="'Cancel'"
     [type]="'secondary'"
     [tooltip]="'Cancel'"
-    [size]="'default'" 
-    [icon]="'fa fa-close'" 
+    [size]="'default'"
+    [icon]="'fa fa-close'"
     [disabled]="disableCancelBtn"
     (onClick)="cancelProject()">
     </amexio-button>
@@ -191,7 +191,7 @@ import { Router, ActivatedRoute } from '@angular/router';
     [type]="'primary'"
     [tooltip]="'Save'"
     [size]="'default'"
-    [icon]="'fa fa-save'"  
+    [icon]="'fa fa-save'"
     [disabled]="disableBtn"
     (onClick)="saveProject(projform)">
     </amexio-button>
@@ -199,7 +199,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 </amexio-form-action>
 
  </amexio-form>
-  
+
   </ng-container>
    <ng-container *ngIf="!showCard">
                 <amexio-card [header]="true"
@@ -222,7 +222,7 @@ import { Router, ActivatedRoute } from '@angular/router';
                [type]="'confirm'"
                (actionStatus)="checkStatus($event)">
 </amexio-dialogue>
-   <amexio-notification 
+   <amexio-notification
    [data]="msgData"
    [vertical-position]="'top'"
    [horizontal-position]="'right'"
@@ -257,7 +257,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 </amexio-action>
 </amexio-dialogue>
 </amexio-row>
-  
+
   `
 })
 export class CreateProjectComponent implements OnInit {
