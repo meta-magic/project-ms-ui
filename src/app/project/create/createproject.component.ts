@@ -15,11 +15,12 @@ import { Router, ActivatedRoute } from '@angular/router';
     <amexio-body [padding]="'0px'">
      <amexio-listbox [enable-checkbox]="false"
                 [header]="'Projects'"
-                [search-placeholder]="'Search Project'"
+                [search-placeholder]="'Search'"
                 [data]="projectList"
                 [filter]="true"
                 [data-reader]="'response'"
                 [display-field]="'projectName'"
+                [border]="'none'"
                 (onRowClick)="onProjectSelect($event)">
 </amexio-listbox>
 </amexio-body>
@@ -32,18 +33,18 @@ import { Router, ActivatedRoute } from '@angular/router';
     [icon]="'fa fa-plus fa-lg'"
     (onClick)="findInstance()">
     </amexio-button>
-</amexio-action>
-</amexio-card>
+</amexio-form-action>
+</amexio-form>
     </amexio-column>
   <amexio-column [size]="9">
   <ng-container *ngIf="showCard">
- <amexio-form #projform [form-name]="'validateForm'" [header]="true" [show-error]="false" [footer-align]="'right'"  [height]="'430'">
+ <amexio-form #projform [form-name]="'validateForm'" [header]="true" [show-error]="false" [footer-align]="'right'">
 
     <amexio-form-header>
              Project Creation
     </amexio-form-header>
 <amexio-form-body>
-                     <amexio-tab-view [closable]="false" (onClick)="onTabClick($event)">
+                     <amexio-tab-view [closable]="false" (onClick)="onTabClick($event)"  [body-height]="60">
                           <amexio-tab title="Project Configuration" [active]="projecttabFlag">
                            <amexio-row>
         <amexio-column [size]="6">
@@ -66,7 +67,7 @@ import { Router, ActivatedRoute } from '@angular/router';
                            [allow-blank]="false"
                             error-msg="Please enter  project description"
                             [enable-popover]="true"
-                           [rows]="'1'"
+                           [rows]="'2'"
                            [columns]="'1'"
                           [disabled]="disblefields"
                           [(ngModel)]="projectCreationModel.projectDescription">
@@ -101,7 +102,6 @@ import { Router, ActivatedRoute } from '@angular/router';
            [allow-blank]="true"
            [value-field]="'themeUUID'"
            [data]="materialthemes"
-           [disabled]="disblefields"
            [default-value]="projectCreationModel.themeUUID"
            (onSelection)="setTheme($event)">
         </amexio-radio-group>
@@ -166,11 +166,36 @@ import { Router, ActivatedRoute } from '@angular/router';
 </amexio-tab-view>
  </amexio-form-body>
    <amexio-form-action>
-   <ng-container *ngIf="showNext">
+     <amexio-button
+    [label]="'Cancel'"
+    [type]="'secondary'"
+    [tooltip]="'Cancel'"
+    [size]="'default'"
+    [icon]="'fa fa-close'"
+    [disabled]="disableCancelBtn"
+    (onClick)="cancelProject()">
+    </amexio-button>
+       <ng-container *ngIf="showNext">
     <amexio-button
     [label]="'Next'"
     [type]="'secondary'"
     [tooltip]="'Next'"
+    [disabled]="disableCancelBtn"
+    [size]="'default'" 
+    [icon]="'fa fa-arrow-right'"
+    (onClick)="onNextClick(projform)">
+    </amexio-button>
+    </ng-container>
+     <ng-container *ngIf="showUpadteBtn">
+    <amexio-button
+    [label]="'Update'"
+    [loading]="asyncFlag"
+    [type]="'primary'"
+    [tooltip]="'Update'"
+    [disabled]="disableUpdateBtn"
+    [size]="'default'"
+    [icon]="'fa fa-save'"  
+    (onClick)="onUpdate()">
     [size]="'default'"
     (onClick)="onNextClick(projform)">
     </amexio-button>
@@ -184,6 +209,7 @@ import { Router, ActivatedRoute } from '@angular/router';
     [disabled]="disableCancelBtn"
     (onClick)="cancelProject()">
     </amexio-button>
+     </ng-container>
     <ng-container *ngIf="!showNext">
     <amexio-button
     [label]="'Save'"
@@ -206,7 +232,7 @@ import { Router, ActivatedRoute } from '@angular/router';
                 [footer]="false"
                 [show]="true"
                 [footer-align]="'right'"
-                [body-height]="82">
+                [body-height]="81">
                     <amexio-header>
                      Help Document
                     </amexio-header>
@@ -233,7 +259,7 @@ import { Router, ActivatedRoute } from '@angular/router';
                [title]="'Warning'"
                [message-type]="'warning'"
                [closable]="true"
-               [custom]="true" (close)="isValidateForm = !isValidateForm"
+               [custom]="true" (close)="warningdialogue = !warningdialogue"
                [type]="'alert'">
                <amexio-body>
     <ol>
@@ -282,15 +308,18 @@ export class CreateProjectComponent implements OnInit {
   disblefields: boolean = false;
   disbleUserFlag: boolean;
   showSaveBtn: boolean = false;
+  showUpadteBtn: boolean = false;
   showNext: boolean = true;
   disableBtn: boolean;
   disableCancelBtn: boolean;
+  disableUpdateBtn: boolean;
   confirmdialogue: boolean;
   showerrorFlag: boolean = false;
   tabdisabledFlag: boolean = true;
 
   WarningMsgArray: any = [];
   warningdialogue: boolean = false;
+  themeID: any;
   // userblankFlag:boolean;
   // passwordblankFlag:boolean;
   constructor(
@@ -329,10 +358,10 @@ export class CreateProjectComponent implements OnInit {
 
   ngOnInit() {}
   onRepositorySelect(event: any) {
-    console.log('id', event);
     if (event.respositoryType == 'Private') {
+      this.WarningMsgArray = [];
       this.WarningMsgArray.push(
-        'If repository type is private,preview is not allowed'
+        'Preview is not enabled for private repositories'
       );
       this.warningdialogue = true;
     }
@@ -392,7 +421,9 @@ export class CreateProjectComponent implements OnInit {
     this.projecttabFlag = true;
     this.sourcetabFlag = false;
     this.tabdisabledFlag = true;
+    this.showUpadteBtn = false;
     this.showNext = true;
+    this.disableBtn = false;
     // this.showSaveBtn=false;
     this.showerrorFlag = false;
     this.disableCancelBtn = false;
@@ -403,14 +434,15 @@ export class CreateProjectComponent implements OnInit {
     if (rUrl != null && rUrl.isComponentValid) {
     } else {
       this.validationMsgArray = [];
-      this.validationMsgArray.push('Url is not valid ,Please check');
+      this.validationMsgArray.push('Repository URL is not valid ,Please check');
       this.isValidateForm = true;
     }
   }
   //GET PROJECT DETAILS OF SELECTED PROJECT IN READ ONLY FORM
   onProjectSelect(event: any) {
     let selectProject: any;
-    this.projectCreationModel = new ProjectCreationModel();
+    this.themeID = '';
+    // this.projectCreationModel = new ProjectCreationModel();
     const projectUUID = event.projectUUID;
     this.http
       .get('/api/project/project/selectProject?projectUUID=' + projectUUID)
@@ -432,13 +464,16 @@ export class CreateProjectComponent implements OnInit {
               selectProject.response.projectDescription;
             this.projectCreationModel.themeUUID =
               selectProject.response.themeUUID;
+            this.themeID = selectProject.response.themeUUID;
             this.serverPort = selectProject.response.serverPort;
             this.portDisableFlag = false;
             this.newTokenid = selectProject.response.newtokenId;
             this.cookieService.set('tokenid', this.newTokenid);
             this.msgService.sendMessage({ projectId: this.projectId });
             this._cdf.detectChanges();
-            this.disableBtn = true;
+            this.showUpadteBtn = true;
+            this.disableUpdateBtn = true;
+            this.showNext = true;
             this.disableCancelBtn = true;
             this.disblefields = true;
             this.tabdisabledFlag = true;
@@ -455,6 +490,11 @@ export class CreateProjectComponent implements OnInit {
   //Set Theme
   setTheme(themeData: any) {
     this.projectCreationModel.themeUUID = themeData.themeUUID;
+    if (this.themeID == this.projectCreationModel.themeUUID) {
+      this.disableUpdateBtn = true;
+    } else {
+      this.disableUpdateBtn = false;
+    }
   }
 
   //Validate Form Fields
@@ -540,6 +580,41 @@ export class CreateProjectComponent implements OnInit {
     }
   }
 
+  onUpdate() {
+    let response: any;
+    this.asyncFlag = true;
+    const requestJson = {
+      projectUUID: this.projectId,
+      themeUUID: this.projectCreationModel.themeUUID
+    };
+    this.http.post('/api/project/project/update', requestJson).subscribe(
+      res => {
+        response = res;
+      },
+      err => {
+        this.validationMsgArray.push('Unable to connect to server');
+        this.isValidateForm = true;
+        this.asyncFlag = false;
+      },
+      () => {
+        if (response.success) {
+          this.asyncFlag = false;
+          this.themeID = this.projectCreationModel.themeUUID;
+          this.msgData.push(response.successMessage);
+        } else {
+          if (response.errorMessage == null) {
+            this.validationMsgArray.push(response.errors);
+            this.isValidateForm = true;
+            this.asyncFlag = false;
+          } else {
+            this.validationMsgArray.push(response.errorMessage);
+            this.isValidateForm = true;
+            this.asyncFlag = false;
+          }
+        }
+      }
+    );
+  }
   //To Save Project Details
   saveProject(projform: any) {
     //  this.validateSourceFormFields();
@@ -607,11 +682,16 @@ export class CreateProjectComponent implements OnInit {
           this.showtask();
         } else {
           if (response.errorMessage == null) {
-            this.validationMsgArray.push(response.errors);
+            response.errors.forEach((error: any, index: any) => {
+              this.validationMsgArray.push(response.errors);
+            });
             this.isValidateForm = true;
             this.asyncFlag = false;
-          } else {
+          } else if (response.errors !== null) {
             this.validationMsgArray.push(response.errorMessage);
+            response.errors.forEach((error: any, index: any) => {
+              this.validationMsgArray.push(response.errors);
+            });
             this.isValidateForm = true;
             this.asyncFlag = false;
           }

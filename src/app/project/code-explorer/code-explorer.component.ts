@@ -1,6 +1,12 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  ComponentFactoryResolver
+} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { RequestOptions } from '@angular/http';
+import { TabcodeComponent } from './tabcode.component';
 import { CookieService } from 'platform-commons';
 import { clearImmediate } from 'timers';
 import { any } from 'codelyzer/util/function';
@@ -10,37 +16,33 @@ import { any } from 'codelyzer/util/function';
   template: `
     <amexio-row>
       <amexio-column [size]="3">
-        <amexio-card [header]="true" [footer]="false" [show]="true" [header-align]="'center'" [body-height]="79"
+        <amexio-card [header]="false" [footer]="false" [show]="true" [header-align]="'center'" [body-height]="79"
                      [footer-align]="'right'">
-          <amexio-header> GitHub
-            <amexio-button [type]="'warning'" [tooltip]="'Share'" (onClick)="onShareClick($event)"
-                           [icon]="'fa fa-share-alt'"></amexio-button>
-            <amexio-button [type]="'success'" [tooltip]="'Files'" (onClick)="onFileClick($event)"
-                           [icon]="'fa fa-file-o'"></amexio-button>
-            <amexio-button [type]="'transparent'" (onClick)="onRefreshBtnClick()" [icon]="'fa fa-refresh'"></amexio-button>
-          </amexio-header>
+      
           <amexio-body>
-            <ng-container *ngIf="fileStructuredata && fileDataFromBack">
-              <amexio-treeview [data]="fileStructuredata" (nodeClick)="getFileDataBtnClick($event)"
+          <amexio-tab-view [body-height]="72">
+                     <amexio-tab title="Source Code" [active]="true" [icon]="'fa fa-file-o'">
+             <ng-container *ngIf="fileStructuredata">
+              <amexio-treeview [data]="fileStructuredata" (nodeClick)="addTab(sourcetab,$event)"
                                [data-reader]="'children'"></amexio-treeview>
             </ng-container>
-            <ng-container *ngIf=" treeViewData ">
+            </amexio-tab>
+             <amexio-tab title="Git" [active]="false" [icon]="'fa fa-github'">
               <amexio-row>
                 <amexio-column size="12">
                   <amexio-treeview [data]="shareTreeJSonData"
                                    (nodeClick)=" onShareBtnDataClick($event) "></amexio-treeview>
                 </amexio-column>
               </amexio-row>
-            </ng-container>
+          
+             </amexio-tab>
+             </amexio-tab-view>
           </amexio-body>
         </amexio-card>
       </amexio-column>
       <amexio-column [size]="9">
-        <amexio-card [body-height]="79" [header]="true" [footer]="false" [show]="true" [header-align]="'left'">
-        <amexio-header>
-        <amexio-button [label]="'Clear'" (onClick) = "clearPrismDisplayData()"[type]="'theme-backgroundcolor'" [tooltip]="'Clear Button'">
-              </amexio-button>
-        </amexio-header>  
+        <amexio-card [body-height]="79" [header]="false" [footer]="false" [show]="true" [header-align]="'left'">
+      
         <amexio-body>
           
               <amexio-window [show-window]="showCommitAllWindow" (close)="closeCommitAllWindow()" type="window"
@@ -89,7 +91,7 @@ import { any } from 'codelyzer/util/function';
                   <amexio-button (onClick)="closeCommitAllWindow()" label="Cancel" type="white"
                                  [icon]="'fa fa-remove'"></amexio-button>
                   <amexio-button (onClick)="onCommitAllChangesClick($event)" label="Commit Changes" type="green"
-                                 [icon]="'fa fa fa-arrow-circle-up'"></amexio-button>
+                                [loading]="asyncFlag" [icon]="'fa fa fa-arrow-circle-up'"></amexio-button>
                 </amexio-action>
               </amexio-window>
 
@@ -113,8 +115,7 @@ import { any } from 'codelyzer/util/function';
                         <amexio-body>
                           <amexio-row>
                             <amexio-column size="12">
-                              <!--<amexio-treeview [enable-checkbox]="true"  [data]="fileStructuredata" (nodeClick)="getUnstagedClickData($event)" [data-reader]="'children'" >-->
-                              <!--</amexio-treeview>-->
+                            
                               <amexio-treeview [enable-checkbox]="true" [data]="unstagedTreeData"
                                                (onTreeNodeChecked)="getUnstagedClickData($event)"></amexio-treeview>
                             </amexio-column>
@@ -212,24 +213,8 @@ import { any } from 'codelyzer/util/function';
                                  (onClick)="onPullRequestClick($event)"></amexio-button>
                 </amexio-action>
               </amexio-window>
-
-              <amexio-label size="'small'">
-              <ng-container *ngIf="sourceCode">
-                <ng-container *ngIf="isCss">
-                  <prism-block [code]="sourceCode" [language]="'css'"></prism-block>
-                </ng-container>
-                <ng-container *ngIf="isHtml">
-                  <prism-block [code]="sourceCode" [language]="'html'"></prism-block>
-                </ng-container>
-                <ng-container *ngIf="isTypeScript">
-                  <prism-block [code]="sourceCode" [language]="'typescript'"></prism-block>
-                </ng-container>
-                <ng-container *ngIf="isJson">
-                  <prism-block [code]="sourceCode" [language]="'json'"></prism-block>
-                </ng-container>
-              </ng-container>
-            </amexio-label>
-           
+  <amexio-tab-view #sourcetab [closable]="true" [tab-position]="'top'" [header-align]="'left'" [body-height]="72">
+</amexio-tab-view>
           </amexio-body>
         </amexio-card>
        
@@ -269,6 +254,7 @@ export class CodeExplorerComponent implements OnInit {
   gitCommitDataClass: GitCommitDataClass;
   gitPullDataClass: GitPullDataClass;
 
+  asyncFlag: boolean = false;
   showCommitAllWindow: boolean;
   showCommitWindow: boolean;
   showPullWindow: boolean;
@@ -277,8 +263,8 @@ export class CodeExplorerComponent implements OnInit {
   // commitWindow: boolean;
   // pullWindow: boolean;
 
-  treeViewData: boolean;
-  fileDataFromBack: boolean;
+  // treeViewData: boolean;
+  // fileDataFromBack: boolean;
   openingWindowFlag: boolean;
   URLDisabled: boolean;
   showErrorDialogue: boolean = false;
@@ -288,7 +274,7 @@ export class CodeExplorerComponent implements OnInit {
   fileStructuredata: any;
   publicIpAddress: any;
   sourceCode: any;
-
+  protocol: any;
   inValidMessageData: any[] = [];
   // unableToConnectServerMsg: any[] = [];
   unstagedTreeData: any;
@@ -304,10 +290,14 @@ export class CodeExplorerComponent implements OnInit {
   selectedTreeStageObject: any;
   enableCommitAndPullWindow: boolean;
   msgData: any[];
+  openTabData: any = [];
+  tabcount: number = 0;
+
   constructor(
     public http: HttpClient,
     private cookie: CookieService,
-    public cdf: ChangeDetectorRef
+    public cdf: ChangeDetectorRef,
+    private componentFactoryResolver: ComponentFactoryResolver
   ) {
     this.commitAllDataClass = new CommitAllDataClass();
     this.gitCommitDataClass = new GitCommitDataClass();
@@ -317,8 +307,8 @@ export class CodeExplorerComponent implements OnInit {
     // this.treeOfUnstagedData();
     this.resetFlag();
     this.resetModel();
-    this.treeViewData = false;
-    this.fileDataFromBack = true;
+    // this.treeViewData = false;
+    // this.fileDataFromBack = true;
     this.stageDataTree = [];
     this.unstagedTreeData = [];
     // this.syncMappedRepositoryURL();
@@ -358,9 +348,11 @@ export class CodeExplorerComponent implements OnInit {
       () => {
         if (responsedata.response) {
           this.publicIpAddress = responsedata.response.hostIpAddress;
+          this.protocol = responsedata.response.protocol;
           this.getSourceCodeTreeData();
         } else {
           this.publicIpAddress = '';
+          this.protocol = '';
         }
       }
     );
@@ -460,44 +452,55 @@ export class CodeExplorerComponent implements OnInit {
     this.isJson = false;
     this.isCss = false;
   }
-  // REFRESH TREE DATA BUTTON CLICK METHOD
-  onRefreshBtnClick() {
-    this.treeViewData = false;
-    this.getSourceCodeTreeData();
-    // this.unableToConnectDialogue = true;
-  }
+
   // PRISM TREE DATA CLEARING BUTTON CLICK
   clearPrismDisplayData() {
-    console.log(' done');
     this.sourceCode = '';
     //this.unableToConnectDialogue = true;
   }
-  // FILE BUTTON CLICK FOR THE PRISM DATA DISPLAY IN THE PRISM FORM
-  onFileClick(data: any) {
-    this.fileDataFromBack = true;
-    this.treeViewData = false;
-    this.getSourceCodeTreeData();
-  }
-  // FOR COMMIT THE FILE HERE IS THE BUTTON
-  onShareClick(data: any) {
-    this.treeViewData = true;
-    this.fileDataFromBack = false;
-    this.File = {
-      item: []
-    };
+  //Add Tab
+  addTab(sourcetab: any, data: any) {
+    if (!data.children) {
+      this.tabcount++;
+      let title = data.text;
+      this.openTabData.push(data);
+      let cmp = sourcetab.addDynamicTab(title, 'black', true, TabcodeComponent);
+      if (data) {
+        let responsedata: any;
+        cmp.getIpAddress().subscribe(
+          (response: any) => {
+            responsedata = response;
+          },
+          (error: any) => {},
+          () => {
+            if (responsedata.response) {
+              cmp.publicIpAddress = responsedata.response.hostIpAddress;
+              cmp.protocol = responsedata.response.protocol;
+              cmp.getFileDataBtnClick(data, cmp.publicIpAddress, cmp.protocol);
+            } else {
+              cmp.publicIpAddress = '';
+              cmp.protocol = '';
+            }
+          }
+        );
+      }
+    }
   }
 
   //Method to get Source Code FROM BACKEND AND USE FOR THE TREE STRUCTURE DATA DISPLAY
   getSourceCodeTreeData() {
     this.inValidMessageData = [];
-    this.fileDataFromBack = false;
+    // this.fileDataFromBack = false;
     // let appUrl = 'http://host:8080/code-pipeline-service/projectExplorer/explorer';
-    let appUrl = 'http://host:9870/projectExplorer/explorer';
+    let appUrl = 'protocol://host:9870/projectExplorer/explorer';
 
     if (this.publicIpAddress) {
       appUrl = appUrl.replace('host', this.publicIpAddress);
+      appUrl = appUrl.replace('protocol', this.protocol);
     } else {
       appUrl = appUrl.replace('host', 'localhost');
+      appUrl = appUrl.replace('protocol', this.protocol);
+
       ``;
     }
     let filedata: any;
@@ -510,7 +513,6 @@ export class CodeExplorerComponent implements OnInit {
         filedata = res;
       },
       err => {
-        console.log('Error occured');
         this.inValidMessageData = [];
         this.inValidMessageData.push('Unable To Connect Server');
         this.showErrorDialogue = true;
@@ -522,80 +524,80 @@ export class CodeExplorerComponent implements OnInit {
           let stringData = {
             children: responsedata.children
           };
-          this.fileStructuredata = null;
-          this.fileDataFromBack = true;
+          // this.fileStructuredata = null;
+          // this.fileDataFromBack = true;
           this.fileStructuredata = stringData;
+          // console.log('sourcetree',this.fileStructuredata);
         }
       }
     );
   }
 
-  //Method to Get File Data IN TREE FORMATE AND USE FOR CLICK ON NODE OF TREE
-  getFileDataBtnClick(data: any) {
-    //back end data comes on child click.
-    this.inValidMessageData = [];
-    if (!data.children) {
-      // let appUrl =
-      //   'http://host:8080/code-pipeline-service/projectExplorer/findSourceCode';
-      let appUrl = 'http://host:9870/projectExplorer/findSourceCode';
-      if (this.publicIpAddress) {
-        appUrl = appUrl.replace('host', this.publicIpAddress);
-      } else {
-        appUrl = appUrl.replace('host', 'localhost');
-      }
-      if (data.leaf) {
-        let filedata: any;
-        const sourcePathJSON: any = {};
-        sourcePathJSON['sourcePath'] = data.sourcePath;
-        this.http.post(appUrl, sourcePathJSON).subscribe(
-          res => {
-            filedata = res;
-          },
-          err => {
-            console.log('Error occured');
-            this.inValidMessageData.push('Unable To Connect Server');
-            this.showErrorDialogue = true;
-          },
-          () => {
-            const responseData = JSON.parse(filedata.response);
-            this.sourceCode = '';
-            if (responseData.source) {
-              this.sourceCode = responseData.source;
-              this.resetFlag();
-              this.cdf.detectChanges();
+  // //Method to Get File Data IN TREE FORMATE AND USE FOR CLICK ON NODE OF TREE
+  // getFileDataBtnClick(data: any) {
+  //   //back end data comes on child click.
+  //   this.inValidMessageData = [];
+  //   if (!data.children) {
+  //     // let appUrl =
+  //     //   'http://host:8080/code-pipeline-service/projectExplorer/findSourceCode';
+  //     let appUrl = 'http://host:9870/projectExplorer/findSourceCode';
+  //     if (this.publicIpAddress) {
+  //       appUrl = appUrl.replace('host', this.publicIpAddress);
+  //     } else {
+  //       appUrl = appUrl.replace('host', 'localhost');
+  //     }
+  //     if (data.leaf) {
+  //       let filedata: any;
+  //       const sourcePathJSON: any = {};
+  //       sourcePathJSON['sourcePath'] = data.sourcePath;
+  //       this.http.post(appUrl, sourcePathJSON).subscribe(
+  //         res => {
+  //           filedata = res;
+  //         },
+  //         err => {
+  //           console.log('Error occured');
+  //           this.inValidMessageData.push('Unable To Connect Server');
+  //           this.showErrorDialogue = true;
+  //         },
+  //         () => {
+  //           const responseData = JSON.parse(filedata.response);
+  //           this.sourceCode = '';
+  //           if (responseData.source) {
+  //             this.sourceCode = responseData.source;
+  //             this.resetFlag();
+  //             this.cdf.detectChanges();
 
-              if (responseData.fileType) {
-                this.resetFlag();
-                if (responseData.fileType == 'html') {
-                  this.isHtml = true;
-                  return;
-                } else if (responseData.fileType == 'json') {
-                  this.isJson = true;
-                  return;
-                } else if (responseData.fileType == 'ts') {
-                  this.isTypeScript = true;
-                  return;
-                } else if (responseData.fileType == 'css') {
-                  this.isCss = true;
-                  return;
-                } else {
-                  this.isHtml = true;
-                }
-              }
-            }
-          }
-        );
-      }
-    }
-  }
+  //             if (responseData.fileType) {
+  //               this.resetFlag();
+  //               if (responseData.fileType == 'html') {
+  //                 this.isHtml = true;
+  //                 return;
+  //               } else if (responseData.fileType == 'json') {
+  //                 this.isJson = true;
+  //                 return;
+  //               } else if (responseData.fileType == 'ts') {
+  //                 this.isTypeScript = true;
+  //                 return;
+  //               } else if (responseData.fileType == 'css') {
+  //                 this.isCss = true;
+  //                 return;
+  //               } else {
+  //                 this.isHtml = true;
+  //               }
+  //             }
+  //           }
+  //         }
+  //       );
+  //     }
+  //   }
+  // }
 
   onBlurCheck(data: any) {
     if (data != null && data.isComponentValid) {
-      console.log('done');
     } else {
       this.inValidMessageData = [];
       this.showErrorDialogue = true;
-      this.inValidMessageData.push('Url is not valid ,Please check');
+      this.inValidMessageData.push('Repository URL is not valid ,Please check');
     }
   }
 
@@ -605,6 +607,7 @@ export class CodeExplorerComponent implements OnInit {
     if (data.id === 'showCommitAllWindow') {
       this.syncMappedRepositoryURL();
       this.showCommitAllWindow = true;
+      this.sourceCode = '';
     }
     if (this.enableCommitAndPullWindow && data.id === 'showCommitWindow') {
       this.syncMappedRepositoryURL();
@@ -620,6 +623,7 @@ export class CodeExplorerComponent implements OnInit {
     if (this.enableCommitAndPullWindow && data.id === 'showPullWindow') {
       this.syncMappedRepositoryURL();
       this.showPullWindow = true;
+      this.sourceCode = '';
     } else if (data.id == 'showPullWindow') {
       this.inValidMessageData = [];
       this.inValidMessageData.push(
@@ -635,6 +639,7 @@ export class CodeExplorerComponent implements OnInit {
     this.validateCommitAllForm();
     if (this.inValidMessageData && this.inValidMessageData.length == 0) {
       let responseData: any;
+      this.asyncFlag = true;
       let RequestOptions = {
         repositoryURL: this.commitAllDataClass.repositoryURL,
         username: this.commitAllDataClass.username,
@@ -650,21 +655,23 @@ export class CodeExplorerComponent implements OnInit {
             responseData = response;
           },
           err => {
-            console.log('Error occured');
             this.inValidMessageData = [];
             this.inValidMessageData.push('Unable To Connect Server');
             this.showErrorDialogue = true;
+            this.asyncFlag = false;
           },
           () => {
             if (responseData.success) {
               this.msgData.push(responseData.successMessage);
               this.commitAllDataClass = new CommitAllDataClass();
               this.showCommitAllWindow = false;
+              this.asyncFlag = false;
             }
 
             if (responseData && responseData.errors) {
               this.inValidMessageData.push(responseData.errors);
               this.showErrorDialogue = true;
+              this.asyncFlag = false;
             }
           }
         );
@@ -691,7 +698,6 @@ export class CodeExplorerComponent implements OnInit {
             responseData = response;
           },
           err => {
-            console.log('Error occured');
             this.inValidMessageData = [];
             this.inValidMessageData.push('Unable To Connect Server');
             this.showErrorDialogue = true;
@@ -709,6 +715,7 @@ export class CodeExplorerComponent implements OnInit {
     this.validatePullForm();
     if (this.inValidMessageData && this.inValidMessageData.length == 0) {
       let responseData: any;
+      this.asyncFlag = true;
       this.http
         .post('/api/pipeline/SourceCodeSharing/pull', this.gitPullDataClass)
         .subscribe(
@@ -716,19 +723,21 @@ export class CodeExplorerComponent implements OnInit {
             responseData = response;
           },
           err => {
-            console.log('Error occured');
             this.inValidMessageData = [];
             this.inValidMessageData.push('Unable To Connect Server');
             this.showErrorDialogue = true;
+            this.asyncFlag = false;
           },
           () => {
             if (responseData && responseData.errors) {
               this.inValidMessageData.push(responseData.errorMessage);
               this.showErrorDialogue = true;
+              this.asyncFlag = false;
             } else if (responseData.success) {
               this.gitPullDataClass = new GitPullDataClass();
               this.showPullWindow = false;
               this.msgData.push(responseData.successMessage);
+              this.asyncFlag = false;
             }
           }
         );
@@ -858,7 +867,6 @@ export class CodeExplorerComponent implements OnInit {
           responseData = response;
         },
         err => {
-          console.log('Error occured');
           this.inValidMessageData = [];
           this.inValidMessageData.push('Unable To Connect Server');
           this.showErrorDialogue = true;
@@ -893,7 +901,6 @@ export class CodeExplorerComponent implements OnInit {
         responseData = response;
       },
       err => {
-        console.log('Error occured');
         this.inValidMessageData = [];
         this.inValidMessageData.push('Unable To Connect Server');
         this.showErrorDialogue = true;

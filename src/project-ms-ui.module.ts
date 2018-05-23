@@ -10,6 +10,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { CreateProjectComponent } from './app/project/create/createproject.component';
 import { ProjectAppComponent } from './app/project/list/projectapp.component';
 import { CodeExplorerComponent } from './app/project/code-explorer/code-explorer.component';
+import { TabcodeComponent } from './app/project/code-explorer/tabcode.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PlatformCommmonsModule } from 'platform-commons';
 import { PrismModule } from './app/prism-module/prism.module';
@@ -40,9 +41,11 @@ const routes: Routes = [
     PrismModule,
     RouterModule.forChild(routes)
   ],
+  entryComponents: [TabcodeComponent],
   declarations: [
     CreateProjectComponent,
     ProjectAppComponent,
+    TabcodeComponent,
     CodeExplorerComponent
   ],
   exports: [

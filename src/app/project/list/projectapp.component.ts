@@ -19,9 +19,7 @@ export class ProjectAppComponent implements OnInit {
   @ViewChild('iframe1') iframe: ElementRef;
   publicIpAddress: any;
   previewURL: any;
-  constructor(private http: HttpClient) {
-    // this.previewURL="https://stackblitz.com/github/meta-magic/demmoapp?embed=1&file=src/main.ts&hideExplorer=1&hideNavigation=1&view=preview"
-  }
+  constructor(private http: HttpClient) {}
   ngOnInit() {
     this.getHostDetails();
   }
@@ -65,19 +63,6 @@ export class ProjectAppComponent implements OnInit {
             let projectName = previewResponse.response;
             this.iframe.nativeElement.src =
               'http://' + ip + '/' + projectName + '/' + 'index.html';
-            /* popup.addEventListener(
-              'load',
-              () => {
-                popup.SendMessage({
-                  ip:
-                    this.publicIpAddress != null
-                      ? this.publicIpAddress
-                      : 'localhost',
-                  name: previewResponse.response
-                });
-              },
-              true
-            );*/
           }
         }
       }
