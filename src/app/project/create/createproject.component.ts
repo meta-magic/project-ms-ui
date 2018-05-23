@@ -9,10 +9,8 @@ import { Router, ActivatedRoute } from '@angular/router';
   template: `
   <amexio-row>
     <amexio-column [size]="3">
-    <amexio-card [header]="false" [footer]="true" [footer-align]="'right'"
-  [body-height]="82">
-
-    <amexio-body [padding]="'0px'">
+   <amexio-form  [header]="false" [show-error]="false" [footer-align]="'right'"  [body-height]="82"> 
+    <amexio-form-body [padding]="'0px'">
      <amexio-listbox [enable-checkbox]="false"
                 [header]="'Projects'"
                 [search-placeholder]="'Search'"
@@ -23,8 +21,8 @@ import { Router, ActivatedRoute } from '@angular/router';
                 [border]="'none'"
                 (onRowClick)="onProjectSelect($event)">
 </amexio-listbox>
-</amexio-body>
-<amexio-action >
+</amexio-form-body>
+<amexio-form-action>
  <amexio-button
     [label]="'New'"
     [type]="'secondary'"
@@ -79,21 +77,6 @@ import { Router, ActivatedRoute } from '@angular/router';
          Server Port:{{serverPort}}
         </amexio-column>
                 </ng-container>
-
-        <amexio-column [size]="6">
-        <amexio-radio-group
-           [field-label]="'Amexio Themes'"
-            [allow-blank]="true"
-           name ="projectCreationModel.themeUUID"
-           [display-field]="'themesName'"
-           [value-field]="'themeUUID'"
-           [data]="amexioThemes"
-           [disabled]="disblefields"
-           [default-value]="projectCreationModel.themeUUID"
-           (onSelection)="setTheme($event)">
-        </amexio-radio-group>
-
-        </amexio-column>
         <amexio-column [size]="6">
         <amexio-radio-group
            [field-label]="'Material Themes'"
@@ -196,18 +179,6 @@ import { Router, ActivatedRoute } from '@angular/router';
     [size]="'default'"
     [icon]="'fa fa-save'"  
     (onClick)="onUpdate()">
-    [size]="'default'"
-    (onClick)="onNextClick(projform)">
-    </amexio-button>
-    </ng-container>
-     <amexio-button
-    [label]="'Cancel'"
-    [type]="'secondary'"
-    [tooltip]="'Cancel'"
-    [size]="'default'"
-    [icon]="'fa fa-close'"
-    [disabled]="disableCancelBtn"
-    (onClick)="cancelProject()">
     </amexio-button>
      </ng-container>
     <ng-container *ngIf="!showNext">
