@@ -675,7 +675,12 @@ export class CreateProjectComponent implements OnInit {
   }
   checkStatus(data: any) {
     if (data === 'ok') {
-      this._route.navigate(['home/codepipeline/task-ui']);
+      this.msgService.sendMessage({
+        path: 'home/codepipeline/task-ui',
+        tiltle: 'Task Details'
+      });
+      // console.log('send');
+      // this._route.navigate(['home/codepipeline/task-ui']);
     }
   }
 
