@@ -16,11 +16,11 @@ import { any } from 'codelyzer/util/function';
   template: `
     <amexio-row>
       <amexio-column [size]="3">
-        <amexio-card [header]="false" [footer]="false" [show]="true" [header-align]="'center'" [body-height]="79"
+        <amexio-card [header]="false" [footer]="false" [show]="true" [header-align]="'center'" [body-height]="74"
                      [footer-align]="'right'">
       
           <amexio-body>
-          <amexio-tab-view [body-height]="72">
+          <amexio-tab-view [body-height]="70">
                      <amexio-tab title="Source Code" [active]="true" [icon]="'fa fa-file-o'">
              <ng-container *ngIf="fileStructuredata">
               <amexio-treeview [data]="fileStructuredata" (nodeClick)="addTab(sourcetab,$event)"
@@ -41,11 +41,17 @@ import { any } from 'codelyzer/util/function';
         </amexio-card>
       </amexio-column>
       <amexio-column [size]="9">
-        <amexio-card [body-height]="79" [header]="false" [footer]="false" [show]="true" [header-align]="'left'">
+        <amexio-card [body-height]="74" [header]="false" [footer]="false" [show]="true" [header-align]="'left'">
       
         <amexio-body>
           
-              <amexio-window [show-window]="showCommitAllWindow" (close)="closeCommitAllWindow()" type="window"
+              <amexio-tab-view #sourcetab [closable]="true" [tab-position]="'top'" [header-align]="'left'" [body-height]="70">
+</amexio-tab-view>
+          </amexio-body>
+        </amexio-card>
+       
+      </amexio-column>
+        <amexio-window [show-window]="showCommitAllWindow" (close)="closeCommitAllWindow()" type="window"
                              [closable]="true" [footer]="true">
                 <amexio-header> Commit Changes</amexio-header>
                 <amexio-body>
@@ -213,12 +219,7 @@ import { any } from 'codelyzer/util/function';
                                  (onClick)="onPullRequestClick($event)"></amexio-button>
                 </amexio-action>
               </amexio-window>
-  <amexio-tab-view #sourcetab [closable]="true" [tab-position]="'top'" [header-align]="'left'" [body-height]="72">
-</amexio-tab-view>
-          </amexio-body>
-        </amexio-card>
-       
-      </amexio-column>
+
        <amexio-notification [data]="msgData" [vertical-position]="'top'" [horizontal-position]="'right'" [auto-dismiss-msg]="true"
 [auto-dismiss-msg-interval]="6000">
 </amexio-notification>  

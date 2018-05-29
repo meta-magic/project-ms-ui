@@ -9,7 +9,7 @@ import { Router, ActivatedRoute } from '@angular/router';
   template: `
   <amexio-row>
     <amexio-column [size]="3">
-   <amexio-form  [header]="false" [show-error]="false" [footer-align]="'right'"  [body-height]="82"> 
+   <amexio-form  [header]="false" [show-error]="false" [footer-align]="'right'"  [body-height]="76"> 
     <amexio-form-body [padding]="'0px'">
      <amexio-listbox [enable-checkbox]="false"
                 [header]="'Projects'"
@@ -42,7 +42,7 @@ import { Router, ActivatedRoute } from '@angular/router';
              Project Creation
     </amexio-form-header>
 <amexio-form-body>
-                     <amexio-tab-view [closable]="false" (onClick)="onTabClick($event)"  [body-height]="60">
+                     <amexio-tab-view [closable]="false" (onClick)="onTabClick($event)"  [body-height]="55">
                           <amexio-tab title="Project Configuration" [active]="projecttabFlag">
                            <amexio-row>
         <amexio-column [size]="6">
@@ -77,21 +77,38 @@ import { Router, ActivatedRoute } from '@angular/router';
          Server Port:{{serverPort}}
         </amexio-column>
                 </ng-container>
-        <amexio-column [size]="6">
-        <amexio-radio-group
-           [field-label]="'Material Themes'"
-           name ="projectCreationModel.themeUUID"
-           [display-field]="'themesName'"
-           [allow-blank]="true"
-           [value-field]="'themeUUID'"
-           [data]="materialthemes"
-           [default-value]="projectCreationModel.themeUUID"
-           (onSelection)="setTheme($event)">
-        </amexio-radio-group>
-        </amexio-column>
-
-      </amexio-row>
- </amexio-tab>
+                <amexio-column [size]="12">
+         <amexio-label >Material themes</amexio-label>
+         </amexio-column>
+       </amexio-row>
+        <amexio-row>
+                <amexio-column [size]="4" *ngFor="let col of materialthemes"> 
+                <div class="proj-ui">    
+ <amexio-card [header]="true"
+                [footer]="false"
+                [show]="true"
+                [header-align]="left">
+            <amexio-header>
+            <div *ngIf="showThemeFlag">
+            <amexio-radio-group 
+                name ="projectCreationModel.themeUUID"
+                [display-field]="'themesName'"
+                [allow-blank]="true"
+                [value-field]="'themeUUID'"
+                [data]="getThemes(col)"
+                [default-value]="projectCreationModel.themeUUID"
+                (onSelection)="setTheme(col)" style="display: inline;">
+           </amexio-radio-group>
+                      </div>
+                    </amexio-header>
+                    <amexio-body>
+                            <amexio-image [path]="'assets/images/theme-icons/'+col.themesIcon"></amexio-image> <br/>
+                    </amexio-body>
+                </amexio-card>
+                </div>
+  </amexio-column>
+            </amexio-row>
+         </amexio-tab>
 <amexio-tab title="Source Code Configuration" [active]="sourcetabFlag" [disabled] = "tabdisabledFlag">
 <amexio-row>
 <amexio-column [size]="6">
@@ -203,7 +220,7 @@ import { Router, ActivatedRoute } from '@angular/router';
                 [footer]="false"
                 [show]="true"
                 [footer-align]="'right'"
-                [body-height]="81">
+                [body-height]="76">
                     <amexio-header>
                      Help Document
                     </amexio-header>
@@ -291,6 +308,8 @@ export class CreateProjectComponent implements OnInit {
   WarningMsgArray: any = [];
   warningdialogue: boolean = false;
   themeID: any;
+  radiogroupData: any;
+  showThemeFlag: boolean = true;
   // userblankFlag:boolean;
   // passwordblankFlag:boolean;
   constructor(
@@ -303,6 +322,7 @@ export class CreateProjectComponent implements OnInit {
     private _cdf: ChangeDetectorRef
   ) {
     debugger;
+
     this.projectCreationModel = new ProjectCreationModel();
     this.themes = [];
     this.amexioThemes = [];
@@ -328,6 +348,11 @@ export class CreateProjectComponent implements OnInit {
   }
 
   ngOnInit() {}
+  getThemes(col: any): any[] {
+    let themearray: any = [];
+    themearray.push(col);
+    return themearray;
+  }
   onRepositorySelect(event: any) {
     if (event.respositoryType == 'Private') {
       this.WarningMsgArray = [];
@@ -413,6 +438,7 @@ export class CreateProjectComponent implements OnInit {
   onProjectSelect(event: any) {
     let selectProject: any;
     this.themeID = '';
+    this.showThemeFlag = false;
     // this.projectCreationModel = new ProjectCreationModel();
     const projectUUID = event.projectUUID;
     this.http
@@ -436,6 +462,7 @@ export class CreateProjectComponent implements OnInit {
             this.projectCreationModel.themeUUID =
               selectProject.response.themeUUID;
             this.themeID = selectProject.response.themeUUID;
+            this.showThemeFlag = true;
             this.serverPort = selectProject.response.serverPort;
             this.portDisableFlag = false;
             this.newTokenid = selectProject.response.newtokenId;
@@ -459,8 +486,8 @@ export class CreateProjectComponent implements OnInit {
   }
 
   //Set Theme
-  setTheme(themeData: any) {
-    this.projectCreationModel.themeUUID = themeData.themeUUID;
+  setTheme(col: any) {
+    this.projectCreationModel.themeUUID = col.themeUUID;
     if (this.themeID == this.projectCreationModel.themeUUID) {
       this.disableUpdateBtn = true;
     } else {
@@ -741,6 +768,7 @@ export class CreateProjectComponent implements OnInit {
           themeUUID: obj.themeUUID,
           themesName: obj.themesName,
           themesDescription: obj.themesDescription,
+          themesIcon: obj.themesIcon,
           themeType: obj.themeType
         };
         this.amexioThemes.push(obj1);
@@ -749,6 +777,7 @@ export class CreateProjectComponent implements OnInit {
           themeUUID: obj.themeUUID,
           themesName: obj.themesName,
           themesDescription: obj.themesDescription,
+          themesIcon: obj.themesIcon,
           themeType: obj.themeType
         };
         this.materialthemes.push(obj2);
