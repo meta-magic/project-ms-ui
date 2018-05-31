@@ -123,7 +123,6 @@ import { Router, ActivatedRoute } from '@angular/router';
            [data]="respositoryTypeData"
            [disabled]="disblefields"
            [default-value]="projectCreationModel.respositoryTypeId"
-           (onSelection)="onRepositorySelect($event)"
            >
         </amexio-radio-group>
 </amexio-column>
@@ -220,7 +219,7 @@ import { Router, ActivatedRoute } from '@angular/router';
                 [footer]="false"
                 [show]="true"
                 [footer-align]="'right'"
-                [body-height]="76">
+                [body-height]="75">
                     <amexio-header>
                      Help Document
                     </amexio-header>
@@ -353,15 +352,15 @@ export class CreateProjectComponent implements OnInit {
     themearray.push(col);
     return themearray;
   }
-  onRepositorySelect(event: any) {
-    if (event.respositoryType == 'Private') {
-      this.WarningMsgArray = [];
-      this.WarningMsgArray.push(
-        'Preview is not enabled for private repositories'
-      );
-      this.warningdialogue = true;
-    }
-  }
+  // onRepositorySelect(event: any) {
+  //   if (event.respositoryType == 'Private') {
+  //     this.WarningMsgArray = [];
+  //     this.WarningMsgArray.push(
+  //       'Preview is not enabled for private repositories'
+  //     );
+  //     this.warningdialogue = true;
+  //   }
+  // }
 
   onTabClick(event: any) {
     if (event.title == 'Project Configuration') {
