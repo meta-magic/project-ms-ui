@@ -176,7 +176,7 @@ import { Router, ActivatedRoute } from '@angular/router';
     (onClick)="cancelProject()">
     </amexio-button>
     </ng-container>
-       <ng-container *ngIf="!showUpadteBtn">
+       <ng-container *ngIf="showNext">
     <amexio-button
     [label]="'Next'"
     [type]="'secondary'"
@@ -199,7 +199,7 @@ import { Router, ActivatedRoute } from '@angular/router';
     (onClick)="onUpdate()">
     </amexio-button>
      </ng-container>
-    <ng-container *ngIf="!showNext">
+    <ng-container *ngIf="showSaveBtn">
     <amexio-button
     [label]="'Save'"
     [loading]="asyncFlag"
@@ -295,7 +295,7 @@ export class CreateProjectComponent implements OnInit {
   sourcetabFlag: boolean;
   disblefields: boolean = false;
   disbleUserFlag: boolean;
-  showSaveBtn: boolean = false;
+  showSaveBtn: boolean;
   showUpadteBtn: boolean = false;
   showNext: boolean = true;
   disableBtn: boolean;
@@ -368,10 +368,12 @@ export class CreateProjectComponent implements OnInit {
       this.projecttabFlag = true;
       this.sourcetabFlag = false;
       this.showNext = true;
+      this.showSaveBtn = false;
     } else {
       this.projecttabFlag = false;
       this.sourcetabFlag = true;
       this.showNext = false;
+      this.showSaveBtn = true;
     }
   }
 
@@ -420,7 +422,7 @@ export class CreateProjectComponent implements OnInit {
     this.showUpadteBtn = false;
     this.showNext = true;
     this.disableBtn = false;
-    // this.showSaveBtn=false;
+    this.showSaveBtn = false;
     this.showerrorFlag = false;
     this.disableCancelBtn = false;
     this.projectCreationModel = new ProjectCreationModel();
@@ -471,7 +473,8 @@ export class CreateProjectComponent implements OnInit {
             this._cdf.detectChanges();
             this.showUpadteBtn = true;
             this.disableUpdateBtn = true;
-            this.showNext = true;
+            this.showSaveBtn = false;
+            this.showNext = false;
             this.disableCancelBtn = true;
             this.disblefields = true;
             this.tabdisabledFlag = true;
@@ -681,7 +684,10 @@ export class CreateProjectComponent implements OnInit {
           this.msgData.push(response.successMessage);
           this.clearData();
           this.getProjectList();
-          this.msgService.sendMessage({ projectId: this.projectId });
+          this.msgService.sendMessage({
+            projectId: this.projectId,
+            saveproject: true
+          });
           this.showtask();
         } else {
           if (response.errorMessage == null) {
