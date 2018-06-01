@@ -165,6 +165,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 </amexio-tab-view>
  </amexio-form-body>
    <amexio-form-action>
+    <ng-container *ngIf="!showUpadteBtn">
      <amexio-button
     [label]="'Cancel'"
     [type]="'secondary'"
@@ -174,7 +175,8 @@ import { Router, ActivatedRoute } from '@angular/router';
     [disabled]="disableCancelBtn"
     (onClick)="cancelProject()">
     </amexio-button>
-       <ng-container *ngIf="showNext">
+    </ng-container>
+       <ng-container *ngIf="!showUpadteBtn">
     <amexio-button
     [label]="'Next'"
     [type]="'secondary'"
@@ -243,7 +245,6 @@ import { Router, ActivatedRoute } from '@angular/router';
    [auto-dismiss-msg-interval]="7000">
 </amexio-notification>
 <amexio-dialogue [show-dialogue]="warningdialogue"
-               [title]="'Warning'"
                [message-type]="'warning'"
                [closable]="true"
                [custom]="true" (close)="warningdialogue = !warningdialogue"
@@ -339,7 +340,7 @@ export class CreateProjectComponent implements OnInit {
           {
             respositoryType: 'Private',
             respositoryTypeId: '2',
-            disabled: false
+            disabled: true
           }
         ]
       }
