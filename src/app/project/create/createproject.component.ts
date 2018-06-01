@@ -9,7 +9,7 @@ import { Router, ActivatedRoute } from '@angular/router';
   template: `
   <amexio-row>
     <amexio-column [size]="3">
-   <amexio-form  [header]="false" [show-error]="false" [footer-align]="'right'"  [body-height]="76"> 
+   <amexio-form  [header]="false" [show-error]="false" [footer-align]="'right'"  [body-height]="76">
     <amexio-form-body [padding]="'0px'">
      <amexio-listbox [enable-checkbox]="false"
                 [header]="'Projects'"
@@ -82,15 +82,15 @@ import { Router, ActivatedRoute } from '@angular/router';
          </amexio-column>
        </amexio-row>
         <amexio-row>
-                <amexio-column [size]="4" *ngFor="let col of materialthemes"> 
-                <div class="proj-ui">    
+                <amexio-column [size]="4" *ngFor="let col of materialthemes">
+                <div class="proj-ui">
  <amexio-card [header]="true"
                 [footer]="false"
                 [show]="true"
                 [header-align]="left">
             <amexio-header>
             <div *ngIf="showThemeFlag">
-            <amexio-radio-group 
+            <amexio-radio-group
                 name ="projectCreationModel.themeUUID"
                 [display-field]="'themesName'"
                 [allow-blank]="true"
@@ -180,7 +180,7 @@ import { Router, ActivatedRoute } from '@angular/router';
     [type]="'secondary'"
     [tooltip]="'Next'"
     [disabled]="disableCancelBtn"
-    [size]="'default'" 
+    [size]="'default'"
     [icon]="'fa fa-arrow-right'"
     (onClick)="onNextClick(projform)">
     </amexio-button>
@@ -193,7 +193,7 @@ import { Router, ActivatedRoute } from '@angular/router';
     [tooltip]="'Update'"
     [disabled]="disableUpdateBtn"
     [size]="'default'"
-    [icon]="'fa fa-save'"  
+    [icon]="'fa fa-save'"
     (onClick)="onUpdate()">
     </amexio-button>
      </ng-container>
@@ -597,6 +597,7 @@ export class CreateProjectComponent implements OnInit {
         if (response.success) {
           this.asyncFlag = false;
           this.themeID = this.projectCreationModel.themeUUID;
+          this.uiCreatedEvent({ ui_created: true });
           this.msgData.push(response.successMessage);
         } else {
           if (response.errorMessage == null) {
@@ -611,6 +612,10 @@ export class CreateProjectComponent implements OnInit {
         }
       }
     );
+  }
+  //UI CREATED EVENT ADDED
+  uiCreatedEvent(string: any) {
+    window.postMessage(string, window.location.origin);
   }
   //To Save Project Details
   saveProject(projform: any) {
