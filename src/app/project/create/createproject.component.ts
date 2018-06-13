@@ -674,16 +674,14 @@ export class CreateProjectComponent implements OnInit {
         instanceresponse = res;
       },
       err => {
-        this.validationMsgArray.push('Unable to connect to server');
+        this.validationMsgArray.push('Unable to connect to server, please try after sometime.');
         this.isValidateForm = true;
       },
       () => {
         if (instanceresponse.success) {
           this.openProjectUi();
         } else {
-          this.validationMsgArray.push(
-            'User instance not in a running state, start instance from Instance Management Screen.'
-          );
+          this.validationMsgArray.push('Unable to connect to server, please try after sometime.');
           this.isValidateForm = true;
         }
       }
