@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from 'platform-commons';
 import { CookieService } from 'platform-commons';
 import { MessagingService } from 'platform-commons';
+import { LoaderService } from 'platform-commons';
 import { Router, ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'project-create',
@@ -36,6 +37,7 @@ import { Router, ActivatedRoute } from '@angular/router';
     </amexio-column>
   <amexio-column [size]="9">
   <ng-container *ngIf="showCard">
+   <div class="loadingnav" *ngIf="loaderService.isLoading"></div>
  <amexio-form #projform [form-name]="'validateForm'" [header]="true" [show-error]="false" [footer-align]="'right'">
 
     <amexio-form-header>
@@ -310,19 +312,17 @@ export class CreateProjectComponent implements OnInit {
   themeID: any;
   radiogroupData: any;
   showThemeFlag: boolean = true;
-  // userblankFlag:boolean;
-  // passwordblankFlag:boolean;
+  isLoading: boolean = false;
   constructor(
     private http: HttpClient,
     private ls: LocalStorageService,
     private cookieService: CookieService,
+    public loaderService: LoaderService,
     private msgService: MessagingService,
     private route: ActivatedRoute,
     private _route: Router,
     private _cdf: ChangeDetectorRef
   ) {
-    debugger;
-
     this.projectCreationModel = new ProjectCreationModel();
     this.themes = [];
     this.amexioThemes = [];
@@ -353,15 +353,6 @@ export class CreateProjectComponent implements OnInit {
     themearray.push(col);
     return themearray;
   }
-  // onRepositorySelect(event: any) {
-  //   if (event.respositoryType == 'Private') {
-  //     this.WarningMsgArray = [];
-  //     this.WarningMsgArray.push(
-  //       'Preview is not enabled for private repositories'
-  //     );
-  //     this.warningdialogue = true;
-  //   }
-  // }
 
   onTabClick(event: any) {
     if (event.title == 'Project Configuration') {
@@ -377,17 +368,6 @@ export class CreateProjectComponent implements OnInit {
     }
   }
 
-  // onRepositorySelect(event:any){
-  // if(event.respositoryTypeId==1){
-  //   this.disbleUserFlag=true;
-  //   this.userblankFlag=true;
-  //   this.passwordblankFlag=true;
-  // }else{
-  //   this.disbleUserFlag=false;
-  //   this.userblankFlag=false;
-  //   this.passwordblankFlag=false
-  // }
-  // }
   //GET PROJECT LIST OF LOGGED IN USER
   getProjectList() {
     let projectDataList: any;
@@ -412,7 +392,6 @@ export class CreateProjectComponent implements OnInit {
   }
 
   openProjectUi() {
-    debugger;
     this.showCard = true;
     this.portDisableFlag = true;
     this.disblefields = false;
@@ -497,43 +476,6 @@ export class CreateProjectComponent implements OnInit {
       this.disableUpdateBtn = false;
     }
   }
-
-  //Validate Form Fields
-  // validateFormFields() {
-  //   let isValid: boolean = false;
-  //   this.validationMsgArray = [];
-  //   if (this.projectCreationModel.projectName == '') {
-  //     this.validationMsgArray.push('Invalid (Blank) Project Name.');
-  //   }
-  //   if (this.projectCreationModel.projectDescription == '') {
-  //     this.validationMsgArray.push('Invalid (Blank) Project Description.');
-  //   }
-  //   if (
-  //     this.projectCreationModel.themeUUID == null ||
-  //     this.projectCreationModel.themeUUID == ''
-  //   ) {
-  //     this.validationMsgArray.push('Invalid (Blank) Theme.');
-  //   }
-  // }
-
-  // validateSourceFormFields(){
-  //   let isValid: boolean = false;
-  //   this.validationMsgArray = [];
-  //   if (this.projectCreationModel.respositoryTypeId == '' ||this.projectCreationModel.respositoryTypeId== null)  {
-  //     this.validationMsgArray.push('Invalid (Blank) respository Type.');
-  //   }
-  //   if (this.projectCreationModel.repositoryURL == '') {
-  //     this.validationMsgArray.push('Invalid (Blank) Respository URL.');
-  //   }
-  //   if(this.projectCreationModel.respositoryTypeId==2){
-  //    if (this.projectCreationModel.userName == '') {
-  //     this.validationMsgArray.push('Invalid (Blank) User Name.');
-  //   }
-  //   if (this.projectCreationModel.password == '') {
-  //     this.validationMsgArray.push('Invalid (Blank) Password');
-  //   }
-  //   }
-  // }
 
   //To close Window
   okErrorBtnClick() {
@@ -657,6 +599,7 @@ export class CreateProjectComponent implements OnInit {
   saveProjectCreation() {
     let response: any;
     this.asyncFlag = true;
+    this.loaderService.showLoader();
     const requestJson = {
       projectName: this.projectCreationModel.projectName,
       projectDescription: this.projectCreationModel.projectDescription,
@@ -674,6 +617,7 @@ export class CreateProjectComponent implements OnInit {
         this.validationMsgArray.push('Unable to connect to server');
         this.isValidateForm = true;
         this.asyncFlag = false;
+        this.loaderService.hideLoader();
       },
       () => {
         if (response.success) {
@@ -682,6 +626,7 @@ export class CreateProjectComponent implements OnInit {
           this.cookieService.set('tokenid', this.newTokenid);
           this.asyncFlag = false;
           this.msgData.push(response.successMessage);
+          this.loaderService.hideLoader();
           this.clearData();
           this.getProjectList();
           this.msgService.sendMessage({
@@ -696,6 +641,7 @@ export class CreateProjectComponent implements OnInit {
             });
             this.isValidateForm = true;
             this.asyncFlag = false;
+            this.loaderService.hideLoader();
           } else if (response.errors !== null) {
             this.validationMsgArray.push(response.errorMessage);
             response.errors.forEach((error: any, index: any) => {
@@ -703,6 +649,7 @@ export class CreateProjectComponent implements OnInit {
             });
             this.isValidateForm = true;
             this.asyncFlag = false;
+            this.loaderService.hideLoader();
           }
         }
       }
@@ -717,8 +664,6 @@ export class CreateProjectComponent implements OnInit {
         path: 'home/codepipeline/task-ui',
         title: 'Task Details'
       });
-      // console.log('send');
-      // this._route.navigate(['home/codepipeline/task-ui']);
     }
   }
 

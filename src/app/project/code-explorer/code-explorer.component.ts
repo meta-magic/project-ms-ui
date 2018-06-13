@@ -221,7 +221,7 @@ import { any } from 'codelyzer/util/function';
               </amexio-window>
 
        <amexio-notification [data]="msgData" [vertical-position]="'top'" [horizontal-position]="'right'" [auto-dismiss-msg]="true"
-[auto-dismiss-msg-interval]="6000">
+[auto-dismiss-msg-interval]="7000">
 </amexio-notification>  
     <amexio-dialogue [show-dialogue]="showErrorDialogue" (close)="closeDialogue()" [custom]="true"
                      [title]="'Error Message'" [type]="'confirm'">
@@ -528,70 +528,10 @@ export class CodeExplorerComponent implements OnInit {
           // this.fileStructuredata = null;
           // this.fileDataFromBack = true;
           this.fileStructuredata = stringData;
-          // console.log('sourcetree',this.fileStructuredata);
         }
       }
     );
   }
-
-  // //Method to Get File Data IN TREE FORMATE AND USE FOR CLICK ON NODE OF TREE
-  // getFileDataBtnClick(data: any) {
-  //   //back end data comes on child click.
-  //   this.inValidMessageData = [];
-  //   if (!data.children) {
-  //     // let appUrl =
-  //     //   'http://host:8080/code-pipeline-service/projectExplorer/findSourceCode';
-  //     let appUrl = 'http://host:9870/projectExplorer/findSourceCode';
-  //     if (this.publicIpAddress) {
-  //       appUrl = appUrl.replace('host', this.publicIpAddress);
-  //     } else {
-  //       appUrl = appUrl.replace('host', 'localhost');
-  //     }
-  //     if (data.leaf) {
-  //       let filedata: any;
-  //       const sourcePathJSON: any = {};
-  //       sourcePathJSON['sourcePath'] = data.sourcePath;
-  //       this.http.post(appUrl, sourcePathJSON).subscribe(
-  //         res => {
-  //           filedata = res;
-  //         },
-  //         err => {
-  //           console.log('Error occured');
-  //           this.inValidMessageData.push('Unable To Connect Server');
-  //           this.showErrorDialogue = true;
-  //         },
-  //         () => {
-  //           const responseData = JSON.parse(filedata.response);
-  //           this.sourceCode = '';
-  //           if (responseData.source) {
-  //             this.sourceCode = responseData.source;
-  //             this.resetFlag();
-  //             this.cdf.detectChanges();
-
-  //             if (responseData.fileType) {
-  //               this.resetFlag();
-  //               if (responseData.fileType == 'html') {
-  //                 this.isHtml = true;
-  //                 return;
-  //               } else if (responseData.fileType == 'json') {
-  //                 this.isJson = true;
-  //                 return;
-  //               } else if (responseData.fileType == 'ts') {
-  //                 this.isTypeScript = true;
-  //                 return;
-  //               } else if (responseData.fileType == 'css') {
-  //                 this.isCss = true;
-  //                 return;
-  //               } else {
-  //                 this.isHtml = true;
-  //               }
-  //             }
-  //           }
-  //         }
-  //       );
-  //     }
-  //   }
-  // }
 
   onBlurCheck(data: any) {
     if (data != null && data.isComponentValid) {
@@ -604,7 +544,6 @@ export class CodeExplorerComponent implements OnInit {
 
   // FLAG USE FOR THE WINDOWS OPEN FOR THE TREE OF COMMIT, COMMITALL, PULL/UPDATE TREE
   onShareBtnDataClick(data: any) {
-    debugger;
     if (data.id === 'showCommitAllWindow') {
       this.syncMappedRepositoryURL();
       this.showCommitAllWindow = true;
