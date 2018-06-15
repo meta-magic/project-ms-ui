@@ -642,11 +642,8 @@ export class CreateProjectComponent implements OnInit {
             this.isValidateForm = true;
             this.asyncFlag = false;
             this.loaderService.hideLoader();
-          } else if (response.errors !== null) {
+          } else {
             this.validationMsgArray.push(response.errorMessage);
-            response.errors.forEach((error: any, index: any) => {
-              this.validationMsgArray.push(response.errors);
-            });
             this.isValidateForm = true;
             this.asyncFlag = false;
             this.loaderService.hideLoader();
@@ -674,14 +671,18 @@ export class CreateProjectComponent implements OnInit {
         instanceresponse = res;
       },
       err => {
-        this.validationMsgArray.push('Unable to connect to server, please try after sometime.');
+        this.validationMsgArray.push(
+          'Unable to connect to server, please try after sometime.'
+        );
         this.isValidateForm = true;
       },
       () => {
         if (instanceresponse.success) {
           this.openProjectUi();
         } else {
-          this.validationMsgArray.push('Unable to connect to server, please try after sometime.');
+          this.validationMsgArray.push(
+            'Unable to connect to server, please try after sometime.'
+          );
           this.isValidateForm = true;
         }
       }
