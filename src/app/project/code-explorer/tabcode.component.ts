@@ -5,6 +5,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 @Component({
   selector: 'tab-code',
   template: `
+  <div *ngIf="!sourceCode" class="loadingnav">
+
+  </div>
   <amexio-label size="'small'">
               <ng-container *ngIf="sourceCode">
                 <ng-container *ngIf="isCss">
