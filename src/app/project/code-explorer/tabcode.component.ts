@@ -7,7 +7,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   template: `
 
   <amexio-label size="'small'">
-           <div *ngIf="!sourceCode || sourceCode=''" class="loadingnav">
+           <div *ngIf="!sourceCode || sourceCode==''" class="loadingnav">
             SAGAR JADHAV
              </div>
               <ng-container *ngIf="sourceCode">
