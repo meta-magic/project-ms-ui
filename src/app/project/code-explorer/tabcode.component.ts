@@ -7,9 +7,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   template: `
 
   <amexio-label size="'small'">
-           <div *ngIf="isLoading" class="loadingnav">
-            SAGAR JADHAV
-             </div>
+    <div *ngIf="!sourceCode || sourceCode==''" class="loadingnav">
+
+     </div>
               <ng-container *ngIf="sourceCode">
                 <ng-container *ngIf="isCss">
                   <prism-block [code]="sourceCode" [language]="'css'"></prism-block>
@@ -35,7 +35,6 @@ export class TabcodeComponent implements OnInit {
   @Input() isCss: boolean;
   @Input() publicIpAddress: any;
   @Input() protocol: any;
-  isLoading: boolean = false;
   constructor(public http: HttpClient) {}
   ngOnInit() {}
 
@@ -43,7 +42,6 @@ export class TabcodeComponent implements OnInit {
     return this.http.post('/api/pipeline/Instance/getHostDetails', {});
   }
   getFileDataBtnClick(data: any, publicIpAddress: any, protocol: any) {
-    this.isLoading = true;
     this.publicIpAddress = publicIpAddress;
     this.protocol = protocol;
     //back end data comes on child click.
@@ -93,7 +91,6 @@ export class TabcodeComponent implements OnInit {
                   this.isHtml = true;
                 }
               }
-              this.isLoading = false;
             }
           }
         );
