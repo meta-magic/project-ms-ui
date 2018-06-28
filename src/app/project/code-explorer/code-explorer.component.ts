@@ -9,6 +9,8 @@ import { RequestOptions } from '@angular/http';
 import { TabcodeComponent } from './tabcode.component';
 import { CookieService } from 'platform-commons';
 import { clearImmediate } from 'timers';
+import { NotificationComponent } from '../notification.component';
+import { NotificationService } from 'platform-commons';
 import { any } from 'codelyzer/util/function';
 @Component({
   selector: 'code-explorer',
@@ -220,9 +222,8 @@ import { any } from 'codelyzer/util/function';
                 </amexio-action>
               </amexio-window>
 
-       <amexio-notification [data]="msgData" [vertical-position]="'top'" [horizontal-position]="'right'" [auto-dismiss-msg]="true"
-[auto-dismiss-msg-interval]="7000">
-</amexio-notification>  
+ <app-notification></app-notification>
+
     <amexio-dialogue [show-dialogue]="showErrorDialogue" (close)="closeDialogue()" [custom]="true"
                      [title]="'Error Message'" [type]="'confirm'">
       <amexio-body>
@@ -297,6 +298,7 @@ export class CodeExplorerComponent implements OnInit {
   constructor(
     public http: HttpClient,
     private cookie: CookieService,
+    public _notificationService: NotificationService,
     public cdf: ChangeDetectorRef,
     private componentFactoryResolver: ComponentFactoryResolver
   ) {
@@ -361,6 +363,25 @@ export class CodeExplorerComponent implements OnInit {
     this.syncMappedRepositoryURL();
   }
 
+  createInvalidCompErrorData() {
+    let errorData: any[] = [];
+    let errorObj: any = {};
+    errorObj['data'] = [];
+    errorObj.data = this.inValidMessageData;
+    errorData.push(errorObj);
+    this._notificationService.showerrorData('Invalid Component', errorData);
+    // console.log('errorObj',errorObj);
+  }
+
+  createErrorData() {
+    let errorData: any[] = [];
+    let errorObj: any = {};
+    errorObj['data'] = [];
+    errorObj.data = this.inValidMessageData;
+    errorData.push(errorObj);
+    this._notificationService.showerrorData('', errorData);
+    // console.log('errorObj',errorObj);
+  }
   /*````````````````````````````````````````````````UNSTAGE DATA TREE OPRATION*/
   getUnstagedClickData(data: any) {
     this.unStageFileSelected = [];
@@ -516,7 +537,7 @@ export class CodeExplorerComponent implements OnInit {
       err => {
         this.inValidMessageData = [];
         this.inValidMessageData.push('Unable To Connect Server');
-        this.showErrorDialogue = true;
+        this.createErrorData();
       },
       () => {
         if (filedata.response) {
@@ -536,9 +557,9 @@ export class CodeExplorerComponent implements OnInit {
   onBlurCheck(data: any) {
     if (data != null && data.isComponentValid) {
     } else {
-      this.inValidMessageData = [];
-      this.showErrorDialogue = true;
-      this.inValidMessageData.push('Repository URL is not valid ,Please check');
+      this.msgData = [];
+      this.msgData.push('Repository URL is not valid ,Please check');
+      this._notificationService.showWarningData(this.msgData);
     }
   }
 
@@ -553,11 +574,12 @@ export class CodeExplorerComponent implements OnInit {
       this.syncMappedRepositoryURL();
       this.showCommitWindow = true;
     } else if (data.id == 'showCommitWindow') {
-      this.inValidMessageData = [];
-      this.inValidMessageData.push(
+      this.msgData = [];
+      this.msgData.push(
         'Repository not found. No repository is mapped to selected project yet'
       );
-      this.showErrorDialogue = true;
+      // this.showErrorDialogue = true;
+      this._notificationService.showWarningData(this.msgData);
     }
 
     if (this.enableCommitAndPullWindow && data.id === 'showPullWindow') {
@@ -565,11 +587,12 @@ export class CodeExplorerComponent implements OnInit {
       this.showPullWindow = true;
       this.sourceCode = '';
     } else if (data.id == 'showPullWindow') {
-      this.inValidMessageData = [];
-      this.inValidMessageData.push(
+      this.msgData = [];
+      this.msgData.push(
         'Repository not found. No repository is mapped to selected project yet'
       );
-      this.showErrorDialogue = true;
+      // this.showErrorDialogue = true;
+      this._notificationService.showWarningData(this.msgData);
     }
   }
   // ON COMMIT CHANGES BUTTON CLICK OPRATION HERE
@@ -577,9 +600,12 @@ export class CodeExplorerComponent implements OnInit {
   //SERVICE CALL HERE FOR THE COMMIT AND COMMIT ALL AND PULL UPDATE
   onCommitAllChangesClick(data: any) {
     this.validateCommitAllForm();
-    if (this.inValidMessageData && this.inValidMessageData.length == 0) {
+    if (this.inValidMessageData && this.inValidMessageData.length >= 1) {
+      this.createInvalidCompErrorData();
+    } else {
       let responseData: any;
       this.asyncFlag = true;
+      this.msgData = [];
       let RequestOptions = {
         repositoryURL: this.commitAllDataClass.repositoryURL,
         username: this.commitAllDataClass.username,
@@ -597,12 +623,13 @@ export class CodeExplorerComponent implements OnInit {
           err => {
             this.inValidMessageData = [];
             this.inValidMessageData.push('Unable To Connect Server');
-            this.showErrorDialogue = true;
+            this.createErrorData();
             this.asyncFlag = false;
           },
           () => {
             if (responseData.success) {
               this.msgData.push(responseData.successMessage);
+              this._notificationService.showSuccessData(this.msgData);
               this.commitAllDataClass = new CommitAllDataClass();
               this.showCommitAllWindow = false;
               this.asyncFlag = false;
@@ -610,7 +637,7 @@ export class CodeExplorerComponent implements OnInit {
 
             if (responseData && responseData.errors) {
               this.inValidMessageData.push(responseData.errors);
-              this.showErrorDialogue = true;
+              this.createErrorData();
               this.asyncFlag = false;
             }
           }
@@ -640,7 +667,7 @@ export class CodeExplorerComponent implements OnInit {
           err => {
             this.inValidMessageData = [];
             this.inValidMessageData.push('Unable To Connect Server');
-            this.showErrorDialogue = true;
+            this.createErrorData();
           },
           () => {
             if (responseData && responseData.errors) {
@@ -653,9 +680,12 @@ export class CodeExplorerComponent implements OnInit {
   //VALIDATION OF PULL WINDOW
   onPullRequestClick(data: any) {
     this.validatePullForm();
-    if (this.inValidMessageData && this.inValidMessageData.length == 0) {
+    if (this.inValidMessageData && this.inValidMessageData.length >= 1) {
+      this.createInvalidCompErrorData();
+    } else {
       let responseData: any;
       this.asyncFlag = true;
+      this.msgData = [];
       this.http
         .post('/api/pipeline/SourceCodeSharing/pull', this.gitPullDataClass)
         .subscribe(
@@ -665,18 +695,19 @@ export class CodeExplorerComponent implements OnInit {
           err => {
             this.inValidMessageData = [];
             this.inValidMessageData.push('Unable To Connect Server');
-            this.showErrorDialogue = true;
+            this.createErrorData();
             this.asyncFlag = false;
           },
           () => {
             if (responseData && responseData.errors) {
               this.inValidMessageData.push(responseData.errorMessage);
-              this.showErrorDialogue = true;
+              this.createErrorData();
               this.asyncFlag = false;
             } else if (responseData.success) {
               this.gitPullDataClass = new GitPullDataClass();
               this.showPullWindow = false;
               this.msgData.push(responseData.successMessage);
+              this._notificationService.showSuccessData(this.msgData);
               this.asyncFlag = false;
             }
           }
@@ -760,9 +791,6 @@ export class CodeExplorerComponent implements OnInit {
 
   // CLOSE DIALOGUE BOX
   closeDialogue() {
-    this.showErrorDialogue = false;
-  }
-  closeDialogueBox() {
     this.showErrorDialogue = false;
   }
 

@@ -2,8 +2,10 @@ import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from 'platform-commons';
 import { CookieService } from 'platform-commons';
+import { NotificationService } from 'platform-commons';
 import { MessagingService } from 'platform-commons';
 import { LoaderService } from 'platform-commons';
+import { NotificationComponent } from '../notification.component';
 import { Router, ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'project-create',
@@ -239,39 +241,7 @@ import { Router, ActivatedRoute } from '@angular/router';
                [type]="'confirm'"
                (actionStatus)="checkStatus($event)">
 </amexio-dialogue>
-   <amexio-notification
-   [data]="msgData"
-   [vertical-position]="'top'"
-   [horizontal-position]="'right'"
-   [auto-dismiss-msg]="true"
-   [auto-dismiss-msg-interval]="7000">
-</amexio-notification>
-<amexio-dialogue [show-dialogue]="warningdialogue"
-               [message-type]="'warning'"
-               [closable]="true"
-               [custom]="true" (close)="warningdialogue = !warningdialogue"
-               [type]="'alert'">
-               <amexio-body>
-    <ol>
-        <li *ngFor="let msgObjone of WarningMsgArray let index=index">{{msgObjone}}</li>
-    </ol>
-</amexio-body>
-<amexio-action>
-    <amexio-button type="primary" (onClick)="okWarningBtnClick()" [label]="'Ok'">
-    </amexio-button>
-</amexio-action>
-</amexio-dialogue>
-<amexio-dialogue [show-dialogue]="isValidateForm" [message-type]="'error'" [closable]="true" [title]="'Error'" [type]="'alert'" [custom]="true" (close)="isValidateForm = !isValidateForm">
-<amexio-body>
-    <ol>
-        <li *ngFor="let msgObj of validationMsgArray let index=index">{{msgObj}}</li>
-    </ol>
-</amexio-body>
-<amexio-action>
-    <amexio-button type="primary" (onClick)="okErrorBtnClick()" [label]="'Ok'">
-    </amexio-button>
-</amexio-action>
-</amexio-dialogue>
+<app-notification></app-notification>
 </amexio-row>
 
   `
@@ -284,7 +254,7 @@ export class CreateProjectComponent implements OnInit {
   msgData: any = [];
   // projectUUID: string;
   validationMsgArray: any = [];
-  isValidateForm: boolean = false;
+  // isValidateForm: boolean = false;
   portDisableFlag: boolean = true;
   themes: any;
   amexioThemes: any;
@@ -306,9 +276,6 @@ export class CreateProjectComponent implements OnInit {
   confirmdialogue: boolean;
   showerrorFlag: boolean = false;
   tabdisabledFlag: boolean = true;
-
-  WarningMsgArray: any = [];
-  warningdialogue: boolean = false;
   themeID: any;
   radiogroupData: any;
   showThemeFlag: boolean = true;
@@ -319,6 +286,7 @@ export class CreateProjectComponent implements OnInit {
     private cookieService: CookieService,
     public loaderService: LoaderService,
     private msgService: MessagingService,
+    public _notificationService: NotificationService,
     private route: ActivatedRoute,
     private _route: Router,
     private _cdf: ChangeDetectorRef
@@ -370,6 +338,7 @@ export class CreateProjectComponent implements OnInit {
 
   //GET PROJECT LIST OF LOGGED IN USER
   getProjectList() {
+    this.validationMsgArray = [];
     let projectDataList: any;
 
     this.http.get('/api/project/project/findByProjectOwner').subscribe(
@@ -378,14 +347,15 @@ export class CreateProjectComponent implements OnInit {
       },
       error => {
         this.validationMsgArray.push('Unable to connect to server');
-        this.isValidateForm = true;
+        this.createErrorData();
       },
       () => {
         if (projectDataList.success) {
           this.projectList = projectDataList;
         } else {
           this.validationMsgArray.push(projectDataList.errorMessage);
-          this.isValidateForm = true;
+          // this.isValidateForm = true;
+          this.createErrorData();
         }
       }
     );
@@ -410,13 +380,15 @@ export class CreateProjectComponent implements OnInit {
   onBlurCheck(rUrl: any) {
     if (rUrl != null && rUrl.isComponentValid) {
     } else {
-      this.validationMsgArray = [];
-      this.validationMsgArray.push('Repository URL is not valid ,Please check');
-      this.isValidateForm = true;
+      this.msgData = [];
+      this.msgData.push('Repository URL is not valid ,Please check');
+      // this.isValidateForm = true;
+      this._notificationService.showWarningData(this.msgData);
     }
   }
   //GET PROJECT DETAILS OF SELECTED PROJECT IN READ ONLY FORM
   onProjectSelect(event: any) {
+    this.validationMsgArray = [];
     let selectProject: any;
     this.themeID = '';
     this.showThemeFlag = false;
@@ -430,7 +402,8 @@ export class CreateProjectComponent implements OnInit {
         },
         err => {
           this.validationMsgArray.push('Unable to connect to server');
-          this.isValidateForm = true;
+          // this.isValidateForm = true;
+          this.createErrorData();
         },
         () => {
           if (selectProject.success) {
@@ -461,7 +434,8 @@ export class CreateProjectComponent implements OnInit {
             this.sourcetabFlag = false;
           } else {
             this.validationMsgArray.push(selectProject.errorMessage);
-            this.isValidateForm = true;
+            // this.isValidateForm = true;
+            this.createErrorData();
           }
         }
       );
@@ -478,20 +452,31 @@ export class CreateProjectComponent implements OnInit {
   }
 
   //To close Window
-  okErrorBtnClick() {
-    this.isValidateForm = false;
-    this.validationMsgArray = [];
-  }
-
-  //To close window
-  okWarningBtnClick() {
-    this.warningdialogue = false;
-    this.WarningMsgArray = [];
-  }
+  // okErrorBtnClick() {
+  //   this.isValidateForm = false;
+  //   this.validationMsgArray = [];
+  // }
 
   //Reset Project Data
   cancelProject() {
     this.projectCreationModel = new ProjectCreationModel();
+  }
+  createInvalidCompErrorData() {
+    let errorData: any[] = [];
+    let errorObj: any = {};
+    errorObj['data'] = [];
+    errorObj.data = this.validationMsgArray;
+    errorData.push(errorObj);
+    this._notificationService.showerrorData('Invalid Component', errorData);
+  }
+
+  createErrorData() {
+    let errorData: any[] = [];
+    let errorObj: any = {};
+    errorObj['data'] = [];
+    errorObj.data = this.validationMsgArray;
+    errorData.push(errorObj);
+    this._notificationService.showerrorData('', errorData);
   }
   onNextClick(projform: any) {
     let isValid: boolean = false;
@@ -509,10 +494,11 @@ export class CreateProjectComponent implements OnInit {
       }
     });
     if (this.validationMsgArray && this.validationMsgArray.length >= 1) {
-      this.isValidateForm = true;
-      return;
+      // this.isValidateForm = true;
+      // return;
+      this.createInvalidCompErrorData();
     } else {
-      this.isValidateForm = false;
+      // this.isValidateForm = false;
       this.projecttabFlag = false;
       this.sourcetabFlag = true;
       this.tabdisabledFlag = false;
@@ -526,6 +512,8 @@ export class CreateProjectComponent implements OnInit {
   onUpdate() {
     let response: any;
     this.asyncFlag = true;
+    this.validationMsgArray = [];
+    this.msgData = [];
     const requestJson = {
       projectUUID: this.projectId,
       themeUUID: this.projectCreationModel.themeUUID
@@ -536,7 +524,8 @@ export class CreateProjectComponent implements OnInit {
       },
       err => {
         this.validationMsgArray.push('Unable to connect to server');
-        this.isValidateForm = true;
+        // this.isValidateForm = true;
+        this.createErrorData();
         this.asyncFlag = false;
       },
       () => {
@@ -545,14 +534,17 @@ export class CreateProjectComponent implements OnInit {
           this.themeID = this.projectCreationModel.themeUUID;
           this.uiCreatedEvent({ ui_created: true });
           this.msgData.push(response.successMessage);
+          this._notificationService.showSuccessData(this.msgData);
         } else {
           if (response.errorMessage == null) {
             this.validationMsgArray.push(response.errors);
-            this.isValidateForm = true;
+            // this.isValidateForm = true;
+            this.createErrorData();
             this.asyncFlag = false;
           } else {
             this.validationMsgArray.push(response.errorMessage);
-            this.isValidateForm = true;
+            // this.isValidateForm = true;
+            this.createErrorData();
             this.asyncFlag = false;
           }
         }
@@ -587,10 +579,11 @@ export class CreateProjectComponent implements OnInit {
       }
     });
     if (this.validationMsgArray && this.validationMsgArray.length >= 1) {
-      this.isValidateForm = true;
+      // this.isValidateForm = true;
+      this.createInvalidCompErrorData();
       return;
     } else {
-      this.isValidateForm = false;
+      // this.isValidateForm = false;
       this.saveProjectCreation();
     }
   }
@@ -599,6 +592,8 @@ export class CreateProjectComponent implements OnInit {
   saveProjectCreation() {
     let response: any;
     this.asyncFlag = true;
+    this.msgData = [];
+    this.validationMsgArray = [];
     this.loaderService.showLoader();
     const requestJson = {
       projectName: this.projectCreationModel.projectName,
@@ -615,7 +610,8 @@ export class CreateProjectComponent implements OnInit {
       },
       err => {
         this.validationMsgArray.push('Unable to connect to server');
-        this.isValidateForm = true;
+        // this.isValidateForm = true;
+        this.createErrorData();
         this.asyncFlag = false;
         this.loaderService.hideLoader();
       },
@@ -626,6 +622,7 @@ export class CreateProjectComponent implements OnInit {
           this.cookieService.set('tokenid', this.newTokenid);
           this.asyncFlag = false;
           this.msgData.push(response.successMessage);
+          this._notificationService.showSuccessData(this.msgData);
           this.loaderService.hideLoader();
           this.clearData();
           this.getProjectList();
@@ -635,19 +632,19 @@ export class CreateProjectComponent implements OnInit {
           });
           this.showtask();
         } else {
-          if (response.errorMessage == null) {
-            response.errors.forEach((error: any, index: any) => {
-              this.validationMsgArray.push(response.errors);
-            });
-            this.isValidateForm = true;
-            this.asyncFlag = false;
-            this.loaderService.hideLoader();
-          } else {
-            this.validationMsgArray.push(response.errorMessage);
-            this.isValidateForm = true;
-            this.asyncFlag = false;
-            this.loaderService.hideLoader();
-          }
+          this.validationMsgArray.push(response.errorMessage);
+          this.createErrorData();
+          // if (response.errors !== null || response.errors!==[])  {
+          //             console.log('abc3');
+
+          //  response.errors.forEach((error: any, index: any) => {
+          //     this.validationMsgArray.push(response.errors);
+          //   });
+          //   this.isValidateForm = true;
+          //    this.createErrorData();
+          // }
+          this.asyncFlag = false;
+          this.loaderService.hideLoader();
         }
       }
     );
@@ -674,7 +671,8 @@ export class CreateProjectComponent implements OnInit {
         this.validationMsgArray.push(
           'Unable to connect to server, please try after sometime.'
         );
-        this.isValidateForm = true;
+        // this.isValidateForm = true;
+        this.createErrorData();
       },
       () => {
         if (instanceresponse.success) {
@@ -683,7 +681,8 @@ export class CreateProjectComponent implements OnInit {
           this.validationMsgArray.push(
             'Unable to connect to server, please try after sometime.'
           );
-          this.isValidateForm = true;
+          // this.isValidateForm = true;
+          this.createErrorData();
         }
       }
     );
@@ -711,6 +710,7 @@ export class CreateProjectComponent implements OnInit {
           this.iterateData(this.themes);
         } else if (!response.success && response.errors) {
           this.validationMsgArray.push(response.errorMessage);
+          this.createErrorData();
         }
       }
     );

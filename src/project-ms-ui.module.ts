@@ -8,6 +8,7 @@ import {
 } from 'amexio-ng-extensions';
 import { RouterModule, Routes } from '@angular/router';
 import { CreateProjectComponent } from './app/project/create/createproject.component';
+import { NotificationComponent } from './app/project/notification.component';
 import { ProjectAppComponent } from './app/project/list/projectapp.component';
 import { CodeExplorerComponent } from './app/project/code-explorer/code-explorer.component';
 import { TabcodeComponent } from './app/project/code-explorer/tabcode.component';
@@ -45,12 +46,14 @@ const routes: Routes = [
   declarations: [
     CreateProjectComponent,
     ProjectAppComponent,
+    NotificationComponent,
     TabcodeComponent,
     CodeExplorerComponent
   ],
   exports: [
     RouterModule,
     CreateProjectComponent,
+    NotificationComponent,
     CodeExplorerComponent,
     ProjectAppComponent
   ]
