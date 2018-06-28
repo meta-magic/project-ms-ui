@@ -723,28 +723,28 @@ export class CodeExplorerComponent implements OnInit {
       this.commitAllDataClass.repositoryURL == null
     ) {
       this.inValidMessageData.push('Repository url should not  empty');
-      this.showErrorDialogue = true;
+      // this.showErrorDialogue = true;
     }
     if (
       this.commitAllDataClass.username == '' ||
       this.commitAllDataClass.username == null
     ) {
       this.inValidMessageData.push('User name can not blank');
-      this.showErrorDialogue = true;
+      // this.showErrorDialogue = true;
     }
     if (
       this.commitAllDataClass.password == '' ||
       this.commitAllDataClass.password == null
     ) {
       this.inValidMessageData.push('Password can not empty');
-      this.showErrorDialogue = true;
+      // this.showErrorDialogue = true;
     }
     if (
       this.commitAllDataClass.commitMessage == '' ||
       this.commitAllDataClass.commitMessage == null
     ) {
       this.inValidMessageData.push('Commit message can not blank');
-      this.showErrorDialogue = true;
+      // this.showErrorDialogue = true;
     }
   }
   validateCommitForm() {
@@ -754,21 +754,21 @@ export class CodeExplorerComponent implements OnInit {
       this.gitCommitDataClass.username == null
     ) {
       this.inValidMessageData.push('User name can not blank');
-      this.showErrorDialogue = true;
+      // this.showErrorDialogue = true;
     }
     if (
       this.gitCommitDataClass.password == '' ||
       this.gitCommitDataClass.password == null
     ) {
       this.inValidMessageData.push('Password can not empty');
-      this.showErrorDialogue = true;
+      // this.showErrorDialogue = true;
     }
     if (
       this.gitCommitDataClass.commitMessage == '' ||
       this.gitCommitDataClass.commitMessage == null
     ) {
       this.inValidMessageData.push('Commit message can not blank');
-      this.showErrorDialogue = true;
+      // this.showErrorDialogue = true;
     }
   }
   validatePullForm() {
@@ -778,14 +778,14 @@ export class CodeExplorerComponent implements OnInit {
       this.gitPullDataClass.username == null
     ) {
       this.inValidMessageData.push('User name can not blank');
-      this.showErrorDialogue = true;
+      // this.showErrorDialogue = true;
     }
     if (
       this.gitPullDataClass.password == '' ||
       this.gitPullDataClass.password == null
     ) {
       this.inValidMessageData.push('Password can not empty');
-      this.showErrorDialogue = true;
+      // this.showErrorDialogue = true;
     }
   }
 
