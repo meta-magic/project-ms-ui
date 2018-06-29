@@ -17,16 +17,18 @@ import { any } from 'codelyzer/util/function';
   //language=Angular2HTML
   template: `
     <amexio-row>
-      <amexio-column [size]="3">
+      <amexio-column [size]="4">
         <amexio-card [header]="false" [footer]="false" [show]="true" [header-align]="'center'" [body-height]="74"
                      [footer-align]="'right'">
       
           <amexio-body>
-          <amexio-tab-view [body-height]="70">
+          <amexio-tab-view [action]="true" [body-height]="70">
+           <amexio-tab-action>
+                 <amexio-image style="cursor:pointer;" [icon-class]="'fa fa-refresh fa-lg'" [tooltip]="'Refresh'" (onClick)="onRefreshClick()"></amexio-image>
+    </amexio-tab-action>
                      <amexio-tab title="Source Code" [active]="true" [icon]="'fa fa-file-o'">
              <ng-container *ngIf="fileStructuredata">
-              <amexio-treeview [data]="fileStructuredata" (nodeClick)="addTab(sourcetab,$event)"
-                               [data-reader]="'children'"></amexio-treeview>
+              <amexio-treeview [data]="fileStructuredata" (nodeClick)="addTab(sourcetab,$event)"></amexio-treeview>
             </ng-container>
             </amexio-tab>
              <amexio-tab title="Git" [active]="false" [icon]="'fa fa-github'">
@@ -42,7 +44,7 @@ import { any } from 'codelyzer/util/function';
           </amexio-body>
         </amexio-card>
       </amexio-column>
-      <amexio-column [size]="9">
+      <amexio-column [size]="8">
         <amexio-card [body-height]="74" [header]="false" [footer]="false" [show]="true" [header-align]="'left'">
       
         <amexio-body>
@@ -273,7 +275,7 @@ export class CodeExplorerComponent implements OnInit {
   // unableToConnectDialogue: boolean = false;
 
   File: any;
-  fileStructuredata: any;
+  fileStructuredata: any = [];
   publicIpAddress: any;
   sourceCode: any;
   protocol: any;
@@ -342,6 +344,10 @@ export class CodeExplorerComponent implements OnInit {
       }
     ];
 
+    this.gethostdeatils();
+    this.syncMappedRepositoryURL();
+  }
+  gethostdeatils() {
     let responsedata: any;
     this.http.post('/api/pipeline/Instance/getHostDetails', {}).subscribe(
       response => {
@@ -359,10 +365,7 @@ export class CodeExplorerComponent implements OnInit {
         }
       }
     );
-
-    this.syncMappedRepositoryURL();
   }
-
   createInvalidCompErrorData() {
     let errorData: any[] = [];
     let errorObj: any = {};
@@ -370,7 +373,6 @@ export class CodeExplorerComponent implements OnInit {
     errorObj.data = this.inValidMessageData;
     errorData.push(errorObj);
     this._notificationService.showerrorData('Invalid Component', errorData);
-    // console.log('errorObj',errorObj);
   }
 
   createErrorData() {
@@ -380,7 +382,6 @@ export class CodeExplorerComponent implements OnInit {
     errorObj.data = this.inValidMessageData;
     errorData.push(errorObj);
     this._notificationService.showerrorData('', errorData);
-    // console.log('errorObj',errorObj);
   }
   /*````````````````````````````````````````````````UNSTAGE DATA TREE OPRATION*/
   getUnstagedClickData(data: any) {
@@ -508,6 +509,10 @@ export class CodeExplorerComponent implements OnInit {
       }
     }
   }
+  //Reload the source code
+  onRefreshClick() {
+    this.getSourceCodeTreeData();
+  }
 
   //Method to get Source Code FROM BACKEND AND USE FOR THE TREE STRUCTURE DATA DISPLAY
   getSourceCodeTreeData() {
@@ -543,12 +548,7 @@ export class CodeExplorerComponent implements OnInit {
         if (filedata.response) {
           let responsedata: any;
           responsedata = JSON.parse(filedata.response);
-          let stringData = {
-            children: responsedata.children
-          };
-          // this.fileStructuredata = null;
-          // this.fileDataFromBack = true;
-          this.fileStructuredata = stringData;
+          this.fileStructuredata = responsedata.children;
         }
       }
     );
