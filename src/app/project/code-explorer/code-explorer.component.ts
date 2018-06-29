@@ -17,7 +17,7 @@ import { any } from 'codelyzer/util/function';
   //language=Angular2HTML
   template: `
     <amexio-row>
-      <amexio-column [size]="4">
+      <amexio-column [size]="3">
         <amexio-card [header]="false" [footer]="false" [show]="true" [header-align]="'center'" [body-height]="74"
                      [footer-align]="'right'">
       
@@ -44,7 +44,7 @@ import { any } from 'codelyzer/util/function';
           </amexio-body>
         </amexio-card>
       </amexio-column>
-      <amexio-column [size]="8">
+      <amexio-column [size]="9">
         <amexio-card [body-height]="74" [header]="false" [footer]="false" [show]="true" [header-align]="'left'">
       
         <amexio-body>
