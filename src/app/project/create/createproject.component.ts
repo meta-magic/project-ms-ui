@@ -476,7 +476,7 @@ export class CreateProjectComponent implements OnInit {
     errorObj['data'] = [];
     errorObj.data = this.validationMsgArray;
     errorData.push(errorObj);
-    this._notificationService.showerrorData('', errorData);
+    this._notificationService.showerrorData('Error Message', errorData);
   }
   onNextClick(projform: any) {
     let isValid: boolean = false;

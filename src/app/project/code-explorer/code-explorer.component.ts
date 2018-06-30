@@ -381,7 +381,7 @@ export class CodeExplorerComponent implements OnInit {
     errorObj['data'] = [];
     errorObj.data = this.inValidMessageData;
     errorData.push(errorObj);
-    this._notificationService.showerrorData('', errorData);
+    this._notificationService.showerrorData('Error Message', errorData);
   }
   /*````````````````````````````````````````````````UNSTAGE DATA TREE OPRATION*/
   getUnstagedClickData(data: any) {
