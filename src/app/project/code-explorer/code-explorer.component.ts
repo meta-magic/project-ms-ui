@@ -18,7 +18,7 @@ import { any } from 'codelyzer/util/function';
   template: `
     <amexio-row>
       <amexio-column [size]="3">
-        <amexio-card [header]="false" [footer]="false" [show]="true" [header-align]="'center'" [body-height]="74"
+        <amexio-card [header]="false" [footer]="false" [show]="true" [header-align]="'center'" [body-height]="82"
                      [footer-align]="'right'">
       
           <amexio-body>
@@ -27,9 +27,7 @@ import { any } from 'codelyzer/util/function';
                  <amexio-image style="cursor:pointer;" [icon-class]="'fa fa-refresh fa-lg'" [tooltip]="'Refresh'" (onClick)="onRefreshClick()"></amexio-image>
     </amexio-tab-action>
                      <amexio-tab title="Source Code" [active]="true" [icon]="'fa fa-file-o'">
-             <ng-container *ngIf="fileStructuredata">
               <amexio-treeview [data]="fileStructuredata" (nodeClick)="addTab(sourcetab,$event)"></amexio-treeview>
-            </ng-container>
             </amexio-tab>
              <amexio-tab title="Git" [active]="false" [icon]="'fa fa-github'">
               <amexio-row>
@@ -45,7 +43,7 @@ import { any } from 'codelyzer/util/function';
         </amexio-card>
       </amexio-column>
       <amexio-column [size]="9">
-        <amexio-card [body-height]="74" [header]="false" [footer]="false" [show]="true" [header-align]="'left'">
+        <amexio-card [body-height]="82" [header]="false" [footer]="false" [show]="true" [header-align]="'left'">
       
         <amexio-body>
           
@@ -482,6 +480,12 @@ export class CodeExplorerComponent implements OnInit {
     //this.unableToConnectDialogue = true;
   }
   //Add Tab
+  checkActiveTab(sourcetab: any, data: any) {
+    let title = data.data.node.text;
+    if (!sourcetab.setActiveTab(data.data.node.text)) {
+      let cmp = sourcetab.addDynamicTab(title, 'black', true, TabcodeComponent);
+    }
+  }
   addTab(sourcetab: any, data: any) {
     if (!data.children) {
       this.tabcount++;
