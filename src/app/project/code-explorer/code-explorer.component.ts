@@ -18,11 +18,11 @@ import { any } from 'codelyzer/util/function';
   template: `
     <amexio-row>
       <amexio-column [size]="3">
-        <amexio-card [header]="false" [footer]="false" [show]="true" [header-align]="'center'" [body-height]="82"
+        <amexio-card [header]="false" [footer]="false" [show]="true" [header-align]="'center'" [body-height]="80"
                      [footer-align]="'right'">
-      
+
           <amexio-body>
-          <amexio-tab-view [action]="true" [body-height]="70">
+          <amexio-tab-view [action]="true" [body-height]="80">
            <amexio-tab-action>
                  <amexio-image style="cursor:pointer;" [icon-class]="'fa fa-refresh fa-lg'" [tooltip]="'Refresh'" (onClick)="onRefreshClick()"></amexio-image>
     </amexio-tab-action>
@@ -36,22 +36,22 @@ import { any } from 'codelyzer/util/function';
                                    (nodeClick)=" onShareBtnDataClick($event) "></amexio-treeview>
                 </amexio-column>
               </amexio-row>
-          
+
              </amexio-tab>
              </amexio-tab-view>
           </amexio-body>
         </amexio-card>
       </amexio-column>
       <amexio-column [size]="9">
-        <amexio-card [body-height]="82" [header]="false" [footer]="false" [show]="true" [header-align]="'left'">
-      
+        <amexio-card [body-height]="80" [header]="false" [footer]="false" [show]="true" [header-align]="'left'">
+
         <amexio-body>
-          
-              <amexio-tab-view #sourcetab [closable]="true" [tab-position]="'top'" [header-align]="'left'" [body-height]="70">
+
+              <amexio-tab-view #sourcetab [closable]="true" [tab-position]="'top'" [header-align]="'left'" [body-height]="80">
 </amexio-tab-view>
           </amexio-body>
         </amexio-card>
-       
+
       </amexio-column>
         <amexio-window [show-window]="showCommitAllWindow" (close)="closeCommitAllWindow()" type="window"
                              [closable]="true" [footer]="true">
@@ -123,7 +123,7 @@ import { any } from 'codelyzer/util/function';
                         <amexio-body>
                           <amexio-row>
                             <amexio-column size="12">
-                            
+
                               <amexio-treeview [enable-checkbox]="true" [data]="unstagedTreeData"
                                                (onTreeNodeChecked)="getUnstagedClickData($event)"></amexio-treeview>
                             </amexio-column>
@@ -217,7 +217,7 @@ import { any } from 'codelyzer/util/function';
                 <amexio-action>
                   <amexio-button (onClick)="closePullWindow()" label="Cancel" type="white"
                                  [icon]="'fa fa-remove'"></amexio-button>
-                  <amexio-button label="Ok" type="green" [icon]="'fa fa fa-hand-o-right'" 
+                  <amexio-button label="Ok" type="green" [icon]="'fa fa fa-hand-o-right'"
                                  (onClick)="onPullRequestClick($event)"></amexio-button>
                 </amexio-action>
               </amexio-window>
@@ -234,7 +234,7 @@ import { any } from 'codelyzer/util/function';
       <amexio-action>
         <amexio-button type="primary" (onClick)="closeDialogue()" [label]="'Ok'"></amexio-button>
       </amexio-action>
-    </amexio-dialogue> 
+    </amexio-dialogue>
     </amexio-row>
     <!--<amexio-floating-button [position-top]="'30px'" [position-left]="'40px'" [label]="'top-left'" [icon]="'fa fa-snowflake-o'"></amexio-floating-button>-->
           `,
