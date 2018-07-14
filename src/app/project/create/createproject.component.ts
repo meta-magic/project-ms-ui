@@ -40,7 +40,7 @@ import { Router, ActivatedRoute } from '@angular/router';
   <amexio-column [size]="9">
   <ng-container *ngIf="showCard">
    <div class="loadingnav" *ngIf="loaderService.isLoading"></div>
- <amexio-form #projform [form-name]="'validateForm'" [header]="true" [show-error]="false" [footer-align]="'right'">
+ <amexio-form #projform [form-name]="'validateForm'"  [body-height]="80" [header]="true" [show-error]="false" [footer-align]="'right'">
 
     <amexio-form-header>
              Project Creation
