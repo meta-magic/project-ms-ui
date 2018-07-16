@@ -392,6 +392,7 @@ export class CreateProjectComponent implements OnInit {
     let selectProject: any;
     this.themeID = '';
     this.showThemeFlag = false;
+    this.loaderService.showLoader();
     // this.projectCreationModel = new ProjectCreationModel();
     const projectUUID = event.projectUUID;
     this.http
@@ -401,6 +402,7 @@ export class CreateProjectComponent implements OnInit {
           selectProject = response;
         },
         err => {
+          this.loaderService.hideLoader();
           this.validationMsgArray.push('Unable to connect to server');
           // this.isValidateForm = true;
           this.createErrorData();
@@ -418,6 +420,7 @@ export class CreateProjectComponent implements OnInit {
             this.themeID = selectProject.response.themeUUID;
             this.showThemeFlag = true;
             this.serverPort = selectProject.response.serverPort;
+            this.loaderService.hideLoader();
             this.portDisableFlag = false;
             this.newTokenid = selectProject.response.newtokenId;
             this.cookieService.set('tokenid', this.newTokenid);
@@ -433,6 +436,7 @@ export class CreateProjectComponent implements OnInit {
             this.projecttabFlag = true;
             this.sourcetabFlag = false;
           } else {
+            this.loaderService.hideLoader();
             this.validationMsgArray.push(selectProject.errorMessage);
             // this.isValidateForm = true;
             this.createErrorData();
