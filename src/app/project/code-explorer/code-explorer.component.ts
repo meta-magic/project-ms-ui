@@ -27,7 +27,7 @@ import { any } from 'codelyzer/util/function';
                  <amexio-image style="cursor:pointer;" [icon-class]="'fa fa-refresh fa-lg'" [tooltip]="'Refresh'" (onClick)="onRefreshClick()"></amexio-image>
     </amexio-tab-action>
                      <amexio-tab title="Source Code" [active]="true" [icon]="'fa fa-file-o'">
-              <amexio-treeview [data]="fileStructuredata" (nodeClick)="addTab(sourcetab,$event)"></amexio-treeview>
+              <amexio-treeview [data-reader]="'children'" [data]="fileStructuredata" (nodeClick)="addTab(sourcetab,$event)"></amexio-treeview>
             </amexio-tab>
              <amexio-tab title="Git" [active]="false" [icon]="'fa fa-github'">
               <amexio-row>
@@ -273,7 +273,7 @@ export class CodeExplorerComponent implements OnInit {
   // unableToConnectDialogue: boolean = false;
 
   File: any;
-  fileStructuredata: any = [];
+  fileStructuredata: any;
   publicIpAddress: any;
   sourceCode: any;
   protocol: any;
@@ -552,6 +552,9 @@ export class CodeExplorerComponent implements OnInit {
         if (filedata.response) {
           let responsedata: any;
           responsedata = JSON.parse(filedata.response);
+          this.fileStructuredata = {
+            children: []
+          };
           this.fileStructuredata = responsedata.children;
         }
       }
