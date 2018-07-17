@@ -13,7 +13,7 @@ import { Router, ActivatedRoute } from '@angular/router';
   <amexio-row>
     <amexio-column [size]="3">
    <amexio-card  [header]="false" [footer-align]="'right'"  [body-height]="80">
-    <amexio-card-body [padding]="'0px'">
+    <amexio-body [padding]="'0px'">
      <amexio-listbox [enable-checkbox]="false"
                 [header]="'Projects'"
                 [search-placeholder]="'Search'"
@@ -24,8 +24,8 @@ import { Router, ActivatedRoute } from '@angular/router';
                 [border]="'none'"
                 (onRowClick)="onProjectSelect($event)">
 </amexio-listbox>
-</amexio-card-body>
-<amexio-card-action>
+</amexio-body>
+<amexio-action>
  <amexio-button
     [label]="'New'"
     [type]="'secondary'"
@@ -34,7 +34,7 @@ import { Router, ActivatedRoute } from '@angular/router';
     [icon]="'fa fa-plus fa-lg'"
     (onClick)="findInstance()">
     </amexio-button>
-</amexio-card-action>
+</amexio-action>
 </amexio-card>
     </amexio-column>
   <amexio-column [size]="9">
