@@ -12,7 +12,7 @@ import { Router, ActivatedRoute } from '@angular/router';
   template: `
   <amexio-row>
     <amexio-column [size]="3">
-   <amexio-card  [header]="false" [footer-align]="'right'"  [body-height]="80">
+   <amexio-card  [header]="false" [footer]="true" [footer-align]="'right'"  [body-height]="80">
     <amexio-body [padding]="'0px'">
      <amexio-listbox [enable-checkbox]="false"
                 [header]="'Projects'"
