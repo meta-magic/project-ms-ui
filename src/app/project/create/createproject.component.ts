@@ -12,8 +12,8 @@ import { Router, ActivatedRoute } from '@angular/router';
   template: `
   <amexio-row>
     <amexio-column [size]="3">
-   <amexio-form  [header]="false" [show-error]="false" [footer-align]="'right'"  [body-height]="80">
-    <amexio-form-body [padding]="'0px'">
+   <amexio-card  [header]="false" [footer-align]="'right'"  [body-height]="80">
+    <amexio-card-body [padding]="'0px'">
      <amexio-listbox [enable-checkbox]="false"
                 [header]="'Projects'"
                 [search-placeholder]="'Search'"
@@ -24,8 +24,8 @@ import { Router, ActivatedRoute } from '@angular/router';
                 [border]="'none'"
                 (onRowClick)="onProjectSelect($event)">
 </amexio-listbox>
-</amexio-form-body>
-<amexio-form-action>
+</amexio-card-body>
+<amexio-card-action>
  <amexio-button
     [label]="'New'"
     [type]="'secondary'"
@@ -34,8 +34,8 @@ import { Router, ActivatedRoute } from '@angular/router';
     [icon]="'fa fa-plus fa-lg'"
     (onClick)="findInstance()">
     </amexio-button>
-</amexio-form-action>
-</amexio-form>
+</amexio-card-action>
+</amexio-card>
     </amexio-column>
   <amexio-column [size]="9">
   <ng-container *ngIf="showCard">
