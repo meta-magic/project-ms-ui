@@ -40,14 +40,12 @@ import { Router, ActivatedRoute } from '@angular/router';
   <amexio-column [size]="9">
   <ng-container *ngIf="showCard">
    <div class="loadingnav" *ngIf="loaderService.isLoading"></div>
- <amexio-form #projform [form-name]="'validateForm'"  [body-height]="80" [header]="true" [show-error]="false" [footer-align]="'right'">
+ <amexio-form [form-name]="'validateForm'"  [body-height]="80" [header]="true" [show-error]="true" [footer-align]="'right'">
 
     <amexio-form-header>
              Project Creation
     </amexio-form-header>
 <amexio-form-body>
-                     <amexio-tab-view [closable]="false" (onClick)="onTabClick($event)"  [body-height]="55">
-                          <amexio-tab title="Project Configuration" [active]="projecttabFlag">
                            <amexio-row>
         <amexio-column [size]="6">
           <amexio-text-input  [(ngModel)]="projectCreationModel.projectName" [field-label]="'Name'" name ="projectCreationModel.projectName"
@@ -112,61 +110,7 @@ import { Router, ActivatedRoute } from '@angular/router';
                 </div>
   </amexio-column>
             </amexio-row>
-         </amexio-tab>
-<amexio-tab title="Source Code Configuration" [active]="sourcetabFlag" [disabled] = "tabdisabledFlag">
-<amexio-row>
-<amexio-column [size]="6">
- <amexio-radio-group
-           [field-label]="'Git Repository Type'"
-            [allow-blank]="false"
-           name="projectCreationModel.respositoryTypeId"
-           [display-field]="'respositoryType'"
-           [value-field]="'respositoryTypeId'"
-           [horizontal]="true"
-           [data-reader]="'response.data'"
-           [data]="respositoryTypeData"
-           [disabled]="disblefields"
-           [default-value]="projectCreationModel.respositoryTypeId"
-           >
-        </amexio-radio-group>
-</amexio-column>
-<amexio-column [size]="6">
- <amexio-text-input #rUrl [(ngModel)]="projectCreationModel.repositoryURL" [field-label]="'Git Repository URL'" name ="projectCreationModel.repositoryURL"
-                            [place-holder]="'https://github.com/meta-magic/demoapp.git'"
-                            [enable-popover]="true"
-                            (onBlur)="onBlurCheck(rUrl)"
-                            [pattern]="'/((http|https):\/\/)?[A-Za-z0-9\.-]{3,}\.[A-Za-z]{2}/'"
-                            [allow-blank]="false"
-                            error-msg="Please Enter Repository URL"
-                            [icon-feedback]="true">
-          </amexio-text-input>
-</amexio-column>
-<amexio-column [size]="6">
- <amexio-text-input [(ngModel)]="projectCreationModel.repositoryUsername" [field-label]="'User name or email address'" name ="projectCreationModel.repositoryUsername"
-                            [place-holder]="'Enter GitHub user name or email address'"
-                            [enable-popover]="true"
-                            [allow-blank]="false"
-                            error-msg="Please enter User name"
-                            [icon-feedback]="true"
-                            [disabled]="disbleUserFlag">
- </amexio-text-input>
-</amexio-column>
-<amexio-column [size]="6">
-<amexio-password-input
-     [enable-popover]="true"
-     [field-label]="'Password'"
-     name ="newPassword"
-     [place-holder]="'Enter GitHub Password'"
-     [allow-blank]="false"
-     [error-msg] ="' Please Enter New Password'"
-     [icon-feedback]="true"
-     [(ngModel)]="projectCreationModel.repositoryPassword"
-     [disabled]="disbleUserFlag">
-</amexio-password-input>
-</amexio-column>
-</amexio-row>
-</amexio-tab>
-</amexio-tab-view>
+
  </amexio-form-body>
    <amexio-form-action>
     <ng-container *ngIf="!showUpadteBtn">
@@ -176,19 +120,7 @@ import { Router, ActivatedRoute } from '@angular/router';
     [tooltip]="'Cancel'"
     [size]="'default'"
     [icon]="'fa fa-close'"
-    [disabled]="disableCancelBtn"
     (onClick)="cancelProject()">
-    </amexio-button>
-    </ng-container>
-       <ng-container *ngIf="showNext">
-    <amexio-button
-    [label]="'Next'"
-    [type]="'secondary'"
-    [tooltip]="'Next'"
-    [disabled]="disableCancelBtn"
-    [size]="'default'"
-    [icon]="'fa fa-arrow-right'"
-    (onClick)="onNextClick(projform)">
     </amexio-button>
     </ng-container>
      <ng-container *ngIf="showUpadteBtn">
@@ -203,7 +135,7 @@ import { Router, ActivatedRoute } from '@angular/router';
     (onClick)="onUpdate()">
     </amexio-button>
      </ng-container>
-    <ng-container *ngIf="showSaveBtn">
+          <ng-container *ngIf="!showUpadteBtn">
     <amexio-button
     [label]="'Save'"
     [loading]="asyncFlag"
@@ -211,8 +143,9 @@ import { Router, ActivatedRoute } from '@angular/router';
     [tooltip]="'Save'"
     [size]="'default'"
     [icon]="'fa fa-save'"
-    [disabled]="disableBtn"
-    (onClick)="saveProject(projform)">
+    [disabled]="false"
+    [form-bind]="'validateForm'"
+    (onClick)="ValidateAndSave()">
     </amexio-button>
     </ng-container>
 </amexio-form-action>
@@ -260,24 +193,13 @@ export class CreateProjectComponent implements OnInit {
   amexioThemes: any;
   materialthemes: any;
   projectList: any;
-  respositoryTypeData: any;
   showCard: boolean = false;
   projectId: string;
-  projecttabFlag: boolean = true;
-  sourcetabFlag: boolean;
   disblefields: boolean = false;
-  disbleUserFlag: boolean;
-  showSaveBtn: boolean;
   showUpadteBtn: boolean = false;
-  showNext: boolean = true;
-  disableBtn: boolean;
-  disableCancelBtn: boolean;
   disableUpdateBtn: boolean;
   confirmdialogue: boolean;
-  showerrorFlag: boolean = false;
-  tabdisabledFlag: boolean = true;
   themeID: any;
-  radiogroupData: any;
   showThemeFlag: boolean = true;
   isLoading: boolean = false;
   constructor(
@@ -297,22 +219,22 @@ export class CreateProjectComponent implements OnInit {
     this.materialthemes = [];
     this.getThemeData();
     this.getProjectList();
-    this.respositoryTypeData = {
-      response: {
-        data: [
-          {
-            respositoryType: 'Public',
-            respositoryTypeId: '1',
-            disabled: false
-          },
-          {
-            respositoryType: 'Private',
-            respositoryTypeId: '2',
-            disabled: true
-          }
-        ]
-      }
-    };
+    //   this.respositoryTypeData = {
+    //     response: {
+    //       data: [
+    //         {
+    //           respositoryType: 'Public',
+    //           respositoryTypeId: '1',
+    //           disabled: false
+    //         },
+    //         {
+    //           respositoryType: 'Private',
+    //           respositoryTypeId: '2',
+    //           disabled: true
+    //         }
+    //       ]
+    //     }
+    //   };
   }
 
   ngOnInit() {}
@@ -322,19 +244,19 @@ export class CreateProjectComponent implements OnInit {
     return themearray;
   }
 
-  onTabClick(event: any) {
-    if (event.title == 'Project Configuration') {
-      this.projecttabFlag = true;
-      this.sourcetabFlag = false;
-      this.showNext = true;
-      this.showSaveBtn = false;
-    } else {
-      this.projecttabFlag = false;
-      this.sourcetabFlag = true;
-      this.showNext = false;
-      this.showSaveBtn = true;
-    }
-  }
+  // onTabClick(event: any) {
+  //   if (event.title == 'Project Configuration') {
+  //     this.projecttabFlag = true;
+  //     this.sourcetabFlag = false;
+  //     this.showNext = true;
+  //     this.showSaveBtn = false;
+  //   } else {
+  //     this.projecttabFlag = false;
+  //     this.sourcetabFlag = true;
+  //     this.showNext = false;
+  //     this.showSaveBtn = true;
+  //   }
+  // }
 
   //GET PROJECT LIST OF LOGGED IN USER
   getProjectList() {
@@ -365,15 +287,7 @@ export class CreateProjectComponent implements OnInit {
     this.showCard = true;
     this.portDisableFlag = true;
     this.disblefields = false;
-    this.projecttabFlag = true;
-    this.sourcetabFlag = false;
-    this.tabdisabledFlag = true;
     this.showUpadteBtn = false;
-    this.showNext = true;
-    this.disableBtn = false;
-    this.showSaveBtn = false;
-    this.showerrorFlag = false;
-    this.disableCancelBtn = false;
     this.projectCreationModel = new ProjectCreationModel();
   }
 
@@ -388,11 +302,11 @@ export class CreateProjectComponent implements OnInit {
   }
   //GET PROJECT DETAILS OF SELECTED PROJECT IN READ ONLY FORM
   onProjectSelect(event: any) {
+    this.loaderService.showLoader();
     this.validationMsgArray = [];
     let selectProject: any;
     this.themeID = '';
     this.showThemeFlag = false;
-    this.loaderService.showLoader();
     // this.projectCreationModel = new ProjectCreationModel();
     const projectUUID = event.projectUUID;
     this.http
@@ -420,7 +334,6 @@ export class CreateProjectComponent implements OnInit {
             this.themeID = selectProject.response.themeUUID;
             this.showThemeFlag = true;
             this.serverPort = selectProject.response.serverPort;
-            this.loaderService.hideLoader();
             this.portDisableFlag = false;
             this.newTokenid = selectProject.response.newtokenId;
             this.cookieService.set('tokenid', this.newTokenid);
@@ -428,17 +341,11 @@ export class CreateProjectComponent implements OnInit {
             this._cdf.detectChanges();
             this.showUpadteBtn = true;
             this.disableUpdateBtn = true;
-            this.showSaveBtn = false;
-            this.showNext = false;
-            this.disableCancelBtn = true;
             this.disblefields = true;
-            this.tabdisabledFlag = true;
-            this.projecttabFlag = true;
-            this.sourcetabFlag = false;
+            this.loaderService.hideLoader();
           } else {
             this.loaderService.hideLoader();
             this.validationMsgArray.push(selectProject.errorMessage);
-            // this.isValidateForm = true;
             this.createErrorData();
           }
         }
@@ -482,36 +389,35 @@ export class CreateProjectComponent implements OnInit {
     errorData.push(errorObj);
     this._notificationService.showerrorData('Error Message', errorData);
   }
-  onNextClick(projform: any) {
-    let isValid: boolean = false;
-    this.validationMsgArray = [];
-    let invalidfield: any;
-    invalidfield = projform.getErrorMsgData();
+  // onNextClick(projform: any) {
+  //   let isValid: boolean = false;
+  //   this.validationMsgArray = [];
+  //   let invalidfield: any;
+  //   invalidfield = projform.getErrorMsgData();
 
-    // this.validateFormFields();
-    invalidfield.forEach((obj: any) => {
-      if (obj.label == 'Name') {
-        this.validationMsgArray.push('Invalid (Blank) Project Name.');
-      }
-      if (obj.label == 'Description') {
-        this.validationMsgArray.push('Invalid (Blank) Project Description.');
-      }
-    });
-    if (this.validationMsgArray && this.validationMsgArray.length >= 1) {
-      // this.isValidateForm = true;
-      // return;
-      this.createInvalidCompErrorData();
-    } else {
-      // this.isValidateForm = false;
-      this.projecttabFlag = false;
-      this.sourcetabFlag = true;
-      this.tabdisabledFlag = false;
-      this._cdf.detectChanges();
-      this.showSaveBtn = true;
-      this.showNext = false;
-      this.showerrorFlag = true;
-    }
-  }
+  //   // this.validateFormFields();
+  //   invalidfield.forEach((obj: any) => {
+  //     if (obj.label == 'Name') {
+  //       this.validationMsgArray.push('Invalid (Blank) Project Name.');
+  //     }
+  //     if (obj.label == 'Description') {
+  //       this.validationMsgArray.push('Invalid (Blank) Project Description.');
+  //     }
+  //   });
+  //   if (this.validationMsgArray && this.validationMsgArray.length >= 1) {
+  //     // this.isValidateForm = true;
+  //     // return;
+  //     this.createInvalidCompErrorData();
+  //   } else {
+  //     // this.isValidateForm = false;
+  //     // this.projecttabFlag = false;
+  //     // this.sourcetabFlag = true;
+  //     // this.tabdisabledFlag = false;
+  //     this._cdf.detectChanges();
+  //     this.showSaveBtn = true;
+  //     this.showerrorFlag = true;
+  //   }
+  // }
 
   onUpdate() {
     let response: any;
@@ -560,38 +466,59 @@ export class CreateProjectComponent implements OnInit {
     window.postMessage(string, window.location.origin);
   }
   //To Save Project Details
-  saveProject(projform: any) {
-    //  this.validateSourceFormFields();
-    let isValid: boolean = false;
+  // saveProject() {
+  //   //  this.validateSourceFormFields();
+  //   let isValid: boolean = false;
+  //   this.validationMsgArray = [];
+  //   let invalidSourceFields: any;
+  //   // invalidSourceFields = projform.getErrorMsgData();
+  //   invalidSourceFields.forEach((obj1: any) => {
+  //     if (obj1.label == 'Git Repository URL') {
+  //       this.validationMsgArray.push('Invalid (Blank) respository Type.');
+  //     }
+  //     if (obj1.label == 'Git Repository Type') {
+  //       this.validationMsgArray.push('Invalid (Blank) Respository URL.');
+  //     }
+  //     {
+  //       if (obj1.label == 'User name or email address') {
+  //         this.validationMsgArray.push('Invalid (Blank) User Name.');
+  //       }
+  //       if (obj1.label == 'Password') {
+  //         this.validationMsgArray.push('Invalid (Blank) Password');
+  //       }
+  //     }
+  //   });
+  //   if (this.validationMsgArray && this.validationMsgArray.length >= 1) {
+  //     // this.isValidateForm = true;
+  //     this.createInvalidCompErrorData();
+  //     return;
+  //   } else {
+  //     // this.isValidateForm = false;
+  //     this.saveProjectCreation();
+  //   }
+  // }
+
+  ValidateAndSave() {
     this.validationMsgArray = [];
-    let invalidSourceFields: any;
-    invalidSourceFields = projform.getErrorMsgData();
-    invalidSourceFields.forEach((obj1: any) => {
-      if (obj1.label == 'Git Repository URL') {
-        this.validationMsgArray.push('Invalid (Blank) respository Type.');
-      }
-      if (obj1.label == 'Git Repository Type') {
-        this.validationMsgArray.push('Invalid (Blank) Respository URL.');
-      }
-      {
-        if (obj1.label == 'User name or email address') {
-          this.validationMsgArray.push('Invalid (Blank) User Name.');
-        }
-        if (obj1.label == 'Password') {
-          this.validationMsgArray.push('Invalid (Blank) Password');
-        }
-      }
-    });
+    if (this.projectCreationModel.projectName == '') {
+      this.validationMsgArray.push('Please enter project name');
+    }
+    if (this.projectCreationModel.projectDescription == '') {
+      this.validationMsgArray.push('Please enter project description');
+    }
+    if (
+      this.projectCreationModel.themeUUID == null ||
+      this.projectCreationModel.themeUUID == ''
+    ) {
+      this.validationMsgArray.push('Please select theme');
+    }
     if (this.validationMsgArray && this.validationMsgArray.length >= 1) {
-      // this.isValidateForm = true;
       this.createInvalidCompErrorData();
       return;
     } else {
-      // this.isValidateForm = false;
       this.saveProjectCreation();
     }
   }
-
   //Save Method to create Project
   saveProjectCreation() {
     let response: any;
@@ -602,11 +529,11 @@ export class CreateProjectComponent implements OnInit {
     const requestJson = {
       projectName: this.projectCreationModel.projectName,
       projectDescription: this.projectCreationModel.projectDescription,
-      themeUUID: this.projectCreationModel.themeUUID,
-      respositoryTypeId: this.projectCreationModel.respositoryTypeId,
-      repositoryURL: this.projectCreationModel.repositoryURL,
-      repositoryUsername: this.projectCreationModel.repositoryUsername,
-      repositoryPassword: this.projectCreationModel.repositoryPassword
+      themeUUID: this.projectCreationModel.themeUUID
+      // respositoryTypeId: this.projectCreationModel.respositoryTypeId,
+      // repositoryURL: this.projectCreationModel.repositoryURL,
+      // repositoryUsername: this.projectCreationModel.repositoryUsername,
+      // repositoryPassword: this.projectCreationModel.repositoryPassword
     };
     this.http.post('/api/project/project/save ', requestJson).subscribe(
       res => {
@@ -748,17 +675,17 @@ export class ProjectCreationModel {
   projectName: string;
   projectDescription: string;
   themeUUID: any;
-  respositoryTypeId: any;
-  repositoryURL: string;
-  repositoryUsername: string;
-  repositoryPassword: string;
+  // respositoryTypeId: any;
+  // repositoryURL: string;
+  // repositoryUsername: string;
+  // repositoryPassword: string;
   constructor() {
     this.projectDescription = '';
     this.projectName = '';
     this.themeUUID = '6FF7B738-EE02-4367-9168-FD5327E3FCBB';
-    this.respositoryTypeId = '1';
-    this.repositoryURL = '';
-    this.repositoryUsername = '';
-    this.repositoryPassword = '';
+    // this.respositoryTypeId = '1';
+    // this.repositoryURL = '';
+    // this.repositoryUsername = '';
+    // this.repositoryPassword = '';
   }
 }

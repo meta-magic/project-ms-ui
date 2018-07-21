@@ -29,7 +29,7 @@ import { any } from 'codelyzer/util/function';
                      <amexio-tab title="Source Code" [active]="true" [icon]="'fa fa-file-o'">
               <amexio-treeview [data-reader]="'children'" [data]="fileStructuredata" (nodeClick)="checkActiveTab(sourcetab,$event)"></amexio-treeview>
             </amexio-tab>
-             <amexio-tab title="Git" [active]="false" [icon]="'fa fa-github'">
+             <amexio-tab title="Git" [active]="false" [icon]="'fa fa-github'" [disabled]="true">
               <amexio-row>
                 <amexio-column size="12">
                   <amexio-treeview [data]="shareTreeJSonData"
