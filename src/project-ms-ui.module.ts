@@ -50,13 +50,7 @@ const routes: Routes = [
     TabcodeComponent,
     CodeExplorerComponent
   ],
-  exports: [
-    RouterModule,
-    CreateProjectComponent,
-    NotificationComponent,
-    CodeExplorerComponent,
-    ProjectAppComponent
-  ]
+  exports: [RouterModule]
 })
 export class ProjectMsUIModule {
   static forRoot(): ModuleWithProviders {
