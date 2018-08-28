@@ -7,6 +7,7 @@ import { MessagingService } from 'platform-commons';
 import { LoaderService } from 'platform-commons';
 import { NotificationComponent } from '../notification.component';
 import { Router, ActivatedRoute } from '@angular/router';
+import { any } from 'codelyzer/util/function';
 @Component({
   selector: 'project-create',
   template: `
@@ -175,6 +176,14 @@ import { Router, ActivatedRoute } from '@angular/router';
                (actionStatus)="checkStatus($event)">
 </amexio-dialogue>
 <app-notification></app-notification>
+
+    <amexio-dialogue  [(show)]="migrationStatusDialogue"
+                      [button-size]="'medium'"
+                      [title]="'Confirm'"
+                      [message]="'You want to migrate project ?'"
+                      [message-type]="'confirm'" 
+                      (actionStatus)="migrateProject($event)">
+    </amexio-dialogue>
 </amexio-row>
 
   `
@@ -202,6 +211,7 @@ export class CreateProjectComponent implements OnInit {
   themeID: any;
   showThemeFlag: boolean = true;
   isLoading: boolean = false;
+  migrationStatusDialogue = false;
   constructor(
     private http: HttpClient,
     private ls: LocalStorageService,
@@ -323,6 +333,13 @@ export class CreateProjectComponent implements OnInit {
         },
         () => {
           if (selectProject.success) {
+            if (
+              selectProject.hasOwnProperty('desire3dVersionId') &&
+              selectProject.desire3dVersionId !=
+                JSON.parse(this.ls.get('platformInfo')).desire3dversionid
+            ) {
+              this.migrationStatusDialogue = true;
+            }
             this.showCard = true;
             this.projectId = selectProject.response.projectUUID;
             this.projectCreationModel.projectName =
@@ -350,6 +367,32 @@ export class CreateProjectComponent implements OnInit {
           }
         }
       );
+  }
+
+  migrateProject(event: any) {
+    if (event === 'ok') {
+      let requestJson: any;
+      let response: any;
+      this.loaderService.showLoader();
+      this.migrationStatusDialogue = false;
+      this.http.get('/api/project/migration/project').subscribe(
+        res => {
+          response = res;
+        },
+        err => {
+          this.validationMsgArray.push('Unable to connect to server');
+        },
+        () => {
+          if (response.success) {
+            this.loaderService.hideLoader();
+            let platformInfo = JSON.parse(this.ls.get('platformInfo'));
+            platformInfo.projectMigrated = true;
+            this.ls.set('platformInfo', JSON.stringify(platformInfo));
+          } else {
+          }
+        }
+      );
+    }
   }
 
   //Set Theme
