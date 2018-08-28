@@ -334,7 +334,8 @@ export class CreateProjectComponent implements OnInit {
         () => {
           if (selectProject.success) {
             if (
-              selectProject.hasOwnProperty('desire3dVersionId') &&
+              !selectProject.hasOwnProperty('desire3dVersionId') ||
+              selectProject.desire3dVersionId == null ||
               selectProject.desire3dVersionId !=
                 JSON.parse(this.ls.get('platformInfo')).desire3dversionid
             ) {
