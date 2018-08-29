@@ -177,13 +177,7 @@ import { any } from 'codelyzer/util/function';
 </amexio-dialogue>
 <app-notification></app-notification>
 
-    <amexio-dialogue  [(show)]="migrationStatusDialogue"
-                      [button-size]="'medium'"
-                      [title]="'Confirm'"
-                      [message]="'You want to migrate project ?'"
-                      [message-type]="'confirm'" 
-                      (actionStatus)="migrateProject($event)">
-    </amexio-dialogue>
+   
 </amexio-row>
 
   `
@@ -339,28 +333,35 @@ export class CreateProjectComponent implements OnInit {
               selectProject.desire3dVersionId !=
                 this.ls.get('platformInfo').desire3dversionid
             ) {
-              this.migrationStatusDialogue = true;
+              this.msgService.sendMessage({
+                projectId: this.projectId,
+                migrated: false
+              });
+            } else {
+              this.showCard = true;
+              this.projectId = selectProject.response.projectUUID;
+              this.projectCreationModel.projectName =
+                selectProject.response.projectName;
+              this.projectCreationModel.projectDescription =
+                selectProject.response.projectDescription;
+              this.projectCreationModel.themeUUID =
+                selectProject.response.themeUUID;
+              this.themeID = selectProject.response.themeUUID;
+              this.showThemeFlag = true;
+              this.serverPort = selectProject.response.serverPort;
+              this.portDisableFlag = false;
+              this.newTokenid = selectProject.response.newtokenId;
+              this.cookieService.set('tokenid', this.newTokenid);
+              this.msgService.sendMessage({
+                projectId: this.projectId,
+                migrated: true
+              });
+              this._cdf.detectChanges();
+              this.showUpadteBtn = true;
+              this.disableUpdateBtn = true;
+              this.disblefields = true;
+              this.loaderService.hideLoader();
             }
-            this.showCard = true;
-            this.projectId = selectProject.response.projectUUID;
-            this.projectCreationModel.projectName =
-              selectProject.response.projectName;
-            this.projectCreationModel.projectDescription =
-              selectProject.response.projectDescription;
-            this.projectCreationModel.themeUUID =
-              selectProject.response.themeUUID;
-            this.themeID = selectProject.response.themeUUID;
-            this.showThemeFlag = true;
-            this.serverPort = selectProject.response.serverPort;
-            this.portDisableFlag = false;
-            this.newTokenid = selectProject.response.newtokenId;
-            this.cookieService.set('tokenid', this.newTokenid);
-            this.msgService.sendMessage({ projectId: this.projectId });
-            this._cdf.detectChanges();
-            this.showUpadteBtn = true;
-            this.disableUpdateBtn = true;
-            this.disblefields = true;
-            this.loaderService.hideLoader();
           } else {
             this.loaderService.hideLoader();
             this.validationMsgArray.push(selectProject.errorMessage);
@@ -370,10 +371,10 @@ export class CreateProjectComponent implements OnInit {
       );
   }
 
-  migrateProject(event: any) {
+  /* migrateProject(event: any) {
     if (event === 'ok') {
       let response: any;
-      /*  this.loaderService.showLoader();*/
+      /!*  this.loaderService.showLoader();*!/
       this.migrationStatusDialogue = false;
       this.http.get('/api/project/migration/project').subscribe(
         res => {
@@ -384,10 +385,10 @@ export class CreateProjectComponent implements OnInit {
         },
         () => {
           if (response.success) {
-            /*  this.loaderService.hideLoader();
+            /!*  this.loaderService.hideLoader();
             let platformInfo = this.ls.get('platformInfo');
             platformInfo.projectMigrated = true;
-            this.ls.set('platformInfo', platformInfo);*/
+            this.ls.set('platformInfo', platformInfo);*!/
           } else {
           }
         }
@@ -397,7 +398,7 @@ export class CreateProjectComponent implements OnInit {
         title: 'Task Details'
       });
     }
-  }
+  }*/
 
   //Set Theme
   setTheme(col: any) {
