@@ -372,9 +372,8 @@ export class CreateProjectComponent implements OnInit {
 
   migrateProject(event: any) {
     if (event === 'ok') {
-      let requestJson: any;
       let response: any;
-      this.loaderService.showLoader();
+      /*  this.loaderService.showLoader();*/
       this.migrationStatusDialogue = false;
       this.http.get('/api/project/migration/project').subscribe(
         res => {
@@ -385,14 +384,18 @@ export class CreateProjectComponent implements OnInit {
         },
         () => {
           if (response.success) {
-            this.loaderService.hideLoader();
+            /*  this.loaderService.hideLoader();
             let platformInfo = this.ls.get('platformInfo');
             platformInfo.projectMigrated = true;
-            this.ls.set('platformInfo', platformInfo);
+            this.ls.set('platformInfo', platformInfo);*/
           } else {
           }
         }
       );
+      this.msgService.sendMessage({
+        path: 'home/codepipeline/task-ui',
+        title: 'Task Details'
+      });
     }
   }
 
