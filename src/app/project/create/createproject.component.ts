@@ -337,7 +337,7 @@ export class CreateProjectComponent implements OnInit {
               !selectProject.hasOwnProperty('desire3dVersionId') ||
               selectProject.desire3dVersionId == null ||
               selectProject.desire3dVersionId !=
-                JSON.parse(this.ls.get('platformInfo')).desire3dversionid
+                this.ls.get('platformInfo').desire3dversionid
             ) {
               this.migrationStatusDialogue = true;
             }
@@ -386,9 +386,9 @@ export class CreateProjectComponent implements OnInit {
         () => {
           if (response.success) {
             this.loaderService.hideLoader();
-            let platformInfo = JSON.parse(this.ls.get('platformInfo'));
+            let platformInfo = this.ls.get('platformInfo');
             platformInfo.projectMigrated = true;
-            this.ls.set('platformInfo', JSON.stringify(platformInfo));
+            this.ls.set('platformInfo', platformInfo);
           } else {
           }
         }
