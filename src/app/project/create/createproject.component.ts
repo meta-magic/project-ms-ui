@@ -327,41 +327,28 @@ export class CreateProjectComponent implements OnInit {
         },
         () => {
           if (selectProject.success) {
-            if (
-              !selectProject.hasOwnProperty('desire3dVersionId') ||
-              selectProject.desire3dVersionId == null ||
-              selectProject.desire3dVersionId !=
-                this.ls.get('platformInfo').desire3dversionid
-            ) {
-              this.msgService.sendMessage({
-                projectId: this.projectId,
-                migrated: false
-              });
-            } else {
-              this.showCard = true;
-              this.projectId = selectProject.response.projectUUID;
-              this.projectCreationModel.projectName =
-                selectProject.response.projectName;
-              this.projectCreationModel.projectDescription =
-                selectProject.response.projectDescription;
-              this.projectCreationModel.themeUUID =
-                selectProject.response.themeUUID;
-              this.themeID = selectProject.response.themeUUID;
-              this.showThemeFlag = true;
-              this.serverPort = selectProject.response.serverPort;
-              this.portDisableFlag = false;
-              this.newTokenid = selectProject.response.newtokenId;
-              this.cookieService.set('tokenid', this.newTokenid);
-              this.msgService.sendMessage({
-                projectId: this.projectId,
-                migrated: true
-              });
-              this._cdf.detectChanges();
-              this.showUpadteBtn = true;
-              this.disableUpdateBtn = true;
-              this.disblefields = true;
-              this.loaderService.hideLoader();
-            }
+            this.showCard = true;
+            this.projectId = selectProject.response.projectUUID;
+            this.projectCreationModel.projectName =
+              selectProject.response.projectName;
+            this.projectCreationModel.projectDescription =
+              selectProject.response.projectDescription;
+            this.projectCreationModel.themeUUID =
+              selectProject.response.themeUUID;
+            this.themeID = selectProject.response.themeUUID;
+            this.showThemeFlag = true;
+            this.serverPort = selectProject.response.serverPort;
+            this.portDisableFlag = false;
+            this.newTokenid = selectProject.response.newtokenId;
+            this.cookieService.set('tokenid', this.newTokenid);
+            this.msgService.sendMessage({
+              projectId: this.projectId
+            });
+            this._cdf.detectChanges();
+            this.showUpadteBtn = true;
+            this.disableUpdateBtn = true;
+            this.disblefields = true;
+            this.loaderService.hideLoader();
           } else {
             this.loaderService.hideLoader();
             this.validationMsgArray.push(selectProject.errorMessage);
