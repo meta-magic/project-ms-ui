@@ -598,7 +598,7 @@ export class CreateProjectComponent implements OnInit {
           });
           this.ls.remove('platformInfo');
           const platformInfo = {
-            desire3dversionid: response.desire3dVersionId,
+            desire3dversionid: response.response.desire3dVersionId,
             projectMigrated: true
           };
           this.ls.set('platformInfo', platformInfo);
