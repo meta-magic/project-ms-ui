@@ -583,6 +583,12 @@ export class CreateProjectComponent implements OnInit {
       },
       () => {
         if (response.success) {
+          this.ls.remove('platformInfo');
+          const platformInfo = {
+            desire3dversionid: 2,
+            projectMigrated: true
+          };
+          this.ls.set('platformInfo', platformInfo);
           this.newTokenid = response.response.tokenid;
           this.projectId = response.response.projectUUID;
           this.cookieService.set('tokenid', this.newTokenid);
@@ -596,13 +602,6 @@ export class CreateProjectComponent implements OnInit {
             projectId: this.projectId,
             saveproject: true
           });
-          let desire3dVersionId = this.ls.get('platformInfo').desire3dVersionId;
-          this.ls.remove('platformInfo');
-          const platformInfo = {
-            desire3dversionid: desire3dVersionId,
-            projectMigrated: true
-          };
-          this.ls.set('platformInfo', platformInfo);
           this.showtask();
         } else {
           this.validationMsgArray.push(response.errorMessage);
