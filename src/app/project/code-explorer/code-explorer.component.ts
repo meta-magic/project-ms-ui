@@ -306,7 +306,7 @@ export class CodeExplorerComponent implements OnInit {
   //Add Tab
   checkActiveTab(sourcetab: any, data: any) {
     let title = data.text;
-    if (!sourcetab.setActiveTab(data.text)) {
+    if (!data.children && !sourcetab.setActiveTab(data.text)) {
       this.addTab(sourcetab, data);
     }
   }
