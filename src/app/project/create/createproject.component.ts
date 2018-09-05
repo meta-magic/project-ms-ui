@@ -223,22 +223,6 @@ export class CreateProjectComponent implements OnInit {
     this.materialthemes = [];
     this.getThemeData();
     this.getProjectList();
-    //   this.respositoryTypeData = {
-    //     response: {
-    //       data: [
-    //         {
-    //           respositoryType: 'Public',
-    //           respositoryTypeId: '1',
-    //           disabled: false
-    //         },
-    //         {
-    //           respositoryType: 'Private',
-    //           respositoryTypeId: '2',
-    //           disabled: true
-    //         }
-    //       ]
-    //     }
-    //   };
   }
 
   ngOnInit() {}
@@ -247,20 +231,6 @@ export class CreateProjectComponent implements OnInit {
     themearray.push(col);
     return themearray;
   }
-
-  // onTabClick(event: any) {
-  //   if (event.title == 'Project Configuration') {
-  //     this.projecttabFlag = true;
-  //     this.sourcetabFlag = false;
-  //     this.showNext = true;
-  //     this.showSaveBtn = false;
-  //   } else {
-  //     this.projecttabFlag = false;
-  //     this.sourcetabFlag = true;
-  //     this.showNext = false;
-  //     this.showSaveBtn = true;
-  //   }
-  // }
 
   //GET PROJECT LIST OF LOGGED IN USER
   getProjectList() {
@@ -272,6 +242,7 @@ export class CreateProjectComponent implements OnInit {
         projectDataList = response;
       },
       error => {
+        this.validationMsgArray = [];
         this.validationMsgArray.push('Unable to connect to server');
         this.createErrorData();
       },
@@ -300,10 +271,10 @@ export class CreateProjectComponent implements OnInit {
     } else {
       this.msgData = [];
       this.msgData.push('Repository URL is not valid ,Please check');
-      // this.isValidateForm = true;
       this._notificationService.showWarningData(this.msgData);
     }
   }
+
   //GET PROJECT DETAILS OF SELECTED PROJECT IN READ ONLY FORM
   onProjectSelect(event: any) {
     this.loaderService.showLoader();
@@ -358,35 +329,6 @@ export class CreateProjectComponent implements OnInit {
       );
   }
 
-  /* migrateProject(event: any) {
-    if (event === 'ok') {
-      let response: any;
-      /!*  this.loaderService.showLoader();*!/
-      this.migrationStatusDialogue = false;
-      this.http.get('/api/project/migration/project').subscribe(
-        res => {
-          response = res;
-        },
-        err => {
-          this.validationMsgArray.push('Unable to connect to server');
-        },
-        () => {
-          if (response.success) {
-            /!*  this.loaderService.hideLoader();
-            let platformInfo = this.ls.get('platformInfo');
-            platformInfo.projectMigrated = true;
-            this.ls.set('platformInfo', platformInfo);*!/
-          } else {
-          }
-        }
-      );
-      this.msgService.sendMessage({
-        path: 'home/codepipeline/task-ui',
-        title: 'Task Details'
-      });
-    }
-  }*/
-
   //Set Theme
   setTheme(col: any) {
     this.projectCreationModel.themeUUID = col.themeUUID;
@@ -424,37 +366,9 @@ export class CreateProjectComponent implements OnInit {
     errorData.push(errorObj);
     this._notificationService.showerrorData('Error Message', errorData);
   }
-  // onNextClick(projform: any) {
-  //   let isValid: boolean = false;
-  //   this.validationMsgArray = [];
-  //   let invalidfield: any;
-  //   invalidfield = projform.getErrorMsgData();
-
-  //   // this.validateFormFields();
-  //   invalidfield.forEach((obj: any) => {
-  //     if (obj.label == 'Name') {
-  //       this.validationMsgArray.push('Invalid (Blank) Project Name.');
-  //     }
-  //     if (obj.label == 'Description') {
-  //       this.validationMsgArray.push('Invalid (Blank) Project Description.');
-  //     }
-  //   });
-  //   if (this.validationMsgArray && this.validationMsgArray.length >= 1) {
-  //     // this.isValidateForm = true;
-  //     // return;
-  //     this.createInvalidCompErrorData();
-  //   } else {
-  //     // this.isValidateForm = false;
-  //     // this.projecttabFlag = false;
-  //     // this.sourcetabFlag = true;
-  //     // this.tabdisabledFlag = false;
-  //     this._cdf.detectChanges();
-  //     this.showSaveBtn = true;
-  //     this.showerrorFlag = true;
-  //   }
-  // }
 
   onUpdate() {
+    this.validationMsgArray = [];
     let response: any;
     this.asyncFlag = true;
     this.validationMsgArray = [];
@@ -468,6 +382,7 @@ export class CreateProjectComponent implements OnInit {
         response = res;
       },
       err => {
+        this.validationMsgArray = [];
         this.validationMsgArray.push('Unable to connect to server');
         // this.isValidateForm = true;
         this.createErrorData();
@@ -496,43 +411,11 @@ export class CreateProjectComponent implements OnInit {
       }
     );
   }
+
   //UI CREATED EVENT ADDED
   uiCreatedEvent(string: any) {
     window.postMessage(string, window.location.origin);
   }
-  //To Save Project Details
-  // saveProject() {
-  //   //  this.validateSourceFormFields();
-  //   let isValid: boolean = false;
-  //   this.validationMsgArray = [];
-  //   let invalidSourceFields: any;
-  //   // invalidSourceFields = projform.getErrorMsgData();
-  //   invalidSourceFields.forEach((obj1: any) => {
-  //     if (obj1.label == 'Git Repository URL') {
-  //       this.validationMsgArray.push('Invalid (Blank) respository Type.');
-  //     }
-  //     if (obj1.label == 'Git Repository Type') {
-  //       this.validationMsgArray.push('Invalid (Blank) Respository URL.');
-  //     }
-  //     {
-  //       if (obj1.label == 'User name or email address') {
-  //         this.validationMsgArray.push('Invalid (Blank) User Name.');
-  //       }
-  //       if (obj1.label == 'Password') {
-  //         this.validationMsgArray.push('Invalid (Blank) Password');
-  //       }
-  //     }
-  //   });
-  //   if (this.validationMsgArray && this.validationMsgArray.length >= 1) {
-  //     // this.isValidateForm = true;
-  //     this.createInvalidCompErrorData();
-  //     return;
-  //   } else {
-  //     // this.isValidateForm = false;
-  //     this.saveProjectCreation();
-  //   }
-  // }
-
   ValidateAndSave() {
     this.validationMsgArray = [];
     if (this.projectCreationModel.projectName == '') {
@@ -565,10 +448,6 @@ export class CreateProjectComponent implements OnInit {
       projectName: this.projectCreationModel.projectName,
       projectDescription: this.projectCreationModel.projectDescription,
       themeUUID: this.projectCreationModel.themeUUID
-      // respositoryTypeId: this.projectCreationModel.respositoryTypeId,
-      // repositoryURL: this.projectCreationModel.repositoryURL,
-      // repositoryUsername: this.projectCreationModel.repositoryUsername,
-      // repositoryPassword: this.projectCreationModel.repositoryPassword
     };
     this.http.post('/api/project/project/save ', requestJson).subscribe(
       res => {
@@ -606,15 +485,6 @@ export class CreateProjectComponent implements OnInit {
         } else {
           this.validationMsgArray.push(response.errorMessage);
           this.createErrorData();
-          // if (response.errors !== null || response.errors!==[])  {
-          //             console.log('abc3');
-
-          //  response.errors.forEach((error: any, index: any) => {
-          //     this.validationMsgArray.push(response.errors);
-          //   });
-          //   this.isValidateForm = true;
-          //    this.createErrorData();
-          // }
           this.asyncFlag = false;
           this.loaderService.hideLoader();
         }
@@ -634,6 +504,7 @@ export class CreateProjectComponent implements OnInit {
   }
 
   findInstance() {
+    this.validationMsgArray = [];
     let instanceresponse: any;
     this.http.post('/api/pipeline/Instance/getHostDetails', {}).subscribe(
       res => {
@@ -716,17 +587,10 @@ export class ProjectCreationModel {
   projectName: string;
   projectDescription: string;
   themeUUID: any;
-  // respositoryTypeId: any;
-  // repositoryURL: string;
-  // repositoryUsername: string;
-  // repositoryPassword: string;
+
   constructor() {
     this.projectDescription = '';
     this.projectName = '';
     this.themeUUID = '6FF7B738-EE02-4367-9168-FD5327E3FCBB';
-    // this.respositoryTypeId = '1';
-    // this.repositoryURL = '';
-    // this.repositoryUsername = '';
-    // this.repositoryPassword = '';
   }
 }

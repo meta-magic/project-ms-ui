@@ -76,25 +76,14 @@ export class CodeExplorerComponent implements OnInit {
   isTypeScript: boolean;
   isCss: boolean;
 
-  // commitAllDataClass: CommitAllDataClass;
-  // gitCommitDataClass: GitCommitDataClass;
-  // gitPullDataClass: GitPullDataClass;
-
   asyncFlag: boolean = false;
-  // showCommitAllWindow: boolean;
+
   showCommitWindow: boolean;
   showPullWindow: boolean;
 
-  // commitAllWindow: boolean;
-  // commitWindow: boolean;
-  // pullWindow: boolean;
-
-  // treeViewData: boolean;
-  // fileDataFromBack: boolean;
   openingWindowFlag: boolean;
   URLDisabled: boolean;
   showErrorDialogue: boolean = false;
-  // unableToConnectDialogue: boolean = false;
 
   File: any;
   fileStructuredata: any;
@@ -102,9 +91,7 @@ export class CodeExplorerComponent implements OnInit {
   sourceCode: any;
   protocol: any;
   inValidMessageData: any[] = [];
-  // unableToConnectServerMsg: any[] = [];
   unstagedTreeData: any;
-  // shareTreeJSonData: any;
 
   stageDataTree: any[] = [];
   syncRepository: any;
@@ -126,48 +113,16 @@ export class CodeExplorerComponent implements OnInit {
     public cdf: ChangeDetectorRef,
     private componentFactoryResolver: ComponentFactoryResolver
   ) {
-    // this.commitAllDataClass = new CommitAllDataClass();
-    // this.gitCommitDataClass = new GitCommitDataClass();
-    // this.gitPullDataClass = new GitPullDataClass();
     this.URLDisabled = false;
 
-    // this.treeOfUnstagedData();
     this.resetFlag();
-    // this.resetModel();
-    // this.treeViewData = false;
-    // this.fileDataFromBack = true;
     this.stageDataTree = [];
     this.unstagedTreeData = [];
-    // this.syncMappedRepositoryURL();
     this.msgData = [];
   }
 
   ngOnInit() {
-    // this.unstagedTreeData =
-
-    // this.shareTreeJSonData = [
-    //   {
-    //     text: 'Commit All',
-    //     id: 'showCommitAllWindow',
-    //     icon: 'fa fa-upload',
-    //     tooltip: 'Commit All Files'
-    //   },
-    // {
-    //   text: 'Commit',
-    //   id: 'showCommitWindow',
-    //   icon: 'fa fa-cloud-upload',
-    //   tooltip: 'Commit Selected Files'
-    // },
-    //   {
-    //     text: 'Pull/Update',
-    //     id: 'showPullWindow',
-    //     icon: 'fa fa-cloud-download',
-    //     tooltip: 'GitHub Login Here'
-    //   }
-    // ];
-
     this.gethostdeatils();
-    // this.syncMappedRepositoryURL();
   }
   gethostdeatils() {
     let responsedata: any;
@@ -385,313 +340,10 @@ export class CodeExplorerComponent implements OnInit {
     );
   }
 
-  // onBlurCheck(data: any) {
-  //   if (data != null && data.isComponentValid) {
-  //   } else {
-  //     this.msgData = [];
-  //     this.msgData.push('Repository URL is not valid ,Please check');
-  //     this._notificationService.showWarningData(this.msgData);
-  //   }
-  // }
-
-  // FLAG USE FOR THE WINDOWS OPEN FOR THE TREE OF COMMIT, COMMITALL, PULL/UPDATE TREE
-  // onShareBtnDataClick(data: any) {
-  //   if (data.id === 'showCommitAllWindow') {
-  //     this.syncMappedRepositoryURL();
-  //     this.showCommitAllWindow = true;
-  //     this.sourceCode = '';
-  //   }
-  //   if (this.enableCommitAndPullWindow && data.id === 'showCommitWindow') {
-  //     this.syncMappedRepositoryURL();
-  //     this.showCommitWindow = true;
-  //   } else if (data.id == 'showCommitWindow') {
-  //     this.msgData = [];
-  //     this.msgData.push(
-  //       'Repository not found. No repository is mapped to selected project yet'
-  //     );
-  //     // this.showErrorDialogue = true;
-  //     this._notificationService.showWarningData(this.msgData);
-  //   }
-
-  //   if (this.enableCommitAndPullWindow && data.id === 'showPullWindow') {
-  //     this.syncMappedRepositoryURL();
-  //     this.showPullWindow = true;
-  //     this.sourceCode = '';
-  //   } else if (data.id == 'showPullWindow') {
-  //     this.msgData = [];
-  //     this.msgData.push(
-  //       'Repository not found. No repository is mapped to selected project yet'
-  //     );
-  //     // this.showErrorDialogue = true;
-  //     this._notificationService.showWarningData(this.msgData);
-  //   }
-  // }
-  // ON COMMIT CHANGES BUTTON CLICK OPRATION HERE
-
-  //SERVICE CALL HERE FOR THE COMMIT AND COMMIT ALL AND PULL UPDATE
-  // onCommitAllChangesClick(data: any) {
-  //   this.validateCommitAllForm();
-  //   if (this.inValidMessageData && this.inValidMessageData.length >= 1) {
-  //     this.createInvalidCompErrorData();
-  //   } else {
-  //     let responseData: any;
-  //     this.asyncFlag = true;
-  //     this.msgData = [];
-  //     let RequestOptions = {
-  //       repositoryURL: this.commitAllDataClass.repositoryURL,
-  //       username: this.commitAllDataClass.username,
-  //       password: this.commitAllDataClass.password,
-  //       commitMessage: this.commitAllDataClass.commitMessage,
-  //       firstCommit: this.commitAllDataClass.firstCommit
-  //     };
-
-  //     this.http
-  //       .post('/api/pipeline/SourceCodeSharing/commitAll', RequestOptions)
-  //       .subscribe(
-  //         response => {
-  //           responseData = response;
-  //         },
-  //         err => {
-  //           this.inValidMessageData = [];
-  //           this.inValidMessageData.push('Unable To Connect Server');
-  //           this.createErrorData();
-  //           this.asyncFlag = false;
-  //         },
-  //         () => {
-  //           if (responseData.success) {
-  //             this.msgData.push(responseData.successMessage);
-  //             this._notificationService.showSuccessData(this.msgData);
-  //             this.commitAllDataClass = new CommitAllDataClass();
-  //             this.showCommitAllWindow = false;
-  //             this.asyncFlag = false;
-  //           }
-
-  //           if (responseData && responseData.errors) {
-  //             this.inValidMessageData.push(responseData.errors);
-  //             this.createErrorData();
-  //             this.asyncFlag = false;
-  //           }
-  //         }
-  //       );
-  //   }
-  // }
-  // VALIDATION OF COMMIT WINDOW
-  // onCommitDataClick(data: any) {
-  //   this.validateCommitForm();
-  //   this.gitCommitDataClass.files = [];
-  //   if (this.inValidMessageData && this.inValidMessageData.length == 0) {
-  //     this.stageDataTree.forEach((objTree: any) => {
-  //       let objTreeData = {
-  //         name: objTree.text,
-  //         path: objTree.sourcePath
-  //       };
-
-  //       this.gitCommitDataClass.files.push(objTreeData);
-  //     });
-  //     let responseData: any;
-  //     this.http
-  //       .post('/api/pipeline/SourceCodeSharing/commit', this.gitCommitDataClass)
-  //       .subscribe(
-  //         response => {
-  //           responseData = response;
-  //         },
-  //         err => {
-  //           this.inValidMessageData = [];
-  //           this.inValidMessageData.push('Unable To Connect Server');
-  //           this.createErrorData();
-  //         },
-  //         () => {
-  //           if (responseData && responseData.errors) {
-  //             this.inValidMessageData = responseData.errors;
-  //           }
-  //         }
-  //       );
-  //   }
-  // }
-  //VALIDATION OF PULL WINDOW
-  // onPullRequestClick(data: any) {
-  //   this.validatePullForm();
-  //   if (this.inValidMessageData && this.inValidMessageData.length >= 1) {
-  //     this.createInvalidCompErrorData();
-  //   } else {
-  //     let responseData: any;
-  //     this.asyncFlag = true;
-  //     this.msgData = [];
-  //     this.http
-  //       .post('/api/pipeline/SourceCodeSharing/pull', this.gitPullDataClass)
-  //       .subscribe(
-  //         response => {
-  //           responseData = response;
-  //         },
-  //         err => {
-  //           this.inValidMessageData = [];
-  //           this.inValidMessageData.push('Unable To Connect Server');
-  //           this.createErrorData();
-  //           this.asyncFlag = false;
-  //         },
-  //         () => {
-  //           if (responseData && responseData.errors) {
-  //             this.inValidMessageData.push(responseData.errorMessage);
-  //             this.createErrorData();
-  //             this.asyncFlag = false;
-  //           } else if (responseData.success) {
-  //             this.gitPullDataClass = new GitPullDataClass();
-  //             this.showPullWindow = false;
-  //             this.msgData.push(responseData.successMessage);
-  //             this._notificationService.showSuccessData(this.msgData);
-  //             this.asyncFlag = false;
-  //           }
-  //         }
-  //       );
-  //   }
-  // }
-
-  // VALIDATION OF COMMIT ALL DATA WINDOW
-  // validateCommitAllForm() {
-  //   this.inValidMessageData = [];
-  //   if (
-  //     this.commitAllDataClass.repositoryURL == '' ||
-  //     this.commitAllDataClass.repositoryURL == null
-  //   ) {
-  //     this.inValidMessageData.push('Repository url should not  empty');
-  //     // this.showErrorDialogue = true;
-  //   }
-  //   if (
-  //     this.commitAllDataClass.username == '' ||
-  //     this.commitAllDataClass.username == null
-  //   ) {
-  //     this.inValidMessageData.push('User name can not blank');
-  //     // this.showErrorDialogue = true;
-  //   }
-  //   if (
-  //     this.commitAllDataClass.password == '' ||
-  //     this.commitAllDataClass.password == null
-  //   ) {
-  //     this.inValidMessageData.push('Password can not empty');
-  //     // this.showErrorDialogue = true;
-  //   }
-  //   if (
-  //     this.commitAllDataClass.commitMessage == '' ||
-  //     this.commitAllDataClass.commitMessage == null
-  //   ) {
-  //     this.inValidMessageData.push('Commit message can not blank');
-  //     // this.showErrorDialogue = true;
-  //   }
-  // }
-  // validateCommitForm() {
-  //   this.inValidMessageData = [];
-  //   if (
-  //     this.gitCommitDataClass.username == '' ||
-  //     this.gitCommitDataClass.username == null
-  //   ) {
-  //     this.inValidMessageData.push('User name can not blank');
-  //     // this.showErrorDialogue = true;
-  //   }
-  //   if (
-  //     this.gitCommitDataClass.password == '' ||
-  //     this.gitCommitDataClass.password == null
-  //   ) {
-  //     this.inValidMessageData.push('Password can not empty');
-  //     // this.showErrorDialogue = true;
-  //   }
-  //   if (
-  //     this.gitCommitDataClass.commitMessage == '' ||
-  //     this.gitCommitDataClass.commitMessage == null
-  //   ) {
-  //     this.inValidMessageData.push('Commit message can not blank');
-  //     // this.showErrorDialogue = true;
-  //   }
-  // }
-  // validatePullForm() {
-  //   this.inValidMessageData = [];
-  //   if (
-  //     this.gitPullDataClass.username == '' ||
-  //     this.gitPullDataClass.username == null
-  //   ) {
-  //     this.inValidMessageData.push('User name can not blank');
-  //     // this.showErrorDialogue = true;
-  //   }
-  //   if (
-  //     this.gitPullDataClass.password == '' ||
-  //     this.gitPullDataClass.password == null
-  //   ) {
-  //     this.inValidMessageData.push('Password can not empty');
-  //     // this.showErrorDialogue = true;
-  //   }
-  // }
-
   // CLOSE DIALOGUE BOX
   closeDialogue() {
     this.showErrorDialogue = false;
   }
-
-  //CLOSE COMMIT ALL WINDOW
-  // closeCommitAllWindow() {
-  //   this.resetModel();
-  //   this.showCommitAllWindow = false;
-  // }
-  //CLOSE COMMIT WINDOW
-  // closeCommitWindow() {
-  //   this.resetModel();
-  //   this.onAllReturnToUnstage();
-  //   this.showCommitWindow = false;
-  // }
-  // //CLOSE PULL WINDOW
-  // closePullWindow() {
-  //   this.resetModel();
-  //   this.showPullWindow = false;
-  // }
-  // USE FOR CLEARING ALL DATA WHEN CANCEL OR COMMIT BUTTON CLICK
-  // resetModel() {
-  //   this.commitAllDataClass.username = '';
-  //   this.commitAllDataClass.password = '';
-  //   this.commitAllDataClass.commitMessage = '';
-  //   this.commitAllDataClass.repositoryURL = '';
-
-  //   this.gitPullDataClass.username = '';
-  //   this.gitPullDataClass.password = '';
-
-  //   this.gitCommitDataClass.username = '';
-  //   this.gitCommitDataClass.password = '';
-  //   this.gitCommitDataClass.commitMessage = '';
-  //   this.gitCommitDataClass.files = [];
-  // }
-  // syncMappedRepositoryURL() {
-  //   let responseData: any;
-  //   let firstCommit: boolean;
-  //   this.http
-  //     .post('/api/pipeline/SourceCodeSharingQuery/findProjectRepository', {})
-  //     .subscribe(
-  //       response => {
-  //         responseData = response;
-  //       },
-  //       err => {
-  //         this.inValidMessageData = [];
-  //         this.inValidMessageData.push('Unable To Connect Server');
-  //         this.showErrorDialogue = true;
-  //       },
-  //       () => {
-  //         if (responseData.success) {
-  //           // repository is present i.e firstCommit = false
-  //           if (
-  //             responseData.response &&
-  //             responseData.response.repositoryURL &&
-  //             responseData.response.repositoryURL != ''
-  //           ) {
-  //             this.commitAllDataClass.repositoryURL =
-  //               responseData.response.repositoryURL;
-  //             this.URLDisabled = true;
-  //             this.commitAllDataClass.firstCommit = false;
-  //             this.enableCommitAndPullWindow = true;
-  //           }
-  //         } else {
-  //           // repository is not present i.e firstCommit = true
-  //           this.URLDisabled = false;
-  //           this.commitAllDataClass.firstCommit = true;
-  //         }
-  //       }
-  //     );
-  // }
 
   treeOfUnstagedData() {
     let responseData: any;
@@ -710,56 +362,5 @@ export class CodeExplorerComponent implements OnInit {
     );
   }
 }
-
-// CLASS FOR THE  2 WAY BINDING OF HTML AND TS (BIND ) HERE
-//FOR THE COMMIT ALL FILE BINDING
-// export class CommitAllDataClass {
-//   repositoryURL: string;
-//   username: string;
-//   password: string;
-//   commitMessage: string;
-//   firstCommit: boolean;
-
-//   constructor() {
-//     this.repositoryURL = '';
-//     this.username = '';
-//     this.password = '';
-//     this.commitMessage = '';
-//     this.firstCommit = true;
-//   }
-// }
-// FOR THE ONLY ONE COMMIT FILE DATA BINDING
-
-// export class GitCommitDataClass {
-//   commitMessage: string;
-//   username: string;
-//   password: string;
-//   files: FileModel[];
-//   constructor() {
-//     this.commitMessage = '';
-//     this.username = '';
-//     this.password = '';
-//     this.files = [];
-//   }
-// }
-// THIS IS FOR THE PULL DATA BINDING
-// export class GitPullDataClass {
-//   username: string;
-//   password: string;
-//   constructor() {
-//     this.username = '';
-//     this.password = '';
-//   }
-// }
-
-//FOR MULTIPLE FILES ARE CONNECTED TO THE COMMIT CHANGES BUTTON CALL TO COMMIT ONLY
-// export class FileModel {
-//   name: string;
-//   path: string;
-//   constructor() {
-//     this.name = '';
-//     this.path = '';
-//   }
-// }
 
 //((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?
