@@ -33,7 +33,7 @@ import { any } from 'codelyzer/util/function';
     [tooltip]="'New'"
     [size]="'default'"
     [icon]="'fa fa-plus fa-lg'"
-    (onClick)="findInstance()">
+    (onClick)="openProjectUi()">
     </amexio-button>
 </amexio-action>
 </amexio-card>
@@ -503,33 +503,33 @@ export class CreateProjectComponent implements OnInit {
     }
   }
 
-  findInstance() {
-    this.validationMsgArray = [];
-    let instanceresponse: any;
-    this.http.post('/api/pipeline/Instance/getHostDetails', {}).subscribe(
-      res => {
-        instanceresponse = res;
-      },
-      err => {
-        this.validationMsgArray.push(
-          'Unable to connect to server, please try after sometime.'
-        );
-        // this.isValidateForm = true;
-        this.createErrorData();
-      },
-      () => {
-        if (instanceresponse.success) {
-          this.openProjectUi();
-        } else {
-          this.validationMsgArray.push(
-            'Unable to connect to server, please try after sometime.'
-          );
-          // this.isValidateForm = true;
-          this.createErrorData();
-        }
-      }
-    );
-  }
+  // findInstance() {
+  //   this.validationMsgArray = [];
+  //   let instanceresponse: any;
+  //   this.http.post('/api/pipeline/Instance/getHostDetails', {}).subscribe(
+  //     res => {
+  //       instanceresponse = res;
+  //     },
+  //     err => {
+  //       this.validationMsgArray.push(
+  //         'Unable to connect to server, please try after sometime.'
+  //       );
+  //       // this.isValidateForm = true;
+  //       this.createErrorData();
+  //     },
+  //     () => {
+  //       if (instanceresponse.success) {
+  //         this.openProjectUi();
+  //       } else {
+  //         this.validationMsgArray.push(
+  //           'Unable to connect to server, please try after sometime.'
+  //         );
+  //         // this.isValidateForm = true;
+  //         this.createErrorData();
+  //       }
+  //     }
+  //   );
+  // }
 
   clearData() {
     this.projectCreationModel = new ProjectCreationModel();
