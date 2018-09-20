@@ -5,16 +5,11 @@ import {
   ComponentFactoryResolver
 } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { RequestOptions } from '@angular/http';
 import { TabcodeComponent } from './tabcode.component';
 import { CookieService } from 'platform-commons';
-import { clearImmediate } from 'timers';
-import { NotificationComponent } from '../notification.component';
 import { NotificationService } from 'platform-commons';
-import { any } from 'codelyzer/util/function';
 @Component({
   selector: 'code-explorer',
-  //language=Angular2HTML
   template: `
     <amexio-row>
       <amexio-column [size]="3">
@@ -46,7 +41,7 @@ import { any } from 'codelyzer/util/function';
 
       </amexio-column>
         
- <app-notification></app-notification>
+ <project-notification></project-notification>
 
     <amexio-dialogue [show-dialogue]="showErrorDialogue" (close)="closeDialogue()" [custom]="true"
                      [title]="'Error Message'" [type]="'confirm'">
@@ -60,7 +55,6 @@ import { any } from 'codelyzer/util/function';
       </amexio-action>
     </amexio-dialogue>
     </amexio-row>
-    <!--<amexio-floating-button [position-top]="'30px'" [position-left]="'40px'" [label]="'top-left'" [icon]="'fa fa-snowflake-o'"></amexio-floating-button>-->
           `,
   styles: [
     `
@@ -101,7 +95,6 @@ export class CodeExplorerComponent implements OnInit {
 
   selectedTreeUnstageObject: any;
   selectedTreeStageObject: any;
-  enableCommitAndPullWindow: boolean;
   msgData: any[];
   openTabData: any = [];
   tabcount: number = 0;

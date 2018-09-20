@@ -1,0 +1,30 @@
+{
+  "name": "project-ms-ui",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/username/repo"
+  },
+  "author": {
+    "name": "datsgawas",
+    "email": "dattaram.gawas@metamagic.in"
+  },
+  "keywords": [
+    "angular"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/username/repo/issues"
+  },
+  "main": "project-ms-ui.umd.js",
+  "module": "project-ms-ui.js",
+  "jsnext:main": "project-ms-ui.js",
+  "typings": "project-ms-ui.d.ts",
+  "peerDependencies": {
+    "@angular/core": "^4.0.0",
+    "rxjs": "^5.1.0",
+    "zone.js": "^0.8.4",
+    "amexio-ng-extensions": "http://localhost/desireplatform/amexio-builds/amexio-ng-extensions.tgz",
+    "platform-commons": "http://localhost/desireplatform/micro-ui-libs/platform-commons.tgz"
+  }
+}

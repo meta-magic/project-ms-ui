@@ -5,9 +5,7 @@ import { CookieService } from 'platform-commons';
 import { NotificationService } from 'platform-commons';
 import { MessagingService } from 'platform-commons';
 import { LoaderService } from 'platform-commons';
-import { NotificationComponent } from '../notification.component';
 import { Router, ActivatedRoute } from '@angular/router';
-import { any } from 'codelyzer/util/function';
 @Component({
   selector: 'project-create',
   template: `
@@ -175,8 +173,8 @@ import { any } from 'codelyzer/util/function';
                [type]="'confirm'"
                (actionStatus)="checkStatus($event)">
 </amexio-dialogue>
-<app-notification></app-notification>
 
+<project-notification></project-notification>
    
 </amexio-row>
 

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NotificationService } from 'platform-commons';
 
 @Component({
-  selector: 'app-notification',
+  selector: 'project-notification',
   template: `
   <amexio-notification
         [data]="_notificationService.errorData"
@@ -76,7 +76,7 @@ import { NotificationService } from 'platform-commons';
       </amexio-notification>
 `
 })
-export class NotificationComponent implements OnInit {
+export class ProjectNotificationComponent implements OnInit {
   constructor(public _notificationService: NotificationService) {}
   ngOnInit() {}
 }
