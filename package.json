@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/username/repo"
+    "url": "https://github.com/meta-magic/project-ms-ui"
   },
   "author": {
     "name": "datsgawas",
@@ -28,7 +28,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/username/repo/issues"
+    "url": "https://github.com/meta-magic/project-ms-ui/issues"
   },
   "devDependencies": {
     "@angular/common": "^5.0.0",
@@ -73,6 +73,7 @@
     "typescript": "~2.4.2",
     "zone.js": "^0.8.14",
     "prismjs": "^1.14.0",
+    "font-awesome": "^4.7.0",
     "amexio-ng-extensions": "http://localhost/desireplatform/amexio-builds/amexio-ng-extensions.tgz",
     "platform-commons": "http://localhost/desireplatform/micro-ui-libs/platform-commons.tgz"
   },
