@@ -118,7 +118,9 @@ export class CodeExplorerComponent implements OnInit {
     this.gethostdeatils();
   }
   gethostdeatils() {
-    let responsedata: any;
+    this.getSourceCodeTreeData();
+
+/*    let responsedata: any;
     this.http.post('/api/pipeline/Instance/getHostDetails', {}).subscribe(
       response => {
         responsedata = response;
@@ -134,7 +136,7 @@ export class CodeExplorerComponent implements OnInit {
           this.protocol = '';
         }
       }
-    );
+    );*/
   }
   createInvalidCompErrorData() {
     let errorData: any[] = [];
@@ -266,7 +268,12 @@ export class CodeExplorerComponent implements OnInit {
       let cmp = sourcetab.addDynamicTab(title, 'black', true, TabcodeComponent);
       if (data) {
         let responsedata: any;
-        cmp.getIpAddress().subscribe(
+        cmp.getFileDataBtnClick(data, '', '');
+
+
+
+
+   /*     cmp.getIpAddress().subscribe(
           (response: any) => {
             responsedata = response;
           },
@@ -281,7 +288,7 @@ export class CodeExplorerComponent implements OnInit {
               cmp.protocol = '';
             }
           }
-        );
+        );*/
       }
     }
   }
@@ -295,7 +302,7 @@ export class CodeExplorerComponent implements OnInit {
     this.inValidMessageData = [];
     // this.fileDataFromBack = false;
     // let appUrl = 'http://host:8080/code-pipeline-service/projectExplorer/explorer';
-    let appUrl = 'protocol://host:9870/projectExplorer/explorer';
+  /*  let appUrl = 'protocol://host:9870/projectExplorer/explorer';
 
     if (this.publicIpAddress) {
       appUrl = appUrl.replace('host', this.publicIpAddress);
@@ -305,13 +312,13 @@ export class CodeExplorerComponent implements OnInit {
       appUrl = appUrl.replace('protocol', this.protocol);
 
       ``;
-    }
+    }*/
     let filedata: any;
     let tokenId = this.cookie.get('tokenid');
 
     const headers = new HttpHeaders({ tokenid: tokenId });
     const httpOptions = { headers: headers };
-    this.http.get(appUrl, httpOptions).subscribe(
+    this.http.get('/api/codepipeline/cps/explorer', httpOptions).subscribe(
       res => {
         filedata = res;
       },

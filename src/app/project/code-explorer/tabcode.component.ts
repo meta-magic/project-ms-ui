@@ -46,20 +46,19 @@ export class TabcodeComponent implements OnInit {
     this.protocol = protocol;
     //back end data comes on child click.
     if (!data.children) {
-      let appUrl = 'protocol://host:9870/projectExplorer/findSourceCode';
-
+    /*  let appUrl = 'protocol://host:9870/projectExplorer/findSourceCode';
       if (this.publicIpAddress) {
         appUrl = appUrl.replace('host', this.publicIpAddress);
         appUrl = appUrl.replace('protocol', this.protocol);
       } else {
         appUrl = appUrl.replace('host', 'localhost');
         appUrl = appUrl.replace('protocol', this.protocol);
-      }
+      }*/
       if (data.leaf) {
         let filedata: any;
         const sourcePathJSON: any = {};
         sourcePathJSON['sourcePath'] = data.sourcePath;
-        this.http.post(appUrl, sourcePathJSON).subscribe(
+        this.http.post('/api/codepipeline/cps/fetchsourcecode', sourcePathJSON).subscribe(
           res => {
             filedata = res;
           },
