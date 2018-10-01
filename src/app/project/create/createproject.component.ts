@@ -171,7 +171,8 @@ import { Router, ActivatedRoute } from '@angular/router';
                [message]="'Do you want to view created project status?'"
                [message-type]="'confirm'"
                [type]="'confirm'"
-               (actionStatus)="checkStatus($event)">
+               (actionStatus)="checkStatus($event)"
+               (close)="confirmdialogue = !confirmdialogue">
 </amexio-dialogue>
 
 <project-notification></project-notification>
