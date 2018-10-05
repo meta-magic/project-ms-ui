@@ -166,14 +166,14 @@ import { Router, ActivatedRoute } from '@angular/router';
                 </amexio-card>
                 </ng-container>
   </amexio-column>
-  <amexio-dialogue [show-dialogue]="confirmdialogue"
+  <!--<amexio-dialogue [show-dialogue]="confirmdialogue"
                [title]="'Confirm'"
                [message]="'Do you want to view created project status?'"
                [message-type]="'confirm'"
                [type]="'confirm'"
                (actionStatus)="checkStatus($event)"
                (close)="confirmdialogue = !confirmdialogue">
-</amexio-dialogue>
+</amexio-dialogue>-->
 
 <project-notification></project-notification>
    
@@ -397,12 +397,10 @@ export class CreateProjectComponent implements OnInit {
         } else {
           if (response.errorMessage == null) {
             this.validationMsgArray.push(response.errors);
-            // this.isValidateForm = true;
             this.createErrorData();
             this.asyncFlag = false;
           } else {
             this.validationMsgArray.push(response.errorMessage);
-            // this.isValidateForm = true;
             this.createErrorData();
             this.asyncFlag = false;
           }
@@ -480,7 +478,7 @@ export class CreateProjectComponent implements OnInit {
             projectId: this.projectId,
             saveproject: true
           });
-          this.showtask();
+          // this.showtask();
         } else {
           this.validationMsgArray.push(response.errorMessage);
           this.createErrorData();
@@ -490,17 +488,17 @@ export class CreateProjectComponent implements OnInit {
       }
     );
   }
-  showtask() {
-    this.confirmdialogue = !this.confirmdialogue;
-  }
-  checkStatus(data: any) {
-    if (data === 'ok') {
-      this.msgService.sendMessage({
-        path: 'home/codepipeline/task-ui',
-        title: 'Task Details'
-      });
-    }
-  }
+  // showtask() {
+  //   this.confirmdialogue = !this.confirmdialogue;
+  // }
+  // checkStatus(data: any) {
+  //   if (data === 'ok') {
+  //     this.msgService.sendMessage({
+  //       path: 'home/codepipeline/task-ui',
+  //       title: 'Task Details'
+  //     });
+  //   }
+  // }
 
   // findInstance() {
   //   this.validationMsgArray = [];
