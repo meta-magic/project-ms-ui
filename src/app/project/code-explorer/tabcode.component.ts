@@ -1,13 +1,17 @@
 import { Input } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { LoaderService } from 'platform-commons';
+import { NotificationService } from 'platform-commons';
+
 
 @Component({
   selector: 'tab-code',
   template: `
-  <div *ngIf="!sourceCode" class="loadingnav">
+ <!-- <div *ngIf="!sourceCode" class="loadingnav">
 
-  -  </div>
+  -  </div>-->
+     <div class="loadingnav" *ngIf="loaderService.isLoading"></div>
   <amexio-label size="'small'">
 
               <ng-container *ngIf="sourceCode">
@@ -35,7 +39,8 @@ export class TabcodeComponent implements OnInit {
   @Input() isCss: boolean;
   @Input() publicIpAddress: any;
   @Input() protocol: any;
-  constructor(public http: HttpClient) {}
+   isLoading: boolean = false;
+  constructor(public http: HttpClient,public loaderService:LoaderService,public _notificationService: NotificationService,) {}
   ngOnInit() {}
 
   getIpAddress(): any {
@@ -46,15 +51,8 @@ export class TabcodeComponent implements OnInit {
     this.protocol = protocol;
     //back end data comes on child click.
     if (!data.children) {
-    /*  let appUrl = 'protocol://host:9870/projectExplorer/findSourceCode';
-      if (this.publicIpAddress) {
-        appUrl = appUrl.replace('host', this.publicIpAddress);
-        appUrl = appUrl.replace('protocol', this.protocol);
-      } else {
-        appUrl = appUrl.replace('host', 'localhost');
-        appUrl = appUrl.replace('protocol', this.protocol);
-      }*/
       if (data.leaf) {
+            this.loaderService.showLoader();
         let filedata: any;
         const sourcePathJSON: any = {};
         sourcePathJSON['sourcePath'] = data.sourcePath;
@@ -63,9 +61,12 @@ export class TabcodeComponent implements OnInit {
             filedata = res;
           },
           err => {
-            console.log('Error occured');
+            console.log('error occured')
+            this.loaderService.hideLoader();
           },
           () => {
+            if(filedata.success){
+            this.loaderService.hideLoader();
             const responseData = JSON.parse(filedata.response);
             this.sourceCode = '';
             if (responseData.source) {
@@ -91,7 +92,11 @@ export class TabcodeComponent implements OnInit {
                 }
               }
             }
+          }else{
+            this.loaderService.hideLoader();
           }
+            }
+         
         );
       }
     }

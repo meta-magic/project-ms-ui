@@ -120,23 +120,6 @@ export class CodeExplorerComponent implements OnInit {
   gethostdeatils() {
     this.getSourceCodeTreeData();
 
-/*    let responsedata: any;
-    this.http.post('/api/pipeline/Instance/getHostDetails', {}).subscribe(
-      response => {
-        responsedata = response;
-      },
-      error => {},
-      () => {
-        if (responsedata.response) {
-          this.publicIpAddress = responsedata.response.hostIpAddress;
-          this.protocol = responsedata.response.protocol;
-          this.getSourceCodeTreeData();
-        } else {
-          this.publicIpAddress = '';
-          this.protocol = '';
-        }
-      }
-    );*/
   }
   createInvalidCompErrorData() {
     let errorData: any[] = [];
@@ -155,92 +138,9 @@ export class CodeExplorerComponent implements OnInit {
     errorData.push(errorObj);
     this._notificationService.showerrorData('Error Message', errorData);
   }
-  /*````````````````````````````````````````````````UNSTAGE DATA TREE OPRATION*/
-  getUnstagedClickData(data: any) {
-    this.unStageFileSelected = [];
-    this.selectedTreeUnstageObject = null;
-    this.selectedTreeUnstageObject = data;
-    this.selectedTreeUnstageObject.forEach(
-      (checkFileUnstage: any, index: any) => {
-        if (checkFileUnstage.checked) {
-          this.unStageFileSelected.push(checkFileUnstage);
-        }
-      }
-    );
-  }
-
-  onOneFileToStage(data: any) {
-    this.removeUnstageData();
-    this.unStageFileSelected.forEach(obj => {
-      obj.checked = false;
-      this.stageDataTree.push(obj);
-    });
-    this.unStageFileSelected = [];
-  }
-  removeUnstageData() {
-    let localArray: any[] = [];
-    let localTreeData: any;
-    this.unstagedTreeData.forEach((objUnstage: any, index: any) => {
-      if (!objUnstage.checked) {
-        localArray.push(objUnstage);
-      }
-    });
-    this.unstagedTreeData = localArray;
-  }
-  onAllFileToStage(data: any) {
-    this.unstagedTreeData.forEach((obj: any, index: any) => {
-      obj.checked = false;
-      this.stageDataTree.push(obj);
-    });
-    this.unstagedTreeData.forEach((obj: any, index: any) => {
-      obj.checked = false;
-      this.unstagedTreeData.splice(index);
-    });
-  }
   /* ``````````````````````````````````````````````````STAGE DATA TREE OPRATION HERE*/
 
-  getStageDataClick(data: any) {
-    this.stageFileSelected = [];
-    this.selectedTreeStageObject = null;
-    this.selectedTreeStageObject = data;
-    this.selectedTreeStageObject.forEach((fileStageCheck: any, index: any) => {
-      if (fileStageCheck.checked) {
-        this.stageFileSelected.push(fileStageCheck);
-      }
-    });
-  }
-  onSelectedReturnToUnstage(data: any) {
-    this.removeFormStageData();
-    this.stageFileSelected.forEach((obj: any) => {
-      if (obj.checked) {
-        obj.checked = false;
-        this.unstagedTreeData.push(obj);
-      }
-    });
-    this.stageFileSelected = [];
-  }
-  removeFormStageData() {
-    let localArray: any[] = [];
-    let localTreeData: any;
-    this.stageDataTree.forEach((objUnstage: any, index: any) => {
-      if (!objUnstage.checked) {
-        localArray.push(objUnstage);
-      }
-    });
-    this.stageDataTree = localArray;
-  }
-  onAllReturnToUnstage() {
-    this.stageDataTree.forEach((obj: any, index: any) => {
-      obj.checked = false;
-      this.unstagedTreeData.push(obj);
-    });
-    this.stageDataTree.forEach((obj: any, index: any) => {
-      obj.checked = false;
-      this.stageDataTree.splice(index);
-    });
-  }
-
-  // ALL PRISM FLAG CLOSE HERE
+    // ALL PRISM FLAG CLOSE HERE
   resetFlag() {
     this.isHtml = false;
     this.isTypeScript = false;
@@ -270,25 +170,6 @@ export class CodeExplorerComponent implements OnInit {
         let responsedata: any;
         cmp.getFileDataBtnClick(data, '', '');
 
-
-
-
-   /*     cmp.getIpAddress().subscribe(
-          (response: any) => {
-            responsedata = response;
-          },
-          (error: any) => {},
-          () => {
-            if (responsedata.response) {
-              cmp.publicIpAddress = responsedata.response.hostIpAddress;
-              cmp.protocol = responsedata.response.protocol;
-              cmp.getFileDataBtnClick(data, cmp.publicIpAddress, cmp.protocol);
-            } else {
-              cmp.publicIpAddress = '';
-              cmp.protocol = '';
-            }
-          }
-        );*/
       }
     }
   }
@@ -300,19 +181,6 @@ export class CodeExplorerComponent implements OnInit {
   //Method to get Source Code FROM BACKEND AND USE FOR THE TREE STRUCTURE DATA DISPLAY
   getSourceCodeTreeData() {
     this.inValidMessageData = [];
-    // this.fileDataFromBack = false;
-    // let appUrl = 'http://host:8080/code-pipeline-service/projectExplorer/explorer';
-  /*  let appUrl = 'protocol://host:9870/projectExplorer/explorer';
-
-    if (this.publicIpAddress) {
-      appUrl = appUrl.replace('host', this.publicIpAddress);
-      appUrl = appUrl.replace('protocol', this.protocol);
-    } else {
-      appUrl = appUrl.replace('host', 'localhost');
-      appUrl = appUrl.replace('protocol', this.protocol);
-
-      ``;
-    }*/
     let filedata: any;
     let tokenId = this.cookie.get('tokenid');
 
@@ -345,22 +213,7 @@ export class CodeExplorerComponent implements OnInit {
     this.showErrorDialogue = false;
   }
 
-  treeOfUnstagedData() {
-    let responseData: any;
-    this.http.get('assets/json/share.json').subscribe(
-      response => {
-        responseData = response;
-      },
-      err => {
-        this.inValidMessageData = [];
-        this.inValidMessageData.push('Unable To Connect Server');
-        this.showErrorDialogue = true;
-      },
-      () => {
-        this.unstagedTreeData = responseData;
-      }
-    );
-  }
+ 
 }
 
 //((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?
